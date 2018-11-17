@@ -8,6 +8,7 @@ import {
     - Create end state for the game so only one "GAME" message shows up
     - Figure out how to get rid of the enemy function while still looping
     - Fix a couple of jumps in the corners of the stage
+    - Double check facing left or right
 */
 
 // SET UP
@@ -164,10 +165,26 @@ window.addEventListener("keyup", (e: KeyboardEvent): void  => {
     }
 },                      false);
 
-// END GAME CONDITIONS
+// HELPER FUNCTIONS
 
 let isOutOfBounds = (unit: Sprite): boolean => {
     return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
+};
+
+let isCyrusOnStageLeft = (): boolean => {
+    return (cyrus.scale.x >= 0 && ((cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 62))));
+};
+
+let isCyrusOnStageRight = (): boolean => {
+    return (cyrus.scale.x < 0 && ((cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 135))));
+};
+
+let isHannitOnStageLeft = (): boolean => {
+    return (hannit.scale.x >= 0 && ((hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 62))));
+};
+
+let isHannitOnStageRight = (): boolean => {
+    return (hannit.scale.x < 0 && ((hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 135))));
 };
 
 // END GAME + TEXT
@@ -259,10 +276,10 @@ app.ticker.add((delta: number): void => {
         // cyrus.y += (S) * speed;
         if (cyrusV < 1) {
             cyrusV = cyrusV + acc;
-        } else if ((cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 62))) {
+        } else if (isCyrusOnStageLeft()) {
             cyrusV = 0;
             resetCyrusY();
-        } else if (cyrus.scale.x < 0 && ((cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 135)))) {
+        } else if (isCyrusOnStageRight()) {
             cyrusV = 0;
             resetCyrusY();
         } else if (cyrus.scale.x >= 0 && ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62))) {
@@ -280,10 +297,10 @@ app.ticker.add((delta: number): void => {
         // hannit.y += (down) * speed;
         if (hannitV < 1) {
             hannitV = hannitV + acc;
-        } else if (hannit.scale.x >= 0 && ((hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 62)))) {
+        } else if (isHannitOnStageLeft()) {
             hannitV = 0;
             resetHannitY();
-        } else if (hannit.scale.x < 0 && ((hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 135)))) {
+        } else if (isHannitOnStageRight()) {
             hannitV = 0;
             resetHannitY();
         } else if (hannit.scale.x >= 0 && ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62))) {
