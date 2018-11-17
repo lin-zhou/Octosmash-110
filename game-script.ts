@@ -55,25 +55,29 @@ for (let i: number = 1; i <= 4; i++) {
     app.stage.addChild(enemy.sprite);
 }
 
-let L: number = 0;
-let R: number = 0;
+// laskjdflaksjdlksjf ad
+
+
+
+let A: number = 0;
 let D: number = 0;
-let U: number = 0;
+let S: number = 0;
+let W: number = 0;
 
 window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     console.log("key: " + e.keyCode);
-    const LEFT: number = 37;
-    const UP: number = 38;
-    const RIGHT: number = 39;
-    const DOWN: number = 40;
+    const LEFT: number = 65;
+    const UP: number = 87;
+    const RIGHT: number = 68;
+    const DOWN: number = 83;
     if (e.keyCode === LEFT) {
-        L = -1;
+        A = -1;
     } else if (e.keyCode === UP) {
-        U = -1;
+        W = -1;
     } else if (e.keyCode === RIGHT) {
-        R = 1;
-    } else if (e.keyCode === DOWN) {
         D = 1;
+    } else if (e.keyCode === DOWN) {
+        S = 1;
     }
 },                      false);
 
@@ -82,20 +86,87 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
 // const RIGHT: number = 39;
 // const DOWN: number = 40; 
 
+/*  const LEFT: number = 65;
+    const UP: number = 87;
+    const RIGHT: number = 68;
+    const DOWN: number = 83;
+*/
+
 window.addEventListener("keyup", (e: KeyboardEvent): void  => {
     console.log("key: " + e.keyCode);
-    const LEFT: number = 37;
-    const UP: number = 38;
-    const RIGHT: number = 39;
-    const DOWN: number = 40;
+    const LEFT: number = 65;
+    const UP: number = 87;
+    const RIGHT: number = 68;
+    const DOWN: number = 83;
     if (e.keyCode === LEFT) {
-        L = 0;
+        A = 0;
     } else if (e.keyCode === UP) {
-        U = 0;
+        W = 0;
     } else if (e.keyCode === RIGHT) {
-        R = 0;
-    } else if (e.keyCode === DOWN) {
         D = 0;
+    } else if (e.keyCode === DOWN) {
+        S = 0;
+    }
+},                      false);
+
+
+
+
+
+
+
+
+
+
+
+//  laskjdlaksjdf asodifjsdlkjf
+let left: number = 0;
+let right: number = 0;
+let down: number = 0;
+let up: number = 0;
+
+window.addEventListener("keydown", (e: KeyboardEvent): void  => {
+    console.log("key: " + e.keyCode);
+    const LEFT: number = 65;
+    const UP: number = 87;
+    const RIGHT: number = 68;
+    const DOWN: number = 83;
+    if (e.keyCode === LEFT) {
+        left = -1;
+    } else if (e.keyCode === UP) {
+        up = -1;
+    } else if (e.keyCode === RIGHT) {
+        right = 1;
+    } else if (e.keyCode === DOWN) {
+        down = 1;
+    }
+},                      false);
+
+// const LEFT: number = 37;
+// const UP: number = 38;
+// const RIGHT: number = 39;
+// const DOWN: number = 40; 
+
+/*  const LEFT: number = 65;
+    const UP: number = 87;
+    const RIGHT: number = 68;
+    const DOWN: number = 83;
+*/
+
+window.addEventListener("keyup", (e: KeyboardEvent): void  => {
+    console.log("key: " + e.keyCode);
+    const LEFT: number = 65;
+    const UP: number = 87;
+    const RIGHT: number = 68;
+    const DOWN: number = 83;
+    if (e.keyCode === LEFT) {
+        left = 0;
+    } else if (e.keyCode === UP) {
+        up = 0;
+    } else if (e.keyCode === RIGHT) {
+        right = 0;
+    } else if (e.keyCode === DOWN) {
+        down = 0;
     }
 },                      false);
 
@@ -117,8 +188,8 @@ let messageBox: Graphics = new Graphics();
 
 app.ticker.add((delta: number): void => {
     for (let i: number = 0; i < enemies.length; i++) {
-        cyrus.x += (L + R) * speed;
-        cyrus.y += (U + D) * speed;
+        cyrus.x += (left + right) * speed;
+        cyrus.y += (up + down) * speed;
 
         if (isColliding(cyrus, messageBox) && hasWon) {
             resetCyrus();
