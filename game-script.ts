@@ -19,6 +19,8 @@ document.body.appendChild(app.view);
 let acc: number = 0.05;
 let cyrusV: number = 0;
 let hannitV: number = 0;
+let cyrusJumpCount: number = 0;
+let hannitJumpCount: number = 0;
 
 class Enemy {
     sprite: Sprite;
@@ -49,7 +51,7 @@ let hannit: Sprite = Sprite.fromImage("./Hannit_Sprite.png");
 hannit.scale.x = .5;
 hannit.scale.y = .5;
 hannit.x = 640;
-hannit.y = 210;
+hannit.y = 205;
 app.stage.addChild(hannit);
 
 // NOTE: Find a way to loop without "enemies."
@@ -85,7 +87,12 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
         }
     } else if (e.keyCode === UP) {
         W = -1;
-        cyrusV = -4;
+        if (canJump(cyrus)) {
+            cyrusV =  -4;
+        } else {
+            cyrusV = 0;
+        }
+        cyrusJumpCount++;
     } else if (e.keyCode === RIGHT) {
         D = 1;
         if (cyrus.scale.x >= 0 ) {
@@ -135,7 +142,12 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
         }
     } else if (e.keyCode === UP) {
         up = -1;
-        hannitV = -4;
+        if (canJump(hannit)) {
+            hannitV =  -4;
+        } else {
+            hannitV = 0;
+        }
+        hannitJumpCount++;
     } else if (e.keyCode === RIGHT) {
         right = 1;
         if (hannit.scale.x >= 0 ) {
@@ -171,20 +183,57 @@ let isOutOfBounds = (unit: Sprite): boolean => {
     return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
 };
 
-let isCyrusOnStageLeft = (): boolean => {
-    return (cyrus.scale.x >= 0 && ((cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 62))));
+let facingLeft = (unit: Sprite) => unit.scale.x >= 0;
+let facingRight = (unit: Sprite) => unit.scale.x < 0;
+
+let isOnStageLeftward = (unit: Sprite) => (facingLeft(unit) && ((unit.y >= 205 && unit.y <= 207 && (unit.x < 718 && unit.x > 62))));
+let isOnStageRightward = (unit: Sprite) => (facingRight(unit) && ((unit.y >= 205 && unit.y <= 207 && (unit.x < 718 && unit.x > 135))));
+let isOnStage = (unit: Sprite) => (isOnStageLeftward(unit) || isOnStageRightward(unit));
+
+let offSides = (unit: Sprite) => (facingLeft(unit) && (unit.x >= 718 || unit.x <= 62));
+
+let canJump = (unit: Sprite): boolean => {
+    if (isOnStage(unit)) {
+        if (unit === cyrus) {
+            cyrusJumpCount = 0;
+            return true;
+        } else if (unit === hannit) {
+            hannitJumpCount = 0;
+            return true;
+        }
+    } else if (unit === cyrus) {
+        if (cyrusJumpCount < 2) {
+            return true;
+        }
+    } else if (unit === hannit) {
+        if (hannitJumpCount < 2) {
+            return true;
+        }
+    }
+    return false;
 };
 
-let isCyrusOnStageRight = (): boolean => {
-    return (cyrus.scale.x < 0 && ((cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 135))));
+// GENERAL RESET FUNCTIONS
+
+let resetY = (unit: Sprite): void => {
+    unit.y = 205;
 };
 
-let isHannitOnStageLeft = (): boolean => {
-    return (hannit.scale.x >= 0 && ((hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 62))));
+let resetLowY = (unit: Sprite): void => {
+    unit.y = 295;
 };
 
-let isHannitOnStageRight = (): boolean => {
-    return (hannit.scale.x < 0 && ((hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 135))));
+let leftResetLeft = (unit: Sprite): void => {
+    unit.x = 62;
+};
+let leftResetRight = (unit: Sprite): void => {
+    unit.x = 718;
+};
+let rightResetLeft = (unit: Sprite): void => {
+    unit.x = 135;
+};
+let rightResetRight = (unit: Sprite): void => {
+    unit.x = 788;
 };
 
 // END GAME + TEXT
@@ -237,37 +286,6 @@ let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
     hasWon = true;
 };
 
-// GENERAL RESET FUNCTIONS
-
-let resetLowY = (unit: Sprite): void => {
-    unit.y = 295;
-};
-
-let leftResetLeft = (unit: Sprite): void => {
-    unit.x = 62;
-};
-let leftResetRight = (unit: Sprite): void => {
-    unit.x = 718;
-};
-let rightResetLeft = (unit: Sprite): void => {
-    unit.x = 135;
-};
-let rightResetRight = (unit: Sprite): void => {
-    unit.x = 788;
-};
-
-// CYRUS RESET FUNCTIONS
-
-let resetCyrusY = (): void => {
-    cyrus.y = 205;
-};
-
-// HANNIT RESET FUNCTIONS
-
-let resetHannitY = (): void => {
-    hannit.y = 210;
-};
-
 // RUN GAME
 
 app.ticker.add((delta: number): void => {
@@ -276,37 +294,31 @@ app.ticker.add((delta: number): void => {
         // cyrus.y += (S) * speed;
         if (cyrusV < 1) {
             cyrusV = cyrusV + acc;
-        } else if (isCyrusOnStageLeft()) {
+        } else if (isOnStage(cyrus)) {
             cyrusV = 0;
-            resetCyrusY();
-        } else if (isCyrusOnStageRight()) {
-            cyrusV = 0;
-            resetCyrusY();
-        } else if (cyrus.scale.x >= 0 && ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62))) {
+            resetY(cyrus);
+        } else if (facingLeft(cyrus) && ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62))) {
             cyrusV = 0;
             resetLowY(cyrus);
-        } else if (cyrus.scale.x < 0 && ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 135))) {
+        } else if (facingRight(cyrus) && ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 135))) {
             cyrusV = 0;
             resetLowY(cyrus);
         } else {
             cyrusV = 1;
         }
-        cyrus.y = cyrus.y + cyrusV;
+        cyrus.y += cyrusV;
 
         hannit.x += (left + right) * speed;
         // hannit.y += (down) * speed;
         if (hannitV < 1) {
             hannitV = hannitV + acc;
-        } else if (isHannitOnStageLeft()) {
+        } else if (isOnStage(hannit)) {
             hannitV = 0;
-            resetHannitY();
-        } else if (isHannitOnStageRight()) {
-            hannitV = 0;
-            resetHannitY();
+            resetY(hannit);
         } else if (hannit.scale.x >= 0 && ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62))) {
             hannitV = 0;
             resetLowY(hannit);
-        } else if (hannit.scale.x >= 0 && ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 135))) {
+        } else if (hannit.scale.x < 0 && ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 135))) {
             hannitV = 0;
             resetLowY(hannit);
         } else {
@@ -329,8 +341,8 @@ app.ticker.add((delta: number): void => {
 
         // NOTE: Cyrus turns weirdly in the bottom left of the stage
 
-        if (cyrus.scale.x >= 0) {
-            if (cyrus.x >= 718 || cyrus.x <= 62) {
+        if (facingLeft(cyrus)) {
+            if (offSides(cyrus)) {
             cyrus.y += .5;
             }
             if (cyrus.y <= 205 && (cyrus.x < 718 && cyrus.x > 62)) {
@@ -340,7 +352,7 @@ app.ticker.add((delta: number): void => {
                 cyrus.y += .5;
             }
             if (cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 62)) {
-                resetCyrusY();
+                resetY(cyrus);
             }
             if ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62)) {
                 resetLowY(cyrus);
@@ -362,7 +374,7 @@ app.ticker.add((delta: number): void => {
                 cyrus.y += .5;
             }
             if (cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 788 && cyrus.x > 135)) {
-                resetCyrusY();
+                resetY(cyrus);
             }
             if ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 788 && cyrus.x > 135)) {
                 resetLowY(cyrus);
@@ -377,18 +389,18 @@ app.ticker.add((delta: number): void => {
 
         // HANNIT RESTRAINTS
           
-        if (hannit.scale.x >= 0) {
-            if (hannit.x >= 718 || hannit.x <= 62) {
+        if (facingLeft(hannit)) {
+            if (offSides(hannit)) {
                 hannit.y += .5;
             }
-            if (hannit.y <= 210 && (hannit.x < 718 && hannit.x > 62)) {
+            if (hannit.y <= 205 && (hannit.x < 718 && hannit.x > 62)) {
                 hannit.y += .5;
             }
-            if (hannit.y > 212 && (hannit.x < 718 && hannit.x > 62)) {
+            if (hannit.y > 207 && (hannit.x < 718 && hannit.x > 62)) {
                 hannit.y += .5;
             }
-            if (hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 62)) {
-                resetHannitY();
+            if (hannit.y >= 205 && hannit.y <= 207 && (hannit.x < 718 && hannit.x > 62)) {
+                resetY(hannit);
             }
             if ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62)) {
                 resetLowY(hannit);
@@ -403,14 +415,14 @@ app.ticker.add((delta: number): void => {
             if (hannit.x >= 788 || hannit.x <= 135) {
                 hannit.y += .5;
             }
-            if (hannit.y <= 210 && (hannit.x < 788 && hannit.x > 135)) {
+            if (hannit.y <= 205 && (hannit.x < 788 && hannit.x > 135)) {
                 hannit.y += .5;
             }
-            if (hannit.y > 212 && (hannit.x < 788 && hannit.x > 135)) {
+            if (hannit.y > 207 && (hannit.x < 788 && hannit.x > 135)) {
                 hannit.y += .5;
             }
-            if (hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 788 && hannit.x > 135)) {
-                resetHannitY();
+            if (hannit.y >= 205 && hannit.y <= 212 && (hannit.x < 788 && hannit.x > 135)) {
+                resetY(hannit);
             }
             if ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 788 && hannit.x > 135)) {
                 resetLowY(hannit);
