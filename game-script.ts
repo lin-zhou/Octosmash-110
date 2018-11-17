@@ -302,7 +302,6 @@ app.ticker.add((delta: number): void => {
             resetHannitRight();
         }
 
-        
     }
 }
 );
