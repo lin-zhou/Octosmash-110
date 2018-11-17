@@ -3,7 +3,12 @@ import {
     Application,
 } from "pixi.js";
 
-// NOTE: Write "on ground" test
+/* TO FIX
+    - Write "on ground" test & other helper functions
+    - Create end state for the game so only one "GAME" message shows up
+    - Figure out how to get rid of the enemy function while still looping
+    - Fix a couple of jumps in the corners of the stage
+*/
 
 // SET UP
 
@@ -257,7 +262,7 @@ app.ticker.add((delta: number): void => {
         } else if ((cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 62))) {
             cyrusV = 0;
             resetCyrusY();
-        } else if (cyrus.scale.x < 0 && ((cyrus.y >= 205 && cyrus.y <= 212 && (cyrus.x < 718 && cyrus.x > 135)))) {
+        } else if (cyrus.scale.x < 0 && ((cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 135)))) {
             cyrusV = 0;
             resetCyrusY();
         } else if (cyrus.scale.x >= 0 && ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62))) {
@@ -368,7 +373,7 @@ app.ticker.add((delta: number): void => {
             if (hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 62)) {
                 resetHannitY();
             }
-            if ((hannit.y >= 293 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62)) {
+            if ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62)) {
                 resetLowY(hannit);
             }
             if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x > 62 && hannit.x <= 64)) {
@@ -390,7 +395,7 @@ app.ticker.add((delta: number): void => {
             if (hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 788 && hannit.x > 135)) {
                 resetHannitY();
             }
-            if ((hannit.y >= 293 && hannit.y <= 295) && (hannit.x < 788 && hannit.x > 135)) {
+            if ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 788 && hannit.x > 135)) {
                 resetLowY(hannit);
             }
             if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x > 135 && hannit.x <= 137)) {
