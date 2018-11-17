@@ -8,6 +8,8 @@ import {
     Text
 } from "pixi.js";
 
+// SET UP
+
 const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
 
@@ -42,6 +44,8 @@ hannit.scale.y = .5;
 hannit.x = 640;
 hannit.y = 210;
 app.stage.addChild(hannit);
+
+// NOTE: Find a way to loop without "enemies."
 
 let enemies: Enemy[] = [];
 for (let i: number = 1; i <= 4; i++) {
@@ -136,10 +140,18 @@ window.addEventListener("keyup", (e: KeyboardEvent): void  => {
     }
 },                      false);
 
+// NOTE: Do something about characters colliding into each other.
+
 let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
     let ab: Rectangle = a.getBounds();
     let bb: Rectangle = b.getBounds();
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+};
+
+// END GAME CONDITIONS
+
+let isOutOfBounds = (unit: Sprite): boolean => {
+    return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
 };
 
 // CYRUS RESET FUNCTIONS
@@ -171,11 +183,57 @@ let resetHannitRight = (): void => {
     hannit.x = 718;
 };
 
+// END GAME + TEXT
 
 let hasWon: boolean = false;
 
-let message: Text = new Text("You won!!");
-let messageBox: Graphics = new Graphics();
+// NOTE: Create an end state.
+
+let style = new PIXI.TextStyle({
+    fontFamily: "Arial",
+    fontSize: 36,
+    fontWeight: "bold",
+    fill: ["#ffffff", "#00ff99"], // gradient
+    stroke: "#4a1850",
+    strokeThickness: 5,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 440
+});
+
+let gameStyle = new PIXI.TextStyle({
+    fontFamily: "Arial",
+    fontSize: 75,
+    fontWeight: "bold",
+    fill: ["#ffffff", "#00ff99"], // gradient
+    stroke: "#4a1850",
+    strokeThickness: 5,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 440
+});
+
+let game = new PIXI.Text("GAME!", gameStyle);
+
+let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
+    gameMessage.x = 305;
+    gameMessage.y = 180;
+    message.x = 327;
+    message.y = 280;
+    app.stage.addChild(gameMessage);
+    app.stage.addChild(message);
+    hasWon = true;
+};
+
+// RUN GAME
 
 app.ticker.add((delta: number): void => {
     for (let i: number = 0; i < enemies.length; i++) {
@@ -184,6 +242,19 @@ app.ticker.add((delta: number): void => {
 
         hannit.x += (left + right) * speed;
         hannit.y += (up + down) * speed;
+
+        // END GAME TEST
+
+        if (isOutOfBounds(cyrus)) {
+            let message = new PIXI.Text("Hannit wins.", style);
+            handleWin(game, message);
+        } else if (isOutOfBounds(hannit)) {
+            let message = new PIXI.Text("Cyrus wins.", style);
+            handleWin(game, message);
+            message.x = 331;
+        }
+
+        // CYRUS RESTRAINTS
 
         if (cyrus.x >= 718 || cyrus.x <= 62) {
             cyrus.y += .5;
@@ -207,6 +278,8 @@ app.ticker.add((delta: number): void => {
             resetCyrusRight();
         }
 
+        // HANNIT RESTRAINTS
+                
         if (hannit.x >= 718 || hannit.x <= 62) {
             hannit.y += .5;
         }
@@ -228,6 +301,8 @@ app.ticker.add((delta: number): void => {
         if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x < 718 && hannit.x >= 716)) {
             resetHannitRight();
         }
+
+        
     }
 }
 );
