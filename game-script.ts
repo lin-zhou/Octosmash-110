@@ -39,7 +39,7 @@ app.stage.addChild(cyrus);
 const speed: number = 1.5;
 
 let hannit: Sprite = Sprite.fromImage("./Hannit_Sprite.png");
-hannit.scale.x = .5;
+hannit.scale.x = -.5;
 hannit.scale.y = .5;
 hannit.x = 640;
 hannit.y = 210;
@@ -121,18 +121,18 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     const DOWN: number = 40;
     if (e.keyCode === LEFT) {
         left = -1;
-        if (hannit.scale.x < 0) {
+        /* if (hannit.scale.x < 0) {
             hannit.scale.x *= -1;
             hannit.x -= 65;
-        }
+        } */
     } else if (e.keyCode === UP) {
         up = -1;
     } else if (e.keyCode === RIGHT) {
         right = 1;
-        if (hannit.scale.x >= 0 ) {
+        /* if (hannit.scale.x >= 0 ) {
             hannit.scale.x *= -1;
             hannit.x += 65;
-        }
+        }*/
     } else if (e.keyCode === DOWN) {
         down = 1;
     }
@@ -168,35 +168,6 @@ let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
 
 let isOutOfBounds = (unit: Sprite): boolean => {
     return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
-};
-
-// CYRUS RESET FUNCTIONS
-
-let resetCyrusY = (): void => {
-    cyrus.y = 205;
-};
-let resetCyrusLowY = (): void => {
-    cyrus.y = 295;
-};
-let resetCyrusLeft = (): void => {
-    cyrus.x = 62;
-};
-let resetCyrusRight = (): void => {
-    cyrus.x = 718;
-};
-// HANNIT RESET FUNCTIONS
-
-let resetHannitY = (): void => {
-    hannit.y = 210;
-};
-let resetHannitLowY = (): void => {
-    hannit.y = 295;
-};
-let resetHannitLeft = (): void => {
-    hannit.x = 62;
-};
-let resetHannitRight = (): void => {
-    hannit.x = 718;
 };
 
 // END GAME + TEXT
@@ -249,6 +220,48 @@ let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
     hasWon = true;
 };
 
+// CYRUS RESET FUNCTIONS
+
+let leftResetCyrusY = (): void => {
+    cyrus.y = 205;
+};
+let leftResetCyrusLowY = (): void => {
+    cyrus.y = 295;
+};
+let leftResetCyrusLeft = (): void => {
+    cyrus.x = 62;
+};
+let leftResetCyrusRight = (): void => {
+    cyrus.x = 718;
+};
+
+let rightResetCyrusY = (): void => {
+    cyrus.y = 205;
+};
+let rightResetCyrusLowY = (): void => {
+    cyrus.y = 295;
+};
+let rightResetCyrusLeft = (): void => {
+    cyrus.x = 135;
+};
+let rightResetCyrusRight = (): void => {
+    cyrus.x = 788;
+};
+// HANNIT RESET FUNCTIONS
+
+let resetHannitY = (): void => {
+    hannit.y = 210;
+};
+let resetHannitLowY = (): void => {
+    hannit.y = 295;
+};
+let resetHannitLeft = (): void => {
+    hannit.x = 112;
+};
+let resetHannitRight = (): void => {
+    hannit.x = 718;
+};
+
 // RUN GAME
 
 app.ticker.add((delta: number): void => {
@@ -272,26 +285,50 @@ app.ticker.add((delta: number): void => {
 
         // CYRUS RESTRAINTS
 
-        if (cyrus.x >= 718 || cyrus.x <= 62) {
+        if (cyrus.scale.x >= 0) {
+            if (cyrus.x >= 718 || cyrus.x <= 62) {
             cyrus.y += .5;
-        }
-        if (cyrus.y <= 205 && (cyrus.x < 718 && cyrus.x > 62)) {
-            cyrus.y += .5;
-        }
-        if (cyrus.y > 207 && (cyrus.x < 718 && cyrus.x > 62)) {
-            cyrus.y += .5;
-        }
-        if (cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 62)) {
-            resetCyrusY();
-        }
-        if ((cyrus.y >= 293 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62)) {
-            resetCyrusLowY();
-        }
-        if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x > 62 && cyrus.x <= 64)) {
-            resetCyrusLeft();
-        }
-        if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x < 718 && cyrus.x >= 716)) {
-            resetCyrusRight();
+            }
+            if (cyrus.y <= 205 && (cyrus.x < 718 && cyrus.x > 62)) {
+                cyrus.y += .5;
+            }
+            if (cyrus.y > 207 && (cyrus.x < 718 && cyrus.x > 62)) {
+                cyrus.y += .5;
+            }
+            if (cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 62)) {
+                leftResetCyrusY();
+            }
+            if ((cyrus.y >= 293 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62)) {
+                leftResetCyrusLowY();
+            }
+            if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x > 62 && cyrus.x <= 64)) {
+                leftResetCyrusLeft();
+            }
+            if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x < 718 && cyrus.x >= 716)) {
+                leftResetCyrusRight();
+            }
+        } else if (cyrus.scale.x < 0) {
+            if (cyrus.x >= 788 || cyrus.x <= 135) {
+                cyrus.y += .5;
+            }
+            if (cyrus.y <= 205 && (cyrus.x < 788 && cyrus.x > 135)) {
+                cyrus.y += .5;
+            }
+            if (cyrus.y > 207 && (cyrus.x < 788 && cyrus.x > 135)) {
+                cyrus.y += .5;
+            }
+            if (cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 788 && cyrus.x > 135)) {
+                rightResetCyrusY();
+            }
+            if ((cyrus.y >= 293 && cyrus.y <= 295) && (cyrus.x < 788 && cyrus.x > 135)) {
+                rightResetCyrusLowY();
+            }
+            if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x > 135 && cyrus.x <= 137)) {
+                rightResetCyrusLeft();
+            }
+            if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x < 788 && cyrus.x >= 786)) {
+                rightResetCyrusRight();
+            }
         }
 
         // HANNIT RESTRAINTS
