@@ -121,18 +121,18 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     const DOWN: number = 40;
     if (e.keyCode === LEFT) {
         left = -1;
-        /* if (hannit.scale.x < 0) {
+        if (hannit.scale.x < 0) {
             hannit.scale.x *= -1;
             hannit.x -= 65;
-        } */
+        }
     } else if (e.keyCode === UP) {
         up = -1;
     } else if (e.keyCode === RIGHT) {
         right = 1;
-        /* if (hannit.scale.x >= 0 ) {
+        if (hannit.scale.x >= 0 ) {
             hannit.scale.x *= -1;
             hannit.x += 65;
-        }*/
+        }
     } else if (e.keyCode === DOWN) {
         down = 1;
     }
@@ -249,17 +249,30 @@ let rightResetCyrusRight = (): void => {
 };
 // HANNIT RESET FUNCTIONS
 
-let resetHannitY = (): void => {
+let leftResetHannitY = (): void => {
     hannit.y = 210;
 };
-let resetHannitLowY = (): void => {
+let leftResetHannitLowY = (): void => {
     hannit.y = 295;
 };
-let resetHannitLeft = (): void => {
-    hannit.x = 112;
+let leftResetHannitLeft = (): void => {
+    hannit.x = 62;
 };
-let resetHannitRight = (): void => {
+let leftResetHannitRight = (): void => {
     hannit.x = 718;
+};
+
+let rightResetHannitY = (): void => {
+    hannit.y = 210;
+};
+let rightResetHannitLowY = (): void => {
+    hannit.y = 295;
+};
+let rightResetHannitLeft = (): void => {
+    hannit.x = 135;
+};
+let rightResetHannitRight = (): void => {
+    hannit.x = 788;
 };
 
 // RUN GAME
@@ -307,7 +320,7 @@ app.ticker.add((delta: number): void => {
             if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x < 718 && cyrus.x >= 716)) {
                 leftResetCyrusRight();
             }
-        } else if (cyrus.scale.x < 0) {
+        } else {
             if (cyrus.x >= 788 || cyrus.x <= 135) {
                 cyrus.y += .5;
             }
@@ -332,29 +345,52 @@ app.ticker.add((delta: number): void => {
         }
 
         // HANNIT RESTRAINTS
-                
-        if (hannit.x >= 718 || hannit.x <= 62) {
-            hannit.y += .5;
+          
+        if (hannit.scale.x >= 0) {
+            if (hannit.x >= 718 || hannit.x <= 62) {
+                hannit.y += .5;
+            }
+            if (hannit.y <= 210 && (hannit.x < 718 && hannit.x > 62)) {
+                hannit.y += .5;
+            }
+            if (hannit.y > 212 && (hannit.x < 718 && hannit.x > 62)) {
+                hannit.y += .5;
+            }
+            if (hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 62)) {
+                leftResetHannitY();
+            }
+            if ((hannit.y >= 293 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62)) {
+                leftResetHannitLowY();
+            }
+            if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x > 62 && hannit.x <= 64)) {
+                leftResetHannitLeft();
+            }
+            if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x < 718 && hannit.x >= 716)) {
+                leftResetHannitRight();
+            }
+        } else {
+            if (hannit.x >= 788 || hannit.x <= 135) {
+                hannit.y += .5;
+            }
+            if (hannit.y <= 210 && (hannit.x < 788 && hannit.x > 135)) {
+                hannit.y += .5;
+            }
+            if (hannit.y > 212 && (hannit.x < 788 && hannit.x > 135)) {
+                hannit.y += .5;
+            }
+            if (hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 788 && hannit.x > 135)) {
+                rightResetHannitY();
+            }
+            if ((hannit.y >= 293 && hannit.y <= 295) && (hannit.x < 788 && hannit.x > 135)) {
+                rightResetHannitLowY();
+            }
+            if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x > 135 && hannit.x <= 137)) {
+                rightResetHannitLeft();
+            }
+            if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x < 788 && hannit.x >= 786)) {
+                rightResetHannitRight();
+            }
         }
-        if (hannit.y <= 210 && (hannit.x < 718 && hannit.x > 62)) {
-            hannit.y += .5;
-        }
-        if (hannit.y > 212 && (hannit.x < 718 && hannit.x > 62)) {
-            hannit.y += .5;
-        }
-        if (hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 62)) {
-            resetHannitY();
-        }
-        if ((hannit.y >= 293 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62)) {
-            resetHannitLowY();
-        }
-        if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x > 62 && hannit.x <= 64)) {
-            resetHannitLeft();
-        }
-        if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x < 718 && hannit.x >= 716)) {
-            resetHannitRight();
-        }
-  
-    }
+    }   
 }
 );
