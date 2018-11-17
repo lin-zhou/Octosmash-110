@@ -8,7 +8,7 @@ import {
     Text
 } from "pixi.js";
 
-// SET UP
+// SET UP2
 
 const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
