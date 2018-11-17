@@ -154,7 +154,7 @@ let resetCyrusLeft = (): void => {
     cyrus.x = 62;
 };
 let resetCyrusRight = (): void => {
-    cyrus.x = 62;
+    cyrus.x = 718;
 };
 // HANNIT RESET FUNCTIONS
 
@@ -168,7 +168,7 @@ let resetHannitLeft = (): void => {
     hannit.x = 62;
 };
 let resetHannitRight = (): void => {
-    hannit.x = 62;
+    hannit.x = 718;
 };
 
 
@@ -200,10 +200,10 @@ app.ticker.add((delta: number): void => {
         if ((cyrus.y >= 293 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62)) {
             resetCyrusLowY();
         }
-        if ((cyrus.y <= 280 && cyrus.y >= 207) && (cyrus.x > 62)) {
+        if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x > 62 && cyrus.x <= 64)) {
             resetCyrusLeft();
         }
-        if ((cyrus.y <= 280 && cyrus.y >= 207) && (cyrus.x < 718)) {
+        if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x < 718 && cyrus.x >= 716)) {
             resetCyrusRight();
         }
 
@@ -221,6 +221,12 @@ app.ticker.add((delta: number): void => {
         }
         if ((hannit.y >= 293 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62)) {
             resetHannitLowY();
+        }
+        if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x > 62 && hannit.x <= 64)) {
+            resetHannitLeft();
+        }
+        if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x < 718 && hannit.x >= 716)) {
+            resetHannitRight();
         }
     }
 }
