@@ -8,7 +8,7 @@ import {
     Text
 } from "pixi.js";
 
-// SET UP2
+// SET UP
 
 const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
@@ -31,9 +31,9 @@ background.scale.y = .85;
 app.stage.addChild(background);
 
 let cyrus: Sprite = Sprite.fromImage("./Cyrus_Sprite.png");
-cyrus.scale.x = .55;
+cyrus.scale.x = -.55;
 cyrus.scale.y = .55;
-cyrus.x = 145;
+cyrus.x = 225;
 cyrus.y = 205;
 app.stage.addChild(cyrus);
 const speed: number = 1.5;
@@ -72,10 +72,18 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     const DOWN: number = 83;
     if (e.keyCode === LEFT) {
         A = -1;
+        if (cyrus.scale.x < 0) {
+            cyrus.scale.x *= -1;
+            cyrus.x -= 65;
+        }
     } else if (e.keyCode === UP) {
         W = -1;
     } else if (e.keyCode === RIGHT) {
         D = 1;
+        if (cyrus.scale.x >= 0 ) {
+            cyrus.scale.x *= -1;
+            cyrus.x += 65;
+        }
     } else if (e.keyCode === DOWN) {
         S = 1;
     }
@@ -113,10 +121,18 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     const DOWN: number = 40;
     if (e.keyCode === LEFT) {
         left = -1;
+        if (hannit.scale.x < 0) {
+            hannit.scale.x *= -1;
+            hannit.x -= 65;
+        }
     } else if (e.keyCode === UP) {
         up = -1;
     } else if (e.keyCode === RIGHT) {
         right = 1;
+        if (hannit.scale.x >= 0 ) {
+            hannit.scale.x *= -1;
+            hannit.x += 65;
+        }
     } else if (e.keyCode === DOWN) {
         down = 1;
     }
@@ -301,7 +317,7 @@ app.ticker.add((delta: number): void => {
         if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x < 718 && hannit.x >= 716)) {
             resetHannitRight();
         }
-
+  
     }
 }
 );
