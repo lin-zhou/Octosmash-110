@@ -33,8 +33,6 @@ cyrus.scale.x = .55;
 cyrus.scale.y = .55;
 cyrus.x = 145;
 cyrus.y = 205;
-
-
 app.stage.addChild(cyrus);
 const speed: number = 1.5;
 
@@ -55,6 +53,48 @@ for (let i: number = 1; i <= 4; i++) {
     app.stage.addChild(enemy.sprite);
 }
 
+// CYRUS MOVE CONTROLS
+
+let A: number = 0;
+let D: number = 0;
+let S: number = 0;
+let W: number = 0;
+
+window.addEventListener("keydown", (e: KeyboardEvent): void  => {
+    console.log("key: " + e.keyCode);
+    const LEFT: number = 65;
+    const UP: number = 87;
+    const RIGHT: number = 68;
+    const DOWN: number = 83;
+    if (e.keyCode === LEFT) {
+        A = -1;
+    } else if (e.keyCode === UP) {
+        W = -1;
+    } else if (e.keyCode === RIGHT) {
+        D = 1;
+    } else if (e.keyCode === DOWN) {
+        S = 1;
+    }
+},                      false);
+
+window.addEventListener("keyup", (e: KeyboardEvent): void  => {
+    console.log("key: " + e.keyCode);
+    const LEFT: number = 65;
+    const UP: number = 87;
+    const RIGHT: number = 68;
+    const DOWN: number = 83;
+    if (e.keyCode === LEFT) {
+        A = 0;
+    } else if (e.keyCode === UP) {
+        W = 0;
+    } else if (e.keyCode === RIGHT) {
+        D = 0;
+    } else if (e.keyCode === DOWN) {
+        S = 0;
+    }
+},                      false);
+
+// HANNIT MOVE CONTROLS
 
 let left: number = 0;
 let right: number = 0;
@@ -96,66 +136,41 @@ window.addEventListener("keyup", (e: KeyboardEvent): void  => {
     }
 },                      false);
 
-let A: number = 0;
-let D: number = 0;
-let S: number = 0;
-let W: number = 0;
-
-window.addEventListener("keydown", (e: KeyboardEvent): void  => {
-    console.log("key: " + e.keyCode);
-    const LEFT: number = 65;
-    const UP: number = 87;
-    const RIGHT: number = 68;
-    const DOWN: number = 83;
-    if (e.keyCode === LEFT) {
-        A = -1;
-    } else if (e.keyCode === UP) {
-        W = -1;
-    } else if (e.keyCode === RIGHT) {
-        D = 1;
-    } else if (e.keyCode === DOWN) {
-        S = 1;
-    }
-},                      false);
-
-// const LEFT: number = 37;
-// const UP: number = 38;
-// const RIGHT: number = 39;
-// const DOWN: number = 40; 
-
-/*  const LEFT: number = 65;
-    const UP: number = 87;
-    const RIGHT: number = 68;
-    const DOWN: number = 83;
-*/
-
-window.addEventListener("keyup", (e: KeyboardEvent): void  => {
-    console.log("key: " + e.keyCode);
-    const LEFT: number = 65;
-    const UP: number = 87;
-    const RIGHT: number = 68;
-    const DOWN: number = 83;
-    if (e.keyCode === LEFT) {
-        A = 0;
-    } else if (e.keyCode === UP) {
-        W = 0;
-    } else if (e.keyCode === RIGHT) {
-        D = 0;
-    } else if (e.keyCode === DOWN) {
-        S = 0;
-    }
-},                      false);
-
 let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
     let ab: Rectangle = a.getBounds();
     let bb: Rectangle = b.getBounds();
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
 };
 
-let resetCyrus = (): void => {
-    cyrus.x = 145;
+// CYRUS RESET FUNCTIONS
+
+let resetCyrusY = (): void => {
     cyrus.y = 205;
 };
+let resetCyrusLowY = (): void => {
+    cyrus.y = 295;
+};
+let resetCyrusLeft = (): void => {
+    cyrus.x = 62;
+};
+let resetCyrusRight = (): void => {
+    cyrus.x = 62;
+};
+// HANNIT RESET FUNCTIONS
+
+let resetHannitY = (): void => {
+    hannit.y = 210;
+};
+let resetHannitLowY = (): void => {
+    hannit.y = 295;
+};
+let resetHannitLeft = (): void => {
+    hannit.x = 62;
+};
+let resetHannitRight = (): void => {
+    hannit.x = 62;
+};
+
 
 let hasWon: boolean = false;
 
@@ -169,20 +184,43 @@ app.ticker.add((delta: number): void => {
 
         hannit.x += (left + right) * speed;
         hannit.y += (up + down) * speed;
-        
-        if (isColliding(cyrus, messageBox) && hasWon) {
-            resetCyrus();
-            app.stage.removeChild(message);
-            app.stage.removeChild(messageBox);
-            hasWon = false;
-        }
 
         if (cyrus.x >= 718 || cyrus.x <= 62) {
             cyrus.y += .5;
         }
-
         if (cyrus.y <= 205 && (cyrus.x < 718 && cyrus.x > 62)) {
             cyrus.y += .5;
+        }
+        if (cyrus.y > 207 && (cyrus.x < 718 && cyrus.x > 62)) {
+            cyrus.y += .5;
+        }
+        if (cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 62)) {
+            resetCyrusY();
+        }
+        if ((cyrus.y >= 293 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62)) {
+            resetCyrusLowY();
+        }
+        if ((cyrus.y <= 280 && cyrus.y >= 207) && (cyrus.x > 62)) {
+            resetCyrusLeft();
+        }
+        if ((cyrus.y <= 280 && cyrus.y >= 207) && (cyrus.x < 718)) {
+            resetCyrusRight();
+        }
+
+        if (hannit.x >= 718 || hannit.x <= 62) {
+            hannit.y += .5;
+        }
+        if (hannit.y <= 210 && (hannit.x < 718 && hannit.x > 62)) {
+            hannit.y += .5;
+        }
+        if (hannit.y > 212 && (hannit.x < 718 && hannit.x > 62)) {
+            hannit.y += .5;
+        }
+        if (hannit.y >= 210 && hannit.y <= 212 && (hannit.x < 718 && hannit.x > 62)) {
+            resetHannitY();
+        }
+        if ((hannit.y >= 293 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62)) {
+            resetHannitLowY();
         }
     }
 }
