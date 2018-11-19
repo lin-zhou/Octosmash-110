@@ -7,14 +7,23 @@ import {
 // npm install pixi.js
 // npm install @types/pixi.js
 
+/* MAJOR TO DOS
+    - Add projectile weapons
+*/
+
+/* OTHER THINGS TO DO IF TIME ALLOWS
+    - Create player 1 and player 2 --> Allow each player to choose a character
+    - Characters who look farther back should appear farther back
+*/
+
 /* TO FIX
     - Figure out how to get rid of the enemy function while still looping
     - Fix a couple of finicky places in the corners of the stage
-    - Double check facing left or right
     - Fix error: sometimes can't jump after walking off stage
+    - Fix error: phase through the ground when holding down after jumping
     - Fix weird jump when holding "up" or "w" keys
+        - Holding up shouldn't do anything different than just tapping it once
     - Consider moving helpers to another file
-    - If introducing multiple characters to pick from, tie controls to a player rather than a character
 */
 
 // SET UP
@@ -22,8 +31,14 @@ import {
 const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
 
-let acc: number = 0.05;
-// This is the acceleration used to determine fall rate to simulate gravity.
+const acc: number = 0.05;
+const speed: number = 1.5;
+
+class Player {
+    sprite: Sprite;
+    vel: number = 0;
+    jumpCount: number = 0;
+}
 
 class Enemy {
     sprite: Sprite;
@@ -33,37 +48,31 @@ class Enemy {
     }
 }
 
-class Unit {
-    sprite: Sprite;
-    vel: number = 0;
-    jumpCount: number = 0;
-}
-
 let background: Sprite = Sprite.fromImage("./Final_Destination_Stage.png");
 background.scale.x = .85;
 background.scale.y = .85;
 app.stage.addChild(background);
 
 let cyrus: Sprite = Sprite.fromImage("./Cyrus_Sprite.png");
-cyrus.scale.x = -.55;
-cyrus.scale.y = .55;
-cyrus.x = 225;
-cyrus.y = 205;
-app.stage.addChild(cyrus);
-const speed: number = 1.5;
+cyrus.scale.x = .56;
+cyrus.scale.y = .56;
 
-let _cyrus = new Unit();
-_cyrus.sprite = cyrus;
+let p1 = new Player();
+p1.sprite = cyrus;
+p1.sprite.x = 225;
+p1.sprite.y = 205;
+p1.sprite.scale.x *= -1;
+app.stage.addChild(p1.sprite);
 
 let hannit: Sprite = Sprite.fromImage("./Hannit_Sprite.png");
-hannit.scale.x = .5;
-hannit.scale.y = .5;
-hannit.x = 640;
-hannit.y = 205;
-app.stage.addChild(hannit);
+hannit.scale.x = .52;
+hannit.scale.y = .52;
 
-let _hannit = new Unit();
-_hannit.sprite = hannit;
+let p2 = new Player();
+p2.sprite = hannit;
+p2.sprite.x = 640;
+p2.sprite.y = 205;
+app.stage.addChild(p2.sprite);
 
 // NOTE: Find a way to loop without "enemies."
 
@@ -77,7 +86,7 @@ for (let i: number = 1; i <= 4; i++) {
     app.stage.addChild(enemy.sprite);
 }
 
-// CYRUS MOVE CONTROLS
+// p1.sprite MOVE CONTROLS
 
 let A: number = 0;
 let D: number = 0;
@@ -92,26 +101,26 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     const DOWN: number = 83;
     if (e.keyCode === LEFT) {
         A = -1;
-        if (cyrus.scale.x < 0) {
-            cyrus.scale.x *= -1;
-            cyrus.x -= 65;
+        if (p1.sprite.scale.x < 0) {
+            p1.sprite.scale.x *= -1;
+            p1.sprite.x -= 65;
         }
     } else if (e.keyCode === UP) {
         W = -1;
-        if (canJump(cyrus)) {
-            _cyrus.vel =  -4;
-            _cyrus.jumpCount++;
+        if (canJump(p1.sprite)) {
+            p1.vel =  -3.5;
+            p1.jumpCount++;
         } else {
-            _cyrus.vel = 0;
+            p1.vel = 0;
         }
     } else if (e.keyCode === RIGHT) {
         D = 1;
-        if (cyrus.scale.x >= 0 ) {
-            cyrus.scale.x *= -1;
-            cyrus.x += 65;
+        if (p1.sprite.scale.x >= 0 ) {
+            p1.sprite.scale.x *= -1;
+            p1.sprite.x += 65;
         }
     } else if (e.keyCode === DOWN) {
-        if (!grounded(cyrus)) {
+        if (!grounded(p1.sprite)) {
             S = 1;
         }
     }
@@ -134,7 +143,7 @@ window.addEventListener("keyup", (e: KeyboardEvent): void  => {
     }
 },                      false);
 
-// HANNIT MOVE CONTROLS
+// PLAYER TWO MOVE CONTROLS
 
 let left: number = 0;
 let right: number = 0;
@@ -149,26 +158,26 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     const DOWN: number = 40;
     if (e.keyCode === LEFT) {
         left = -1;
-        if (hannit.scale.x < 0) {
-            hannit.scale.x *= -1;
-            hannit.x -= 65;
+        if (p2.sprite.scale.x < 0) {
+            p2.sprite.scale.x *= -1;
+            p2.sprite.x -= 65;
         }
     } else if (e.keyCode === UP) {
         up = -1;
-        if (canJump(hannit)) {
-            _hannit.vel =  -4;
-            _hannit.jumpCount++;
+        if (canJump(p2.sprite)) {
+            p2.vel =  -3.5;
+            p2.jumpCount++;
         } else {
-            _hannit.vel = 0;
+            p2.vel = 0;
         }
     } else if (e.keyCode === RIGHT) {
         right = 1;
-        if (hannit.scale.x >= 0 ) {
-            hannit.scale.x *= -1;
-            hannit.x += 65;
+        if (p2.sprite.scale.x >= 0 ) {
+            p2.sprite.scale.x *= -1;
+            p2.sprite.x += 65;
         }
     } else if (e.keyCode === DOWN) {
-        if (!grounded(hannit)) {
+        if (!grounded(p2.sprite)) {
             down = 1;
         }
     }
@@ -213,19 +222,19 @@ let offSides = (unit: Sprite) => ((facingLeft(unit) && (unit.x >= 718 || unit.x 
 
 let canJump = (unit: Sprite): boolean => {
     if (grounded(unit)) {
-        if (unit === cyrus) {
-            _cyrus.jumpCount = 0;
+        if (unit === p1.sprite) {
+            p1.jumpCount = 0;
             return true;
-        } else if (unit === hannit) {
-            _hannit.jumpCount = 0;
-            return true;
-        }
-    } else if (unit === cyrus) {
-        if (_cyrus.jumpCount < 2) {
+        } else if (unit === p2.sprite) {
+            p2.jumpCount = 0;
             return true;
         }
-    } else if (unit === hannit) {
-        if (_hannit.jumpCount < 2) {
+    } else if (unit === p1.sprite) {
+        if (p1.jumpCount < 2) {
+            return true;
+        }
+    } else if (unit === p2.sprite) {
+        if (p2.jumpCount < 2) {
             return true;
         }
     }
@@ -310,21 +319,22 @@ app.ticker.add((delta: number): void => {
     for (let i: number = 0; i < enemies.length; i++) {
         // END GAME TEST
 
-        if (isOutOfBounds(cyrus) || isOutOfBounds(hannit)) {
+        if (isOutOfBounds(p1.sprite) || isOutOfBounds(p2.sprite)) {
             gameOver = true;
         }
 
         if (gameOver) {
-            if (isOutOfBounds(cyrus)) {
-                winner = hannit;
-            } else if (isOutOfBounds(hannit)) {
-                winner = cyrus;
+            if (isOutOfBounds(p1.sprite)) {
+                winner = p2.sprite;
+            } else if (isOutOfBounds(p2.sprite)) {
+                winner = p1.sprite;
             }
-            if (winner === hannit && !winnerExists) {
+            if (winner === p2.sprite && !winnerExists) {
                 let message = new PIXI.Text("Hannit wins.", style);
                 handleWin(game, message);
                 winnerExists = true;
-            } else if (winner === cyrus && !winnerExists) {
+                // Change message to player one and player two instead of character names
+            } else if (winner === p1.sprite && !winnerExists) {
                 let message = new PIXI.Text("Cyrus wins.", style);
                 handleWin(game, message);
                 message.x = 331;
@@ -332,121 +342,119 @@ app.ticker.add((delta: number): void => {
             }
         }
         
-        cyrus.x += (A + D) * speed;
-        cyrus.y += (S) * speed;
-        if (_cyrus.vel < 1) {
-            _cyrus.vel += acc;
-        } else if (grounded(cyrus)) {
-            _cyrus.vel = 0;
-            resetY(cyrus);
-        } else if (underStage(cyrus)) {
-            _cyrus.vel = 0;
-            resetLowY(cyrus);
-        } else if (underStage(cyrus)) {
-            _cyrus.vel = 0;
-            resetLowY(cyrus);
+        p1.sprite.x += (A + D) * speed;
+        p1.sprite.y += (S) * speed;
+        if (p1.vel < 1) {
+            p1.vel += acc;
+        } else if (grounded(p1.sprite)) {
+            p1.vel = 0;
+            resetY(p1.sprite);
+        } else if (underStage(p1.sprite)) {
+            p1.vel = 0;
+            resetLowY(p1.sprite);
+        } else if (underStage(p1.sprite)) {
+            p1.vel = 0;
+            resetLowY(p1.sprite);
         } else {
-            _cyrus.vel = 1;
+            p1.vel = 1;
         }
-        cyrus.y += _cyrus.vel;
+        p1.sprite.y += p1.vel;
 
-        hannit.x += (left + right) * speed;
-        hannit.y += (down) * speed;
-        if (_hannit.vel < 1) {
-            _hannit.vel += acc;
-        } else if (grounded(hannit)) {
-            _hannit.vel = 0;
-            resetY(hannit);
-        } else if (underStage(hannit)) {
-            _hannit.vel = 0;
-            resetLowY(hannit);
-        } else if (underStage(hannit)) {
-            _hannit.vel = 0;
-            resetLowY(hannit);
+        p2.sprite.x += (left + right) * speed;
+        p2.sprite.y += (down) * speed;
+        if (p2.vel < 1) {
+            p2.vel += acc;
+        } else if (grounded(p2.sprite)) {
+            p2.vel = 0;
+            resetY(p2.sprite);
+        } else if (underStage(p2.sprite)) {
+            p2.vel = 0;
+            resetLowY(p2.sprite);
+        } else if (underStage(p2.sprite)) {
+            p2.vel = 0;
+            resetLowY(p2.sprite);
         } else {
-            _hannit.vel = 1;
+            p2.vel = 1;
         }
-        hannit.y = hannit.y + _hannit.vel;
+        p2.sprite.y = p2.sprite.y + p2.vel;
 
-        // CYRUS RESTRAINTS
+        // PLAYER ONE RESTRAINTS
 
-        // NOTE: Cyrus turns weirdly in the bottom left of the stage
-
-        if (grounded(cyrus)) {
-            resetY(cyrus);
+        if (grounded(p1.sprite)) {
+            resetY(p1.sprite);
         }
-        if (underStage(cyrus)) {
-            resetLowY(cyrus);
+        if (underStage(p1.sprite)) {
+            resetLowY(p1.sprite);
         }
-        if (offSides(cyrus)) {
-            cyrus.y += .5;
+        if (offSides(p1.sprite)) {
+            p1.sprite.y += .5;
         }
 
-        if (facingLeft(cyrus)) {
-            if (cyrus.y <= 205 && (cyrus.x < 718 && cyrus.x > 62)) {
-                cyrus.y += .5;
+        if (facingLeft(p1.sprite)) {
+            if (p1.sprite.y <= 205 && (p1.sprite.x < 718 && p1.sprite.x > 62)) {
+                p1.sprite.y += .5;
             }
-            if (cyrus.y > 207 && (cyrus.x < 718 && cyrus.x > 62)) {
-                cyrus.y += .5;
+            if (p1.sprite.y > 207 && (p1.sprite.x < 718 && p1.sprite.x > 62)) {
+                p1.sprite.y += .5;
             }
-            if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x > 62 && cyrus.x <= 64)) {
-                leftResetLeft(cyrus);
+            if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x > 62 && p1.sprite.x <= 64)) {
+                leftResetLeft(p1.sprite);
             }
-            if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x < 718 && cyrus.x >= 716)) {
-                leftResetRight(cyrus);
+            if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x < 718 && p1.sprite.x >= 716)) {
+                leftResetRight(p1.sprite);
             }
         } else {
-            if (cyrus.y <= 205 && (cyrus.x < 788 && cyrus.x > 135)) {
-                cyrus.y += .5;
+            if (p1.sprite.y <= 205 && (p1.sprite.x < 788 && p1.sprite.x > 135)) {
+                p1.sprite.y += .5;
             }
-            if (cyrus.y > 207 && (cyrus.x < 788 && cyrus.x > 135)) {
-                cyrus.y += .5;
+            if (p1.sprite.y > 207 && (p1.sprite.x < 788 && p1.sprite.x > 135)) {
+                p1.sprite.y += .5;
             }
-            if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x > 135 && cyrus.x <= 137)) {
-                rightResetLeft(cyrus);
+            if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x > 135 && p1.sprite.x <= 137)) {
+                rightResetLeft(p1.sprite);
             }
-            if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x < 788 && cyrus.x >= 786)) {
-                rightResetRight(cyrus);
+            if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x < 788 && p1.sprite.x >= 786)) {
+                rightResetRight(p1.sprite);
             }
         }
 
-        // HANNIT RESTRAINTS
+        // PLAYER TWO RESTRAINTS
 
-        if (grounded(hannit)) {
-            resetY(hannit);
+        if (grounded(p2.sprite)) {
+            resetY(p2.sprite);
         }
-        if (underStage(hannit)) {
-            resetLowY(hannit);
+        if (underStage(p2.sprite)) {
+            resetLowY(p2.sprite);
         }
-        if (offSides(hannit)) {
-            hannit.y += .5;
+        if (offSides(p2.sprite)) {
+            p2.sprite.y += .5;
         }
           
-        if (facingLeft(hannit)) {
-            if (hannit.y <= 205 && (hannit.x < 718 && hannit.x > 62)) {
-                hannit.y += .5;
+        if (facingLeft(p2.sprite)) {
+            if (p2.sprite.y <= 205 && (p2.sprite.x < 718 && p2.sprite.x > 62)) {
+                p2.sprite.y += .5;
             }
-            if (hannit.y > 207 && (hannit.x < 718 && hannit.x > 62)) {
-                hannit.y += .5;
+            if (p2.sprite.y > 207 && (p2.sprite.x < 718 && p2.sprite.x > 62)) {
+                p2.sprite.y += .5;
             }
-            if ((hannit.y >= 207 && hannit.y <= 292) && (hannit.x > 62 && hannit.x <= 64)) {
-                leftResetLeft(hannit);
+            if ((p2.sprite.y >= 207 && p2.sprite.y <= 292) && (p2.sprite.x > 62 && p2.sprite.x <= 64)) {
+                leftResetLeft(p2.sprite);
             }
-            if ((hannit.y >= 207 && hannit.y <= 292) && (hannit.x < 718 && hannit.x >= 716)) {
-                leftResetRight(hannit);
+            if ((p2.sprite.y >= 207 && p2.sprite.y <= 292) && (p2.sprite.x < 718 && p2.sprite.x >= 716)) {
+                leftResetRight(p2.sprite);
             }
         } else {
-            if (hannit.y <= 205 && (hannit.x < 788 && hannit.x > 135)) {
-                hannit.y += .5;
+            if (p2.sprite.y <= 205 && (p2.sprite.x < 788 && p2.sprite.x > 135)) {
+                p2.sprite.y += .5;
             }
-            if (hannit.y > 207 && (hannit.x < 788 && hannit.x > 135)) {
-                hannit.y += .5;
+            if (p2.sprite.y > 207 && (p2.sprite.x < 788 && p2.sprite.x > 135)) {
+                p2.sprite.y += .5;
             }
-            if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x > 135 && hannit.x <= 137)) {
-                rightResetLeft(hannit);
+            if ((p2.sprite.y <= 292 && p2.sprite.y >= 207) && (p2.sprite.x > 135 && p2.sprite.x <= 137)) {
+                rightResetLeft(p2.sprite);
             }
-            if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x < 788 && hannit.x >= 786)) {
-                rightResetRight(hannit);
+            if ((p2.sprite.y <= 292 && p2.sprite.y >= 207) && (p2.sprite.x < 788 && p2.sprite.x >= 786)) {
+                rightResetRight(p2.sprite);
             }
         }
     }   
