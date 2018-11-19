@@ -3,12 +3,19 @@ import {
     Application,
 } from "pixi.js";
 
+// How To Download Pixi.js
+// npm install pixi.js
+// npm install @types/pixi.js
+
 /* TO FIX
-    - Write "on ground" test & other helper functions
     - Create end state for the game so only one "GAME" message shows up
     - Figure out how to get rid of the enemy function while still looping
-    - Fix a couple of jumps in the corners of the stage
+    - Fix a couple of finicky places in the corners of the stage
     - Double check facing left or right
+    - Fix error: sometimes can't jump after walking off stage
+    - Fix weird jump when holding "up" or "w" keys
+    - Consider moving helpers to another file
+    - If introducing multiple characters to pick from, tie controls to a player rather than a character
 */
 
 // SET UP
@@ -17,10 +24,7 @@ const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
 
 let acc: number = 0.05;
-let cyrusV: number = 0;
-let hannitV: number = 0;
-let cyrusJumpCount: number = 0;
-let hannitJumpCount: number = 0;
+// This is the acceleration used to determine fall rate to simulate gravity.
 
 class Enemy {
     sprite: Sprite;
@@ -32,6 +36,8 @@ class Enemy {
 
 class Unit {
     sprite: Sprite;
+    vel: number = 0;
+    jumpCount: number = 0;
 }
 
 let background: Sprite = Sprite.fromImage("./Final_Destination_Stage.png");
@@ -47,12 +53,18 @@ cyrus.y = 205;
 app.stage.addChild(cyrus);
 const speed: number = 1.5;
 
+let _cyrus = new Unit();
+_cyrus.sprite = cyrus;
+
 let hannit: Sprite = Sprite.fromImage("./Hannit_Sprite.png");
 hannit.scale.x = .5;
 hannit.scale.y = .5;
 hannit.x = 640;
 hannit.y = 205;
 app.stage.addChild(hannit);
+
+let _hannit = new Unit();
+_hannit.sprite = hannit;
 
 // NOTE: Find a way to loop without "enemies."
 
@@ -88,11 +100,11 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     } else if (e.keyCode === UP) {
         W = -1;
         if (canJump(cyrus)) {
-            cyrusV =  -4;
+            _cyrus.vel =  -4;
+            _cyrus.jumpCount++;
         } else {
-            cyrusV = 0;
+            _cyrus.vel = 0;
         }
-        cyrusJumpCount++;
     } else if (e.keyCode === RIGHT) {
         D = 1;
         if (cyrus.scale.x >= 0 ) {
@@ -100,7 +112,9 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
             cyrus.x += 65;
         }
     } else if (e.keyCode === DOWN) {
-        S = 1;
+        if (!grounded(cyrus)) {
+            S = 1;
+        }
     }
 },                      false);
 
@@ -143,11 +157,11 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     } else if (e.keyCode === UP) {
         up = -1;
         if (canJump(hannit)) {
-            hannitV =  -4;
+            _hannit.vel =  -4;
+            _hannit.jumpCount++;
         } else {
-            hannitV = 0;
+            _hannit.vel = 0;
         }
-        hannitJumpCount++;
     } else if (e.keyCode === RIGHT) {
         right = 1;
         if (hannit.scale.x >= 0 ) {
@@ -155,7 +169,9 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
             hannit.x += 65;
         }
     } else if (e.keyCode === DOWN) {
-        down = 1;
+        if (!grounded(hannit)) {
+            down = 1;
+        }
     }
 },                      false);
 
@@ -186,27 +202,31 @@ let isOutOfBounds = (unit: Sprite): boolean => {
 let facingLeft = (unit: Sprite) => unit.scale.x >= 0;
 let facingRight = (unit: Sprite) => unit.scale.x < 0;
 
-let isOnStageLeftward = (unit: Sprite) => (facingLeft(unit) && ((unit.y >= 205 && unit.y <= 207 && (unit.x < 718 && unit.x > 62))));
-let isOnStageRightward = (unit: Sprite) => (facingRight(unit) && ((unit.y >= 205 && unit.y <= 207 && (unit.x < 718 && unit.x > 135))));
-let isOnStage = (unit: Sprite) => (isOnStageLeftward(unit) || isOnStageRightward(unit));
+let groundedLeftward = (unit: Sprite) => (facingLeft(unit) && (unit.y >= 205 && unit.y <= 207 && (unit.x < 718 && unit.x > 62)));
+let groundedRightward = (unit: Sprite) => (facingRight(unit) && (unit.y >= 205 && unit.y <= 207 && (unit.x < 788 && unit.x > 135)));
+let grounded = (unit: Sprite) => (groundedLeftward(unit) || groundedRightward(unit));
 
-let offSides = (unit: Sprite) => (facingLeft(unit) && (unit.x >= 718 || unit.x <= 62));
+let underStageLeftWard = (unit: Sprite) => (facingLeft(unit) && (unit.y >= 208 && unit.y <= 295) && (unit.x < 718 && unit.x > 62));
+let underStageRightWard = (unit: Sprite) => (facingRight(unit) && (unit.y >= 208 && unit.y <= 295) && (unit.x < 788 && unit.x > 135));
+let underStage = (unit: Sprite) => (underStageLeftWard(unit) || underStageRightWard(unit));
+
+let offSides = (unit: Sprite) => ((facingLeft(unit) && (unit.x >= 718 || unit.x <= 62)) || (facingRight(unit) && (unit.x <= 135 || unit.x >= 788)));
 
 let canJump = (unit: Sprite): boolean => {
-    if (isOnStage(unit)) {
+    if (grounded(unit)) {
         if (unit === cyrus) {
-            cyrusJumpCount = 0;
+            _cyrus.jumpCount = 0;
             return true;
         } else if (unit === hannit) {
-            hannitJumpCount = 0;
+            _hannit.jumpCount = 0;
             return true;
         }
     } else if (unit === cyrus) {
-        if (cyrusJumpCount < 2) {
+        if (_cyrus.jumpCount < 2) {
             return true;
         }
     } else if (unit === hannit) {
-        if (hannitJumpCount < 2) {
+        if (_hannit.jumpCount < 2) {
             return true;
         }
     }
@@ -236,7 +256,7 @@ let rightResetRight = (unit: Sprite): void => {
     unit.x = 788;
 };
 
-// END GAME + TEXT
+// END GAME + TEXT --> has yet to be implemented
 
 let hasWon: boolean = false;
 
@@ -291,40 +311,40 @@ let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
 app.ticker.add((delta: number): void => {
     for (let i: number = 0; i < enemies.length; i++) {
         cyrus.x += (A + D) * speed;
-        // cyrus.y += (S) * speed;
-        if (cyrusV < 1) {
-            cyrusV = cyrusV + acc;
-        } else if (isOnStage(cyrus)) {
-            cyrusV = 0;
+        cyrus.y += (S) * speed;
+        if (_cyrus.vel < 1) {
+            _cyrus.vel += acc;
+        } else if (grounded(cyrus)) {
+            _cyrus.vel = 0;
             resetY(cyrus);
-        } else if (facingLeft(cyrus) && ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62))) {
-            cyrusV = 0;
+        } else if (underStage(cyrus)) {
+            _cyrus.vel = 0;
             resetLowY(cyrus);
-        } else if (facingRight(cyrus) && ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 135))) {
-            cyrusV = 0;
+        } else if (underStage(cyrus)) {
+            _cyrus.vel = 0;
             resetLowY(cyrus);
         } else {
-            cyrusV = 1;
+            _cyrus.vel = 1;
         }
-        cyrus.y += cyrusV;
+        cyrus.y += _cyrus.vel;
 
         hannit.x += (left + right) * speed;
-        // hannit.y += (down) * speed;
-        if (hannitV < 1) {
-            hannitV = hannitV + acc;
-        } else if (isOnStage(hannit)) {
-            hannitV = 0;
+        hannit.y += (down) * speed;
+        if (_hannit.vel < 1) {
+            _hannit.vel += acc;
+        } else if (grounded(hannit)) {
+            _hannit.vel = 0;
             resetY(hannit);
-        } else if (hannit.scale.x >= 0 && ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62))) {
-            hannitV = 0;
+        } else if (underStage(hannit)) {
+            _hannit.vel = 0;
             resetLowY(hannit);
-        } else if (hannit.scale.x < 0 && ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 135))) {
-            hannitV = 0;
+        } else if (underStage(hannit)) {
+            _hannit.vel = 0;
             resetLowY(hannit);
         } else {
-            hannitV = 1;
+            _hannit.vel = 1;
         }
-        hannit.y = hannit.y + hannitV;
+        hannit.y = hannit.y + _hannit.vel;
 
         // END GAME TEST
 
@@ -341,21 +361,22 @@ app.ticker.add((delta: number): void => {
 
         // NOTE: Cyrus turns weirdly in the bottom left of the stage
 
-        if (facingLeft(cyrus)) {
-            if (offSides(cyrus)) {
+        if (grounded(cyrus)) {
+            resetY(cyrus);
+        }
+        if (underStage(cyrus)) {
+            resetLowY(cyrus);
+        }
+        if (offSides(cyrus)) {
             cyrus.y += .5;
-            }
+        }
+
+        if (facingLeft(cyrus)) {
             if (cyrus.y <= 205 && (cyrus.x < 718 && cyrus.x > 62)) {
                 cyrus.y += .5;
             }
             if (cyrus.y > 207 && (cyrus.x < 718 && cyrus.x > 62)) {
                 cyrus.y += .5;
-            }
-            if (cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 718 && cyrus.x > 62)) {
-                resetY(cyrus);
-            }
-            if ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 718 && cyrus.x > 62)) {
-                resetLowY(cyrus);
             }
             if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x > 62 && cyrus.x <= 64)) {
                 leftResetLeft(cyrus);
@@ -364,20 +385,11 @@ app.ticker.add((delta: number): void => {
                 leftResetRight(cyrus);
             }
         } else {
-            if (cyrus.x >= 788 || cyrus.x <= 135) {
-                cyrus.y += .5;
-            }
             if (cyrus.y <= 205 && (cyrus.x < 788 && cyrus.x > 135)) {
                 cyrus.y += .5;
             }
             if (cyrus.y > 207 && (cyrus.x < 788 && cyrus.x > 135)) {
                 cyrus.y += .5;
-            }
-            if (cyrus.y >= 205 && cyrus.y <= 207 && (cyrus.x < 788 && cyrus.x > 135)) {
-                resetY(cyrus);
-            }
-            if ((cyrus.y >= 208 && cyrus.y <= 295) && (cyrus.x < 788 && cyrus.x > 135)) {
-                resetLowY(cyrus);
             }
             if ((cyrus.y <= 292 && cyrus.y > 207) && (cyrus.x > 135 && cyrus.x <= 137)) {
                 rightResetLeft(cyrus);
@@ -388,44 +400,36 @@ app.ticker.add((delta: number): void => {
         }
 
         // HANNIT RESTRAINTS
+
+        if (grounded(hannit)) {
+            resetY(hannit);
+        }
+        if (underStage(hannit)) {
+            resetLowY(hannit);
+        }
+        if (offSides(hannit)) {
+            hannit.y += .5;
+        }
           
         if (facingLeft(hannit)) {
-            if (offSides(hannit)) {
-                hannit.y += .5;
-            }
             if (hannit.y <= 205 && (hannit.x < 718 && hannit.x > 62)) {
                 hannit.y += .5;
             }
             if (hannit.y > 207 && (hannit.x < 718 && hannit.x > 62)) {
                 hannit.y += .5;
             }
-            if (hannit.y >= 205 && hannit.y <= 207 && (hannit.x < 718 && hannit.x > 62)) {
-                resetY(hannit);
-            }
-            if ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 718 && hannit.x > 62)) {
-                resetLowY(hannit);
-            }
-            if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x > 62 && hannit.x <= 64)) {
+            if ((hannit.y >= 207 && hannit.y <= 292) && (hannit.x > 62 && hannit.x <= 64)) {
                 leftResetLeft(hannit);
             }
-            if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x < 718 && hannit.x >= 716)) {
+            if ((hannit.y >= 207 && hannit.y <= 292) && (hannit.x < 718 && hannit.x >= 716)) {
                 leftResetRight(hannit);
             }
         } else {
-            if (hannit.x >= 788 || hannit.x <= 135) {
-                hannit.y += .5;
-            }
             if (hannit.y <= 205 && (hannit.x < 788 && hannit.x > 135)) {
                 hannit.y += .5;
             }
             if (hannit.y > 207 && (hannit.x < 788 && hannit.x > 135)) {
                 hannit.y += .5;
-            }
-            if (hannit.y >= 205 && hannit.y <= 212 && (hannit.x < 788 && hannit.x > 135)) {
-                resetY(hannit);
-            }
-            if ((hannit.y >= 213 && hannit.y <= 295) && (hannit.x < 788 && hannit.x > 135)) {
-                resetLowY(hannit);
             }
             if ((hannit.y <= 292 && hannit.y >= 207) && (hannit.x > 135 && hannit.x <= 137)) {
                 rightResetLeft(hannit);
