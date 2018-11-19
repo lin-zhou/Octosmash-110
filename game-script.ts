@@ -8,7 +8,6 @@ import {
 // npm install @types/pixi.js
 
 /* TO FIX
-    - Create end state for the game so only one "GAME" message shows up
     - Figure out how to get rid of the enemy function while still looping
     - Fix a couple of finicky places in the corners of the stage
     - Double check facing left or right
@@ -256,11 +255,7 @@ let rightResetRight = (unit: Sprite): void => {
     unit.x = 788;
 };
 
-// END GAME + TEXT --> has yet to be implemented
-
-let hasWon: boolean = false;
-
-// NOTE: Create an end state.
+// END GAME + TEXT
 
 let style = new PIXI.TextStyle({
     fontFamily: "Arial",
@@ -294,6 +289,10 @@ let gameStyle = new PIXI.TextStyle({
     wordWrapWidth: 440
 });
 
+let gameOver: boolean = false;
+let winner: Sprite;
+let winnerExists: boolean = false;
+
 let game = new PIXI.Text("GAME!", gameStyle);
 
 let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
@@ -303,13 +302,36 @@ let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
     message.y = 280;
     app.stage.addChild(gameMessage);
     app.stage.addChild(message);
-    hasWon = true;
 };
 
 // RUN GAME
 
 app.ticker.add((delta: number): void => {
     for (let i: number = 0; i < enemies.length; i++) {
+        // END GAME TEST
+
+        if (isOutOfBounds(cyrus) || isOutOfBounds(hannit)) {
+            gameOver = true;
+        }
+
+        if (gameOver) {
+            if (isOutOfBounds(cyrus)) {
+                winner = hannit;
+            } else if (isOutOfBounds(hannit)) {
+                winner = cyrus;
+            }
+            if (winner === hannit && !winnerExists) {
+                let message = new PIXI.Text("Hannit wins.", style);
+                handleWin(game, message);
+                winnerExists = true;
+            } else if (winner === cyrus && !winnerExists) {
+                let message = new PIXI.Text("Cyrus wins.", style);
+                handleWin(game, message);
+                message.x = 331;
+                winnerExists = true;
+            }
+        }
+        
         cyrus.x += (A + D) * speed;
         cyrus.y += (S) * speed;
         if (_cyrus.vel < 1) {
@@ -345,17 +367,6 @@ app.ticker.add((delta: number): void => {
             _hannit.vel = 1;
         }
         hannit.y = hannit.y + _hannit.vel;
-
-        // END GAME TEST
-
-        if (isOutOfBounds(cyrus)) {
-            let message = new PIXI.Text("Hannit wins.", style);
-            handleWin(game, message);
-        } else if (isOutOfBounds(hannit)) {
-            let message = new PIXI.Text("Cyrus wins.", style);
-            handleWin(game, message);
-            message.x = 331;
-        }
 
         // CYRUS RESTRAINTS
 
