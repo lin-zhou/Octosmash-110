@@ -67,7 +67,7 @@ app.stage.addChild(hannitName);
 let nextBox: Graphics = new Graphics;
 nextBox.beginFill(0x6f6f6f, 0.6);
 nextBox.drawRect(0, 0, 120, 45);
-nextBox.x = 700;
+nextBox.x = 701;
 nextBox.y = 420;
 app.stage.addChild(nextBox);
 
@@ -79,12 +79,12 @@ reselectBox.y = 420;
 app.stage.addChild(reselectBox);
 
 let next = new PIXI.Text("NEXT", nextStyle);
-next.x = 710;
+next.x = 712;
 next.y = 421;
 app.stage.addChild(next);
 
 let activeNext = new PIXI.Text("NEXT", activeNextStyle);
-activeNext.x = 710;
+activeNext.x = 712;
 activeNext.y = 421;
 
 let reselect = new PIXI.Text("RESELECT", reselectStyle);
@@ -279,7 +279,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         app.stage.addChild(reselect);
         app.stage.addChild(next);
     }
-    if (p1choose && hasChosen && e.x >= 700 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
+    if (p1choose && hasChosen && e.x >= 701 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
         console.log("P2's Turn");
         p1choose = false;
         p2choose = true;
@@ -300,19 +300,19 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         let playBox: Graphics = new Graphics();
         playBox.beginFill(0x6f6f6f, 0.6);
         playBox.drawRect(0, 0, 120, 45);
-        playBox.x = 700;
+        playBox.x = 701;
         playBox.y = 420;
         app.stage.addChild(playBox);
 
         let play = new PIXI.Text("PLAY", nextStyle);
-        play.x = 710;
+        play.x = 712;
         play.y = 421;
         app.stage.addChild(play);
 
         app.stage.addChild(reselect);
 
         let activePlay = new PIXI.Text("PLAY", activeNextStyle);
-        activePlay.x = 710;
+        activePlay.x = 712;
         activePlay.y = 421;
 
         window.addEventListener("click", (e: MouseEvent): void  => {
@@ -478,7 +478,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 app.stage.addChild(play);
                 app.stage.addChild(reselect);
             }
-            if (p2choose && hasChosen && e.x >= 700 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
+            if (p2choose && hasChosen && e.x >= 701 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
                 // Game starts!
                 console.log("Game Starting");
                 let test = new PIXI.Text("GAME RUN", nextStyle);
