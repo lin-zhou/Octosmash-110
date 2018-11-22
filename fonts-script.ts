@@ -45,3 +45,19 @@ export let gameStyle = new PIXI.TextStyle({
     wordWrap: true,
     wordWrapWidth: 440
 });
+
+export let selectStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 24,
+    fontWeight: "bold",
+    fill: ["#ffffff"],
+    stroke: "#455028",
+    strokeThickness: 3,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 500
+});
