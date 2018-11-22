@@ -195,6 +195,8 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         let canChoose = true;
         let hasChosen = false;
 
+        let blockBox: Graphics = new Graphics();       
+
         window.addEventListener("click", (e: MouseEvent): void  => {
             if (p1choose && canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
                 console.log("P1 Chose Ophelia");
@@ -202,6 +204,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite.x = 210;
                 p1.sprite.y = 205;
                 p1.sprite.scale.x *= -1;
+
+                blockBox = new Graphics();
+                blockBox.beginFill(0xffffff, 0.5);
+                blockBox.drawRect(0, 0, 90, 277);
+                blockBox.x = 50,
+                blockBox.y = 125;
+                app.stage.addChild(blockBox);
+
                 canChoose = false;
                 hasChosen = true;
                 app.stage.addChild(nextBox);
@@ -215,6 +225,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite.x = 225;
                 p1.sprite.y = 205;
                 p1.sprite.scale.x *= -1;
+
+                blockBox = new Graphics();
+                blockBox.beginFill(0xffffff, 0.5);
+                blockBox.drawRect(0, 0, 90, 277);
+                blockBox.x = 148,
+                blockBox.y = 125;
+                app.stage.addChild(blockBox);
+
                 canChoose = false;
                 hasChosen = true;
                 app.stage.addChild(nextBox);
@@ -228,6 +246,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite.x = 210;
                 p1.sprite.y = 205;
                 p1.sprite.scale.x *= -1;
+
+                blockBox = new Graphics();
+                blockBox.beginFill(0xffffff, 0.5);
+                blockBox.drawRect(0, 0, 91, 277);
+                blockBox.x = 245,
+                blockBox.y = 125;
+                app.stage.addChild(blockBox);
+
                 canChoose = false;
                 hasChosen = true;
                 app.stage.addChild(nextBox);
@@ -241,6 +267,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite.x = 225;
                 p1.sprite.y = 205;
                 p1.sprite.scale.x *= -1;
+
+                blockBox = new Graphics();
+                blockBox.beginFill(0xffffff, 0.5);
+                blockBox.drawRect(0, 0, 90, 277);
+                blockBox.x = 342,
+                blockBox.y = 125;
+                app.stage.addChild(blockBox);
+
                 canChoose = false;
                 hasChosen = true;
                 app.stage.addChild(nextBox);
@@ -254,6 +288,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite.x = 210;
                 p1.sprite.y = 205;
                 p1.sprite.scale.x *= -1;
+
+                blockBox = new Graphics();
+                blockBox.beginFill(0xffffff, 0.5);
+                blockBox.drawRect(0, 0, 91, 277);
+                blockBox.x = 439,
+                blockBox.y = 125;
+                app.stage.addChild(blockBox);
+
                 canChoose = false;
                 hasChosen = true;
                 app.stage.addChild(nextBox);
@@ -267,6 +309,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite.x = 212;
                 p1.sprite.y = 205;
                 p1.sprite.scale.x *= -1;
+
+                blockBox = new Graphics();
+                blockBox.beginFill(0xffffff, 0.5);
+                blockBox.drawRect(0, 0, 91, 277);
+                blockBox.x = 536,
+                blockBox.y = 125;
+                app.stage.addChild(blockBox);
+
                 canChoose = false;
                 hasChosen = true;
                 app.stage.addChild(nextBox);
@@ -280,6 +330,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite.x = 217;
                 p1.sprite.y = 205;
                 p1.sprite.scale.x *= -1;
+
+                blockBox = new Graphics();
+                blockBox.beginFill(0xffffff, 0.5);
+                blockBox.drawRect(0, 0, 91, 277);
+                blockBox.x = 633,
+                blockBox.y = 125;
+                app.stage.addChild(blockBox);
+
                 canChoose = false;
                 hasChosen = true;
                 app.stage.addChild(nextBox);
@@ -293,6 +351,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite.x = 215;
                 p1.sprite.y = 205;
                 p1.sprite.scale.x *= -1;
+
+                blockBox = new Graphics();
+                blockBox.beginFill(0xffffff, 0.5);
+                blockBox.drawRect(0, 0, 90, 277);
+                blockBox.x = 731,
+                blockBox.y = 125;
+                app.stage.addChild(blockBox);
+
                 canChoose = false;
                 hasChosen = true;
                 app.stage.addChild(nextBox);
@@ -308,6 +374,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 app.stage.removeChild(reselectBox);
                 app.stage.removeChild(next);
                 app.stage.removeChild(reselect);
+                app.stage.removeChild(blockBox);
             }
             if (p1choose && hasChosen && e.x >= 700 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
                 console.log("P2's Turn");
@@ -328,6 +395,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 app.stage.removeChild(nextBox);
                 app.stage.removeChild(reselect);
                 app.stage.removeChild(reselectBox);
+                app.stage.removeChild(blockBox);
 
                 let playBox: Graphics = new Graphics();
                 playBox.beginFill(0x6f6f6f, 0.6);
@@ -345,6 +413,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         p2.sprite = ophelia2;
                         p2.sprite.x = 650;
                         p2.sprite.y = 205;
+
+                        blockBox = new Graphics();
+                        blockBox.beginFill(0xffffff, 0.5);
+                        blockBox.drawRect(0, 0, 90, 277);
+                        blockBox.x = 50,
+                        blockBox.y = 125;
+                        app.stage.addChild(blockBox);
+
                         canChoose = false;
                         hasChosen = true;
                         app.stage.addChild(playBox);
@@ -357,6 +433,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         p2.sprite = cyrus2;
                         p2.sprite.x = 637;
                         p2.sprite.y = 205;
+
+                        blockBox = new Graphics();
+                        blockBox.beginFill(0xffffff, 0.5);
+                        blockBox.drawRect(0, 0, 90, 277);
+                        blockBox.x = 148,
+                        blockBox.y = 125;
+                        app.stage.addChild(blockBox);
+
                         canChoose = false;
                         hasChosen = true;
                         app.stage.addChild(playBox);
@@ -369,6 +453,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         p2.sprite = tressa2;
                         p2.sprite.x = 655;
                         p2.sprite.y = 205;
+
+                        blockBox = new Graphics();
+                        blockBox.beginFill(0xffffff, 0.5);
+                        blockBox.drawRect(0, 0, 91, 277);
+                        blockBox.x = 245,
+                        blockBox.y = 125;
+                        app.stage.addChild(blockBox);
+
                         canChoose = false;
                         hasChosen = true;
                         app.stage.addChild(playBox);
@@ -381,6 +473,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         p2.sprite = olberic2;
                         p2.sprite.x = 640;
                         p2.sprite.y = 205;
+
+                        blockBox = new Graphics();
+                        blockBox.beginFill(0xffffff, 0.5);
+                        blockBox.drawRect(0, 0, 90, 277);
+                        blockBox.x = 342,
+                        blockBox.y = 125;
+                        app.stage.addChild(blockBox);
+
                         canChoose = false;
                         hasChosen = true;
                         app.stage.addChild(playBox);
@@ -393,6 +493,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         p2.sprite = primrose2;
                         p2.sprite.x = 655;
                         p2.sprite.y = 205;
+
+                        blockBox = new Graphics();
+                        blockBox.beginFill(0xffffff, 0.5);
+                        blockBox.drawRect(0, 0, 91, 277);
+                        blockBox.x = 439,
+                        blockBox.y = 125;
+                        app.stage.addChild(blockBox);
+
                         canChoose = false;
                         hasChosen = true;
                         app.stage.addChild(playBox);
@@ -403,6 +511,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p2choose && canChoose && e.x >= 544 && e.x <= 634 && e.y >= 125 && e.y <= 402) {
                         console.log("P2 Chose Alfyn");
                         p2.sprite = alfyn2;
+
+                        blockBox = new Graphics();
+                        blockBox.beginFill(0xffffff, 0.5);
+                        blockBox.drawRect(0, 0, 91, 277);
+                        blockBox.x = 536,
+                        blockBox.y = 125;
+                        app.stage.addChild(blockBox);
+
                         p2.sprite.x = 652;
                         p2.sprite.y = 205;
                         canChoose = false;
@@ -417,6 +533,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         p2.sprite = therion2;
                         p2.sprite.x = 648;
                         p2.sprite.y = 205;
+
+                        blockBox = new Graphics();
+                        blockBox.beginFill(0xffffff, 0.5);
+                        blockBox.drawRect(0, 0, 91, 277);
+                        blockBox.x = 633,
+                        blockBox.y = 125;
+                        app.stage.addChild(blockBox);
+
                         canChoose = false;
                         hasChosen = true;
                         app.stage.addChild(playBox);
@@ -429,6 +553,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         p2.sprite = hannit2;
                         p2.sprite.x = 650;
                         p2.sprite.y = 205;
+
+                        blockBox = new Graphics();
+                        blockBox.beginFill(0xffffff, 0.5);
+                        blockBox.drawRect(0, 0, 90, 277);
+                        blockBox.x = 731,
+                        blockBox.y = 125;
+                        app.stage.addChild(blockBox);
+
                         canChoose = false;
                         hasChosen = true;
                         app.stage.addChild(playBox);
@@ -444,6 +576,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         app.stage.removeChild(reselectBox);
                         app.stage.removeChild(play);
                         app.stage.removeChild(reselect);
+                        app.stage.removeChild(blockBox);
                     }
                     if (p2choose && hasChosen && e.x >= 700 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
                         // Game starts!
