@@ -59,8 +59,8 @@ therionName.x = 646;
 therionName.y = 105;
 app.stage.addChild(therionName);
 
-let hannitName = new PIXI.Text("HANNIT", nameStyle);
-hannitName.x = 745;
+let hannitName = new PIXI.Text("H'ANNIT", nameStyle);
+hannitName.x = 743;
 hannitName.y = 105;
 app.stage.addChild(hannitName);
 
