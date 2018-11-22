@@ -1,5 +1,3 @@
-// To be imported to game script
-
 import {
     Sprite,
 } from "pixi.js";
