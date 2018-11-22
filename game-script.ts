@@ -42,16 +42,17 @@ import {
 /* OTHER THINGS TO DO IF TIME ALLOWS
     - Characters who look farther back should appear farther back
     - Multiply lives + respawning
+    - Sound effects!
 */
 
 // SET UP - START MENU
 const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
 
-let background: Sprite = Sprite.fromImage("./Start_Screen.png");
-background.scale.x = 34 / 75;
-background.scale.y = 34 / 75;
-app.stage.addChild(background);
+let startScreen: Sprite = Sprite.fromImage("./Start_Screen.png");
+startScreen.scale.x = 34 / 75;
+startScreen.scale.y = 34 / 75;
+app.stage.addChild(startScreen);
 
 let startMessage = new PIXI.Text("START", startStyle);
 startMessage.x = 460;
@@ -64,7 +65,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
 
         // GET RID OF START MENU COMPONENTS
         app.stage.removeChild(startMessage);
-        app.stage.removeChild(background);
+        app.stage.removeChild(startScreen);
 
         // BUILD IN-GAME COMPONENTS
         let gameBG: Sprite = Sprite.fromImage("./Final_Destination_Stage.png");
