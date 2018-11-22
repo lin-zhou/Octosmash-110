@@ -10,10 +10,12 @@ import {
     reselectStyle,
     nameStyle
 } from "./fonts-script";
-import { test } from "../ps04-list-utils/test-util";
 
 const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
+
+let p1choose: boolean = true;
+let p2choose: boolean = false;
 
 let selectScreen: Sprite = Sprite.fromImage("./Character_Select.png");
 selectScreen.scale.x = 34 / 75;
@@ -65,24 +67,20 @@ nextBox.beginFill(0x6f6f6f, 0.6);
 nextBox.drawRect(0, 0, 120, 45);
 nextBox.x = 700;
 nextBox.y = 420;
-app.stage.addChild(nextBox);
 
 let reselectBox: Graphics = new Graphics;
 reselectBox.beginFill(0x6f6f6f, 0.6);
 reselectBox.drawRect(0, 0, 170, 45);
 reselectBox.x = 50;
 reselectBox.y = 420;
-app.stage.addChild(reselectBox);
 
 let next = new PIXI.Text("NEXT", nextStyle);
-next.x = 708;
+next.x = 710;
 next.y = 421;
-app.stage.addChild(next);
 
 let reselect = new PIXI.Text("RESELECT", reselectStyle);
-reselect.x = 53;
+reselect.x = 59;
 reselect.y = 424;
-app.stage.addChild(reselect);
 
 let choose1 = new PIXI.Text("Player One: Choose Your Character", selectStyle);
 choose1.x = 270;
@@ -102,59 +100,100 @@ let canChoose = true;
 let hasChosen = false;
 
 window.addEventListener("click", (e: MouseEvent): void  => {
-    if (canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
-        console.log("Chose Ophelia");
+    if (p1choose && canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
+        console.log("P1 Chose Ophelia");
         app.stage.addChild(testOphelia);
         canChoose = false;
         hasChosen = true;
+        app.stage.addChild(nextBox);
+        app.stage.addChild(reselectBox);
+        app.stage.addChild(next);
+        app.stage.addChild(reselect);
     }
-    if (canChoose && e.x >= 153 && e.x <= 246 && e.y >= 125 && e.y <= 402) {
-        console.log("Chose Cyrus");
+    if (p1choose && canChoose && e.x >= 153 && e.x <= 246 && e.y >= 125 && e.y <= 402) {
+        console.log("P1 Chose Cyrus");
         app.stage.addChild(testCyrus);
         canChoose = false;
         hasChosen = true;
+        app.stage.addChild(nextBox);
+        app.stage.addChild(reselectBox);
+        app.stage.addChild(next);
+        app.stage.addChild(reselect);
     }
-    if (canChoose && e.x >= 252 && e.x <= 342 && e.y >= 125 && e.y <= 402) {
-        console.log("Chose Tressa");
+    if (p1choose && canChoose && e.x >= 252 && e.x <= 342 && e.y >= 125 && e.y <= 402) {
+        console.log("P1 Chose Tressa");
         app.stage.addChild(testTressa);
         canChoose = false;
         hasChosen = true;
+        app.stage.addChild(nextBox);
+        app.stage.addChild(reselectBox);
+        app.stage.addChild(next);
+        app.stage.addChild(reselect);
     }
-    if (canChoose && e.x >= 349 && e.x <= 438 && e.y >= 125 && e.y <= 402) {
-        console.log("Chose Olberic");
+    if (p1choose && canChoose && e.x >= 349 && e.x <= 438 && e.y >= 125 && e.y <= 402) {
+        console.log("P1 Chose Olberic");
         app.stage.addChild(testOlberic);
         canChoose = false;
         hasChosen = true;
+        app.stage.addChild(nextBox);
+        app.stage.addChild(reselectBox);
+        app.stage.addChild(next);
+        app.stage.addChild(reselect);
     }
-    if (canChoose && e.x >= 446 && e.x <= 536 && e.y >= 125 && e.y <= 402) {
-        console.log("Chose Primrose");
+    if (p1choose && canChoose && e.x >= 446 && e.x <= 536 && e.y >= 125 && e.y <= 402) {
+        console.log("P1 Chose Primrose");
         app.stage.addChild(testPrimrose);
         canChoose = false;
         hasChosen = true;
+        app.stage.addChild(nextBox);
+        app.stage.addChild(reselectBox);
+        app.stage.addChild(next);
+        app.stage.addChild(reselect);
     }
-    if (canChoose && e.x >= 544 && e.x <= 634 && e.y >= 125 && e.y <= 402) {
-        console.log("Chose Alfyn");
+    if (p1choose && canChoose && e.x >= 544 && e.x <= 634 && e.y >= 125 && e.y <= 402) {
+        console.log("P1 Chose Alfyn");
         app.stage.addChild(testAlfyn);
         canChoose = false;
         hasChosen = true;
+        app.stage.addChild(nextBox);
+        app.stage.addChild(reselectBox);
+        app.stage.addChild(next);
+        app.stage.addChild(reselect);
     }
-    if (canChoose && e.x >= 642 && e.x <= 732 && e.y >= 125 && e.y <= 402) {
-        console.log("Chose Therion");
+    if (p1choose && canChoose && e.x >= 642 && e.x <= 732 && e.y >= 125 && e.y <= 402) {
+        console.log("P1 Chose Therion");
         app.stage.addChild(testTherion);
         canChoose = false;
         hasChosen = true;
+        app.stage.addChild(nextBox);
+        app.stage.addChild(reselectBox);
+        app.stage.addChild(next);
+        app.stage.addChild(reselect);
     }
-    if (canChoose && e.x >= 738 && e.x <= 828 && e.y >= 125 && e.y <= 402) {
-        console.log("Chose Hannit");
+    if (p1choose && canChoose && e.x >= 738 && e.x <= 828 && e.y >= 125 && e.y <= 402) {
+        console.log("P1 Chose Hannit");
         app.stage.addChild(testHannit);
         canChoose = false;
         hasChosen = true;
+        app.stage.addChild(nextBox);
+        app.stage.addChild(reselectBox);
+        app.stage.addChild(next);
+        app.stage.addChild(reselect);
     }
-    if (hasChosen && e.x >= 50 && e.x <= 220 && e.y >= 420 && e.y <= 465) {
+    if (p1choose && hasChosen && e.x >= 50 && e.x <= 220 && e.y >= 420 && e.y <= 465) {
+        console.log("P1 Unselected");
         canChoose = true;
         hasChosen = false;
+        app.stage.removeChild(nextBox);
+        app.stage.removeChild(reselectBox);
+        app.stage.removeChild(next);
+        app.stage.removeChild(reselect);
     }
-    if (hasChosen && e.x >= 700 && e.x <= 820 && e.y >= 420 && e.y <= 465) {
+    if (p1choose && hasChosen && e.x >= 700 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
+        console.log("P2's Turn");
+        p1choose = false;
+        p2choose = true;
+
         canChoose = true;
         hasChosen = false;
 
@@ -165,74 +204,116 @@ window.addEventListener("click", (e: MouseEvent): void  => {
 
         app.stage.addChild(choose2);
 
-        app.stage.removeChild(nextBox);
         app.stage.removeChild(next);
+        app.stage.removeChild(nextBox);
+        app.stage.removeChild(reselect);
+        app.stage.removeChild(reselectBox);
 
         let playBox: Graphics = new Graphics();
         playBox.beginFill(0x6f6f6f, 0.6);
         playBox.drawRect(0, 0, 120, 45);
         playBox.x = 700;
         playBox.y = 420;
-        app.stage.addChild(playBox);
 
         let play = new PIXI.Text("PLAY", nextStyle);
         play.x = 710;
-        play.y = 431;
-        app.stage.addChild(play);
-
+        play.y = 421;
 
         window.addEventListener("click", (e: MouseEvent): void  => {
-            if (canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
-                console.log("Chose Ophelia");
+            if (p2choose && canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
+                console.log("P2 Chose Ophelia");
                 app.stage.addChild(testOphelia);
                 canChoose = false;
                 hasChosen = true;
+                app.stage.addChild(playBox);
+                app.stage.addChild(reselectBox);
+                app.stage.addChild(play);
+                app.stage.addChild(reselect);
             }
-            if (canChoose && e.x >= 153 && e.x <= 246 && e.y >= 125 && e.y <= 402) {
-                console.log("Chose Cyrus");
+            if (p2choose && canChoose && e.x >= 153 && e.x <= 246 && e.y >= 125 && e.y <= 402) {
+                console.log("P2 Chose Cyrus");
                 app.stage.addChild(testCyrus);
                 canChoose = false;
                 hasChosen = true;
+                app.stage.addChild(playBox);
+                app.stage.addChild(reselectBox);
+                app.stage.addChild(play);
+                app.stage.addChild(reselect);
             }
-            if (canChoose && e.x >= 252 && e.x <= 342 && e.y >= 125 && e.y <= 402) {
-                console.log("Chose Tressa");
+            if (p2choose && canChoose && e.x >= 252 && e.x <= 342 && e.y >= 125 && e.y <= 402) {
+                console.log("P2 Chose Tressa");
                 app.stage.addChild(testTressa);
                 canChoose = false;
                 hasChosen = true;
+                app.stage.addChild(playBox);
+                app.stage.addChild(reselectBox);
+                app.stage.addChild(play);
+                app.stage.addChild(reselect);
             }
-            if (canChoose && e.x >= 349 && e.x <= 438 && e.y >= 125 && e.y <= 402) {
-                console.log("Chose Olberic");
+            if (p2choose && canChoose && e.x >= 349 && e.x <= 438 && e.y >= 125 && e.y <= 402) {
+                console.log("P2 Chose Olberic");
                 app.stage.addChild(testOlberic);
                 canChoose = false;
                 hasChosen = true;
+                app.stage.addChild(playBox);
+                app.stage.addChild(reselectBox);
+                app.stage.addChild(play);
+                app.stage.addChild(reselect);
             }
-            if (canChoose && e.x >= 446 && e.x <= 536 && e.y >= 125 && e.y <= 402) {
-                console.log("Chose Primrose");
+            if (p2choose && canChoose && e.x >= 446 && e.x <= 536 && e.y >= 125 && e.y <= 402) {
+                console.log("P2 Chose Primrose");
                 app.stage.addChild(testPrimrose);
                 canChoose = false;
                 hasChosen = true;
+                app.stage.addChild(playBox);
+                app.stage.addChild(reselectBox);
+                app.stage.addChild(play);
+                app.stage.addChild(reselect);
             }
-            if (canChoose && e.x >= 544 && e.x <= 634 && e.y >= 125 && e.y <= 402) {
-                console.log("Chose Alfyn");
+            if (p2choose && canChoose && e.x >= 544 && e.x <= 634 && e.y >= 125 && e.y <= 402) {
+                console.log("P2 Chose Alfyn");
                 app.stage.addChild(testAlfyn);
                 canChoose = false;
                 hasChosen = true;
+                app.stage.addChild(playBox);
+                app.stage.addChild(reselectBox);
+                app.stage.addChild(play);
+                app.stage.addChild(reselect);
             }
-            if (canChoose && e.x >= 642 && e.x <= 732 && e.y >= 125 && e.y <= 402) {
-                console.log("Chose Therion");
+            if (p2choose && canChoose && e.x >= 642 && e.x <= 732 && e.y >= 125 && e.y <= 402) {
+                console.log("P2 Chose Therion");
                 app.stage.addChild(testTherion);
                 canChoose = false;
                 hasChosen = true;
+                app.stage.addChild(playBox);
+                app.stage.addChild(reselectBox);
+                app.stage.addChild(play);
+                app.stage.addChild(reselect);
             }
-            if (canChoose && e.x >= 738 && e.x <= 828 && e.y >= 125 && e.y <= 402) {
-                console.log("Chose Hannit");
+            if (p2choose && canChoose && e.x >= 738 && e.x <= 828 && e.y >= 125 && e.y <= 402) {
+                console.log("P2 Chose Hannit");
                 app.stage.addChild(testHannit);
                 canChoose = false;
                 hasChosen = true;
+                app.stage.addChild(playBox);
+                app.stage.addChild(reselectBox);
+                app.stage.addChild(play);
+                app.stage.addChild(reselect);
             }
-            if (hasChosen && e.x >= 50 && e.x <= 220 && e.y >= 420 && e.y <= 465) {
+            if (p2choose && hasChosen && e.x >= 50 && e.x <= 220 && e.y >= 420 && e.y <= 465) {
+                console.log("P2 Unselected");
                 canChoose = true;
                 hasChosen = false;
+                app.stage.removeChild(playBox);
+                app.stage.removeChild(reselectBox);
+                app.stage.removeChild(play);
+                app.stage.removeChild(reselect);
+            }
+            if (p1choose && hasChosen && e.x >= 700 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
+                // Game starts!
+                console.log("Game Starting");
+                let test = new PIXI.Text("GAME RUN", nextStyle);
+                app.stage.addChild(test);
             }
         },                      false);
     }
