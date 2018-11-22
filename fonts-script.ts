@@ -64,6 +64,16 @@ export let selectStyle = new PIXI.TextStyle({
 export let nextStyle = new PIXI.TextStyle({
     fontFamily: "Times New Roman",
     fontSize: 36,
+    fill: ["#8e8e8e"],
+    stroke: "#545454",
+    strokeThickness: 3,
+    wordWrap: true,
+    wordWrapWidth: 500
+});
+
+export let activeNextStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 36,
     fill: ["#ffffff"],
     stroke: "#455028",
     strokeThickness: 3,
@@ -72,6 +82,16 @@ export let nextStyle = new PIXI.TextStyle({
 });
 
 export let reselectStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 30,
+    fill: ["#8e8e8e"],
+    stroke: "#545454",
+    strokeThickness: 3,
+    wordWrap: true,
+    wordWrapWidth: 500
+});
+
+export let activeReselectStyle = new PIXI.TextStyle({
     fontFamily: "Times New Roman",
     fontSize: 30,
     fill: ["#ffffff"],
