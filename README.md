@@ -1,2 +1,2 @@
-# Smash-Flash-110
-Hack110 Project
+# Octosmash-110
+Hack110 & COMP 110 Final Project
