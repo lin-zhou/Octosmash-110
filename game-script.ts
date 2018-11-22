@@ -1,6 +1,8 @@
 import {
     Sprite,
     Application,
+    Rectangle,
+    DisplayObject
 } from "pixi.js";
 
 import {
@@ -57,7 +59,15 @@ app.stage.addChild(gameBG);
 // NUMBERS FOR MOTION
 const acc: number = 0.05;
 const speed: number = 1.5;
+const  weapSpeed: number = 2;
 
+// WEAPONS
+let magic: Sprite = Sprite.fromImage("./Magic_Blast.png");
+magic.scale.x = 1;
+magic.scale.y = 1;
+let magicTwo: Sprite = Sprite.fromImage("./Magic_Blast.png");
+magicTwo.scale.x = 1;
+magicTwo.scale.y = 1;
 // For some reason, we can't loop without this. Maybe try to get rid of it somehow?
 class Looper {
     sprite: Sprite;
@@ -74,6 +84,17 @@ for (let i: number = 1; i <= 4; i++) {
 }
 
 // TWO PLAYER GAME
+class Weapon {
+    sprite: Sprite;
+    vel: number = 0;
+    shootCount: number = 0;
+}
+let magicWeapon = new Weapon();
+magicWeapon.sprite = magic;
+
+let magicWeaponTwo = new Weapon();
+magicWeaponTwo.sprite = magicTwo;
+
 class Player {
     sprite: Sprite;
     vel: number = 0;
@@ -98,6 +119,7 @@ let A: number = 0;
 let D: number = 0;
 let S: number = 0;
 let W: number = 0;
+let keyThree: number = 0;
 
 window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     console.log("key: " + e.keyCode);
@@ -105,6 +127,8 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     const UP: number = 87;
     const RIGHT: number = 68;
     const DOWN: number = 83;
+    const ATTACK: number = 51;
+
     if (e.keyCode === LEFT) {
         A = -1;
         if (p1.sprite.scale.x < 0) {
@@ -128,6 +152,21 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     } else if (e.keyCode === DOWN) {
         if (!grounded(p1.sprite)) {
             S = 1;
+        }          
+    } else if (e.keyCode === ATTACK) {
+        if (p1.sprite.scale.x < 0) { 
+            magicWeapon.sprite.x = p1.sprite.x;
+            magicWeapon.sprite.y = p1.sprite.y;
+            magicWeapon.shootCount++;
+            app.stage.addChild(magicWeapon.sprite);
+            keyThree = 1;
+        } else if (p1.sprite.scale.x >= 0) {
+            magicWeapon.sprite.scale.x *= -1;
+            magicWeapon.sprite.x = p1.sprite.x;
+            magicWeapon.sprite.y = p1.sprite.y;
+            magicWeapon.shootCount++;
+            app.stage.addChild(magicWeapon.sprite);
+            keyThree = 1;
         }
     }
 },                      false);
@@ -223,7 +262,11 @@ let underStageRightWard = (unit: Sprite) => (facingRight(unit) && (unit.y >= 208
 let underStage = (unit: Sprite) => (underStageLeftWard(unit) || underStageRightWard(unit));
 
 let offSides = (unit: Sprite) => ((facingLeft(unit) && (unit.x >= 718 || unit.x <= 62)) || (facingRight(unit) && (unit.x <= 135 || unit.x >= 788)));
-
+let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
+    let ab: Rectangle = a.getBounds();
+    let bb: Rectangle = b.getBounds();
+    return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+};
 let canJump = (unit: Sprite): boolean => {
     if (grounded(unit)) {
         if (unit === p1.sprite) {
@@ -244,7 +287,13 @@ let canJump = (unit: Sprite): boolean => {
     }
     return false;
 };
-
+       
+let hitback = (unit: Sprite): void => {
+    unit.x -= 30;
+};
+if (isColliding(p2.sprite, magicWeapon.sprite)) {
+    hitback(p2.sprite);
+}
 // GENERAL RESET FUNCTIONS
 let resetY = (unit: Sprite): void => {
     unit.y = 205;
@@ -266,7 +315,14 @@ let rightResetLeft = (unit: Sprite): void => {
 let rightResetRight = (unit: Sprite): void => {
     unit.x = 788;
 };
-
+let resetWeaponX = (unit: Sprite): void => {
+    unit.x = p1.sprite.x;
+    magicWeapon.vel = 0;
+};
+let resetWeaponY = (unit: Sprite): void => {
+    unit.y = p2.sprite.y;
+    magicWeapon.vel = 0;
+};
 // END GAME + TEXT
 let gameOver: boolean = false;
 let winner: Sprite;
@@ -307,8 +363,24 @@ app.ticker.add((delta: number): void => {
                 handleWin(game, message);
                 winnerExists = true;
             }
+}
+            // Weapons attack
+        if (p1.sprite.scale.x >= 0 ) {
+            magic.x += (keyThree) * -weapSpeed;
+        } else if ( p1.sprite.scale.x < 0) {
+            magic.x += (keyThree) * weapSpeed;
+        }               
+        if (magicWeapon.vel < 1) {
+            magicWeapon.vel += weapSpeed;
         }
-        
+        // magicTwo.x += (keyThree) * weapSpeed;
+    
+        if (isOutOfBounds(magicWeapon.sprite)) {
+            resetWeaponX(magic);
+            resetWeaponY(magic);
+            
+
+        }
         // PLAYER ONE MOVING
         p1.sprite.x += (A + D) * speed;
         p1.sprite.y += (S) * speed;
@@ -346,7 +418,10 @@ app.ticker.add((delta: number): void => {
             p2.vel = 1;
         }
         p2.sprite.y = p2.sprite.y + p2.vel;
-
+    // Weapons Moving
+        if (keyThree === 1) {
+            magicWeapon.sprite.x += .5;
+        }
         // PLAYER ONE RESTRAINTS
         if (grounded(p1.sprite)) {
             resetY(p1.sprite);
