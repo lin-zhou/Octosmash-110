@@ -49,7 +49,41 @@ export let gameStyle = new PIXI.TextStyle({
 export let selectStyle = new PIXI.TextStyle({
     fontFamily: "Times New Roman",
     fontSize: 24,
-    fontWeight: "bold",
+    fill: ["#ffffff"],
+    stroke: "#455028",
+    strokeThickness: 3,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 500
+});
+
+export let nextStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 36,
+    fill: ["#ffffff"],
+    stroke: "#455028",
+    strokeThickness: 3,
+    wordWrap: true,
+    wordWrapWidth: 500
+});
+
+export let reselectStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 30,
+    fill: ["#ffffff"],
+    stroke: "#455028",
+    strokeThickness: 3,
+    wordWrap: true,
+    wordWrapWidth: 500
+});
+
+export let nameStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 14,
     fill: ["#ffffff"],
     stroke: "#455028",
     strokeThickness: 3,
