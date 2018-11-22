@@ -46,7 +46,6 @@ import {
 
 /* MAJOR TO DOS
     - Add weapons and, you know, combat stuff
-    - Create character selection screen
 */
 
 /* TO FIX
@@ -100,6 +99,7 @@ class Player {
 let p1 = new Player();
 let p2 = new Player();
 
+// START SCREEN
 let startScreen: Sprite = Sprite.fromImage("./Start_Screen.png");
 startScreen.scale.x = 34 / 75;
 startScreen.scale.y = 34 / 75;
@@ -112,6 +112,7 @@ app.stage.addChild(startMessage);
 
 let choosing = false;
 
+// CHARACTER SELECTION SCREEN
 window.addEventListener("click", (e: MouseEvent): void  => {
     if (!choosing && e.x >= 455 && e.x <= 740 && e.y >= 385 && e.y <= 465) {
         console.log("Starting...");
@@ -120,10 +121,12 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         app.stage.removeChild(startMessage);
         app.stage.removeChild(startScreen);
 
+        // These prevent certain codes from running more times than they're supposed to
         choosing = true;
         let p1choose: boolean = true;
         let p2choose: boolean = false;
         
+        // SELECTION SCREEN SETUP
         let selectScreen: Sprite = Sprite.fromImage("./Character_Select.png");
         selectScreen.scale.x = 34 / 75;
         selectScreen.scale.y = 34 / 75;
@@ -164,15 +167,21 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         therionName.y = 105;
         app.stage.addChild(therionName);
         
-        let hannitName = new PIXI.Text("HANNIT", nameStyle);
-        hannitName.x = 745;
+        let hannitName = new PIXI.Text("H'ANNIT", nameStyle);
+        hannitName.x = 743;
         hannitName.y = 105;
         app.stage.addChild(hannitName);
+
+        let choose1 = new PIXI.Text("Player One: Choose Your Character", selectStyle);
+        choose1.x = 270;
+        choose1.y = 430;
+        app.stage.addChild(choose1);
         
+        // "BUTTONS"
         let nextBox: Graphics = new Graphics;
         nextBox.beginFill(0x6f6f6f, 0.6);
         nextBox.drawRect(0, 0, 120, 45);
-        nextBox.x = 700;
+        nextBox.x = 701;
         nextBox.y = 420;
         app.stage.addChild(nextBox);
         
@@ -182,14 +191,15 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         reselectBox.x = 50;
         reselectBox.y = 420;
         app.stage.addChild(reselectBox);
-        
+
+        // "Active" texts are used when a character has been chosen; just for effect       
         let next = new PIXI.Text("NEXT", nextStyle);
-        next.x = 710;
+        next.x = 712;
         next.y = 421;
         app.stage.addChild(next);
         
         let activeNext = new PIXI.Text("NEXT", activeNextStyle);
-        activeNext.x = 710;
+        activeNext.x = 712;
         activeNext.y = 421;
         
         let reselect = new PIXI.Text("RESELECT", reselectStyle);
@@ -201,23 +211,21 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         activeReselect.x = 59;
         activeReselect.y = 424;
         
-        let choose1 = new PIXI.Text("Player One: Choose Your Character", selectStyle);
-        choose1.x = 270;
-        choose1.y = 430;
-        app.stage.addChild(choose1);
-        
         let canChoose = true;
         let hasChosen = false;
         
-        let blockBox: Graphics = new Graphics();           
-
+        let blockBox: Graphics = new Graphics();
+        
+        // PLAYER ONE SELECTION
         window.addEventListener("click", (e: MouseEvent): void  => {
             if (p1choose && canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
                 console.log("P1 Chose Ophelia");
                 p1.sprite = ophelia1;
                 p1.sprite.x = 210;
                 p1.sprite.y = 205;
-                p1.sprite.scale.x *= -1;
+                if (p1.sprite.scale.x >= 0) {
+                    p1.sprite.scale.x *= -1;
+                }
 
                 blockBox = new Graphics();
                 blockBox.beginFill(0xffffff, 0.5);
@@ -239,7 +247,9 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite = cyrus1;
                 p1.sprite.x = 225;
                 p1.sprite.y = 205;
-                p1.sprite.scale.x *= -1;
+                if (p1.sprite.scale.x >= 0) {
+                    p1.sprite.scale.x *= -1;
+                }
 
                 blockBox = new Graphics();
                 blockBox.beginFill(0xffffff, 0.5);
@@ -261,7 +271,9 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite = tressa1;
                 p1.sprite.x = 210;
                 p1.sprite.y = 205;
-                p1.sprite.scale.x *= -1;
+                if (p1.sprite.scale.x >= 0) {
+                    p1.sprite.scale.x *= -1;
+                }
 
                 blockBox = new Graphics();
                 blockBox.beginFill(0xffffff, 0.5);
@@ -283,7 +295,9 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite = olberic1;
                 p1.sprite.x = 225;
                 p1.sprite.y = 205;
-                p1.sprite.scale.x *= -1;
+                if (p1.sprite.scale.x >= 0) {
+                    p1.sprite.scale.x *= -1;
+                }
 
                 blockBox = new Graphics();
                 blockBox.beginFill(0xffffff, 0.5);
@@ -305,7 +319,9 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite = primrose1;
                 p1.sprite.x = 210;
                 p1.sprite.y = 205;
-                p1.sprite.scale.x *= -1;
+                if (p1.sprite.scale.x >= 0) {
+                    p1.sprite.scale.x *= -1;
+                }
 
                 blockBox = new Graphics();
                 blockBox.beginFill(0xffffff, 0.5);
@@ -327,7 +343,9 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite = alfyn1;
                 p1.sprite.x = 212;
                 p1.sprite.y = 205;
-                p1.sprite.scale.x *= -1;
+                if (p1.sprite.scale.x >= 0) {
+                    p1.sprite.scale.x *= -1;
+                }
 
                 blockBox = new Graphics();
                 blockBox.beginFill(0xffffff, 0.5);
@@ -349,7 +367,9 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite = therion1;
                 p1.sprite.x = 217;
                 p1.sprite.y = 205;
-                p1.sprite.scale.x *= -1;
+                if (p1.sprite.scale.x >= 0) {
+                    p1.sprite.scale.x *= -1;
+                }
 
                 blockBox = new Graphics();
                 blockBox.beginFill(0xffffff, 0.5);
@@ -371,7 +391,9 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 p1.sprite = hannit1;
                 p1.sprite.x = 215;
                 p1.sprite.y = 205;
-                p1.sprite.scale.x *= -1;
+                if (p1.sprite.scale.x >= 0) {
+                    p1.sprite.scale.x *= -1;
+                }
 
                 blockBox = new Graphics();
                 blockBox.beginFill(0xffffff, 0.5);
@@ -399,7 +421,8 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 app.stage.addChild(reselect);
                 app.stage.addChild(next);
             }
-            if (p1choose && hasChosen && e.x >= 700 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
+            // "NEXT" --> PLAYER TWO'S SELECTION
+            if (p1choose && hasChosen && e.x >= 701 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
                 console.log("P2's Turn");
                 p1choose = false;
                 p2choose = true;
@@ -420,21 +443,22 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 let playBox: Graphics = new Graphics();
                 playBox.beginFill(0x6f6f6f, 0.6);
                 playBox.drawRect(0, 0, 120, 45);
-                playBox.x = 700;
+                playBox.x = 701;
                 playBox.y = 420;
                 app.stage.addChild(playBox);
         
                 let play = new PIXI.Text("PLAY", nextStyle);
-                play.x = 710;
+                play.x = 712;
                 play.y = 421;
                 app.stage.addChild(play);
         
                 app.stage.addChild(reselect);
         
                 let activePlay = new PIXI.Text("PLAY", activeNextStyle);
-                activePlay.x = 710;
+                activePlay.x = 712;
                 activePlay.y = 421;
 
+                // PLAYER TWO SELECTION
                 window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p2choose && canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
                         console.log("P2 Chose Ophelia");
@@ -614,8 +638,8 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         app.stage.addChild(play);
                         app.stage.addChild(reselect);
                     }
-                    if (p2choose && hasChosen && e.x >= 700 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
-                        // Game starts!
+                    // "PLAY" --> START GAME
+                    if (p2choose && hasChosen && e.x >= 701 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
                         console.log("Game Starting");
 
                         // BUILD IN-GAME COMPONENTS
