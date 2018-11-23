@@ -253,8 +253,12 @@ window.addEventListener("keyup", (e: KeyboardEvent): void  => {
 },                      false);
 
 // HELPER FUNCTIONS
-let isOutOfBounds = (unit: Sprite): boolean => {
-    return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
+let isOutOfBounds = (sprite: Sprite): boolean => {
+    return sprite.x <= -100 || sprite.x >= 970 || sprite.y <= -100 || sprite.y >= 590;
+};
+
+let isOffScreen = (sprite: Sprite): boolean => {
+    return sprite.x <= 0 || sprite.x >= 1024 * .85 || sprite.y <= 0 || sprite.y >= 576 * .85;
 };
 
 let facingLeft = (unit: Sprite) => unit.scale.x >= 0;
@@ -373,7 +377,7 @@ app.ticker.add((delta: number): void => {
         for (let i: number = 0; i < magicArr.length; i++) {
             let magic: Magic = magicArr[i];
             magic.sprite.x += 1 * magic.direction;
-            if (isOutOfBounds(magicArr[i].sprite)) {
+            if (isOffScreen(magicArr[i].sprite)) {
                 app.stage.removeChild(magicArr[i].sprite);
                 shootCount--;
                 magicArr.splice(i, 1);
