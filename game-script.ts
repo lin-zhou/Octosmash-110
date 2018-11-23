@@ -34,17 +34,11 @@ let orientation = 1;
 // npm install pixi.js
 // npm install @types/pixi.js
 
-/* MAJOR TO DOS
-    - Add weapons and, you know, combat stuff
-    - Create character selection screen
-*/
-
 /* TO FIX
     - Figure out how to get rid of the looper function while still looping
     - Movement issues:
         - Finicky places in the corners of the stage
         - Sometimes can't jump after walking off stage
-        - Phase through the ground when holding down after jumping
         - Weird jump when holding "up" or "w" keys
             - Holding up shouldn't do anything different than just tapping it once
 */
@@ -55,7 +49,7 @@ let orientation = 1;
     - Sound effects!
 */
 
-// SET UP - START MENU
+// SET UP
 const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
 
@@ -68,7 +62,6 @@ app.stage.addChild(gameBG);
 // NUMBERS FOR MOTION
 const acc: number = 0.05;
 const speed: number = 1.5;
-const  weapSpeed: number = 2;
 
 // For some reason, we can't loop without this. Maybe try to get rid of it somehow?
 class Looper {
@@ -77,6 +70,7 @@ class Looper {
         this.sprite = sprite;
     }
 }
+
 let loops: Looper[] = [];
 for (let i: number = 1; i <= 4; i++) {
     let sprite: Sprite = Sprite.fromImage("nonexistent");
@@ -90,7 +84,6 @@ class Magic {
     x: number = 0;
     y: number = 0;
     direction: number = 1;
-    vel: number = 0;
     constructor(sprite: Sprite) {
         this.sprite = sprite;
     }
@@ -100,9 +93,8 @@ class Magic {
     }
 }
 
-let magic = new Magic (Sprite.fromImage("./Magic_Blast.png"));
+let magic = new Magic(Sprite.fromImage("./Magic_Blast.png"));
 let magicArr: Magic[] = [];
-let shootCount: number = 0;
 
 // TWO PLAYER GAME
 class Player {
@@ -129,7 +121,6 @@ let A: number = 0;
 let D: number = 0;
 let S: number = 0;
 let W: number = 0;
-let keyThree: number = 0;
 
 window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     console.log("key: " + e.keyCode);
@@ -166,11 +157,15 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
             S = 1;
         }          
     } else if (e.keyCode === ATTACK) {
-        if (magicArr.length < 5) {
-            shootCount++;
+        if (magicArr.length < 3) {
             let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
             let magic: Magic = new Magic(sprite);
-            magic.getPoint(p1.sprite.x, p1.sprite.y);
+            magic.getPoint(p1.sprite.x, p1.sprite.y + 20);
+            if (facingLeft(p1.sprite)) {
+                magic.direction = -1;
+            } else {
+                magic.direction = 1;
+            }
             magicArr.push(magic);
             app.stage.addChild(magic.sprite);
         }
@@ -258,7 +253,7 @@ let isOutOfBounds = (sprite: Sprite): boolean => {
 };
 
 let isOffScreen = (sprite: Sprite): boolean => {
-    return sprite.x <= 0 || sprite.x >= 1024 * .85 || sprite.y <= 0 || sprite.y >= 576 * .85;
+    return sprite.x <= -40 || sprite.x >= 1024 * .85 || sprite.y <= 0 || sprite.y >= 576 * .85;
 };
 
 let facingLeft = (unit: Sprite) => unit.scale.x >= 0;
@@ -278,9 +273,11 @@ let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
     let bb: Rectangle = b.getBounds();
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
 };
+
 // let tryColliding = (a: Sprite, b: Sprite): boolean => {
 
 // }
+
 let canJump = (unit: Sprite): boolean => {
     if (grounded(unit)) {
         if (unit === p1.sprite) {
@@ -376,16 +373,16 @@ app.ticker.add((delta: number): void => {
 }
         for (let i: number = 0; i < magicArr.length; i++) {
             let magic: Magic = magicArr[i];
-            magic.sprite.x += 1 * magic.direction;
+            magic.sprite.x += 2 * magic.direction;
             if (isOffScreen(magicArr[i].sprite)) {
                 app.stage.removeChild(magicArr[i].sprite);
-                shootCount--;
                 magicArr.splice(i, 1);
             }
         }
+        
         // PLAYER ONE MOVING
         p1.sprite.x += (A + D) * speed;
-        p1.sprite.y += (S) * speed;
+        // p1.sprite.y += (S) * speed;
         if (p1.vel < 1) {
             p1.vel += acc;
         } else if (grounded(p1.sprite)) {
@@ -404,7 +401,7 @@ app.ticker.add((delta: number): void => {
 
         // PLAYER TWO MOVING
         p2.sprite.x += (left + right) * speed;
-        p2.sprite.y += (down) * speed;
+        // p2.sprite.y += (down) * speed;
         if (p2.vel < 1) {
             p2.vel += acc;
         } else if (grounded(p2.sprite)) {
@@ -420,10 +417,7 @@ app.ticker.add((delta: number): void => {
             p2.vel = 1;
         }
         p2.sprite.y = p2.sprite.y + p2.vel;
-    // Weapons Moving
-        if (keyThree === 1) {
-            magic.sprite.x -= .01;
-        }
+
         // PLAYER ONE RESTRAINTS
         if (grounded(p1.sprite)) {
             resetY(p1.sprite);
