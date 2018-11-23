@@ -77,6 +77,7 @@ const  weapSpeed: number = 2;
 let magicTwo: Sprite = Sprite.fromImage("./Magic_Blast.png");
 magicTwo.scale.x = 1;
 magicTwo.scale.y = 1;
+
 // For some reason, we can't loop without this. Maybe try to get rid of it somehow?
 class Looper {
     sprite: Sprite;
@@ -97,11 +98,7 @@ class Player {
     vel: number = 0;
     jumpCount: number = 0;
 }
-class Weapon {
-    sprite: Sprite;
-    vel: number = 0;
-    shootCount: number = 0;
-}
+
 class Magic {
     sprite: Sprite;
     x: number = 0;
@@ -116,9 +113,10 @@ class Magic {
         this.sprite.y += unitY;
     }
 }
-let shootCount1 = 0;
+
 let magic = new Magic (Sprite.fromImage("./Magic_Blast.png"));
 let magicArr: Magic[] = [];
+let shootCount1 = 0;
 
 // let magicWeapon = new Weapon();
 // magicWeapon.sprite = magic;
@@ -180,18 +178,16 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
             S = 1;
         }          
     } else if (e.keyCode === ATTACK) {
-        if (shootCount1 < 1) {
-        // Create a new Magic object every time the 3 key is pressed
-        let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-        let magic: Magic = new Magic(sprite);
-        magic.getPoint(p1.sprite.x, p1.sprite.y);
-        // Use player's coordinates as arguments for getPoint()
-        magicArr.push(magic);
-        // Adds new Magic object to magicArr
-        app.stage.addChild(magic.sprite);
-        shootCount1 += 1;
-        } else {
-            shootCount1 = 0;
+        shootCount1++;
+        if (magicArr.length < 5) {
+            // Create a new Magic object every time the 3 key is pressed
+            let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+            let magic: Magic = new Magic(sprite);
+            magic.getPoint(p1.sprite.x, p1.sprite.y);
+            // Use player's coordinates as arguments for getPoint()
+            magicArr.push(magic);
+            // Adds new Magic object to magicArr
+            app.stage.addChild(magic.sprite);
         }
     }
 },                      false);
@@ -202,7 +198,7 @@ window.addEventListener("keyup", (e: KeyboardEvent): void  => {
     const UP: number = 87;
     const RIGHT: number = 68;
     const DOWN: number = 83;
-    const ATTACK: number = 51;
+
     if (e.keyCode === LEFT) {
         A = 0;
     } else if (e.keyCode === UP) {
@@ -211,10 +207,7 @@ window.addEventListener("keyup", (e: KeyboardEvent): void  => {
         D = 0;
     } else if (e.keyCode === DOWN) {
         S = 0;
-    } else if (e.keyCode === ATTACK) {
-        keyThree = 0;
     }
-    
 },                      false);
 
 // PLAYER TWO MOVE CONTROLS
@@ -407,14 +400,14 @@ app.ticker.add((delta: number): void => {
             magic.sprite.x += 1 * magic.direction;
         }
             // Weapons attack
-        if (p1.sprite.scale.x >= 0 ) {
-            magic.sprite.x += (keyThree) * -weapSpeed;
-        } else if ( p1.sprite.scale.x < 0) {
-            magic.sprite.x += (keyThree) * weapSpeed;
-        }               
-        if (magic.vel < 1) {
-            magic.vel += weapSpeed;
-        }
+        // if (p1.sprite.scale.x >= 0 ) {
+        //     magic.sprite.x += (keyThree) * -weapSpeed;
+        // } else if ( p1.sprite.scale.x < 0) {
+        //     magic.sprite.x += (keyThree) * weapSpeed;
+        // }               
+        // if (magic.vel < 1) {
+        //     magic.vel += weapSpeed;
+        // }
         magicTwo.x += (keyThree) * weapSpeed;
         if (isOutOfBounds(magic.sprite)) {
             app.stage.removeChild(magic.sprite);
