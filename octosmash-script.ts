@@ -95,7 +95,10 @@ class Magic {
 }
 
 let magic = new Magic(Sprite.fromImage("./Magic_Blast.png"));
+let magicTwo = new Magic(Sprite.fromImage("./Magic_Blast.png"));
+
 let magicArr: Magic[] = [];
+let magicArrTwo: Magic[] = [];
 
 // TWO PLAYER GAME
 class Player {
@@ -769,19 +772,19 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     down = 1;
                                 }
                             } else if (e.keyCode === ATTACK) {
-                                if (magicArr.length < 3) {
+                                if (magicArrTwo.length < 3) {
                                     let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-                                    let magic: Magic = new Magic(sprite);
-                                    magic.getPoint(p2.sprite.x, p2.sprite.y + 20);
+                                    let magicTwo: Magic = new Magic(sprite);
+                                    magicTwo.getPoint(p2.sprite.x, p2.sprite.y + 20);
                                     if (facingLeft(p2.sprite)) {
-                                        magic.direction = -1;
-                                        magic.sprite.scale.x *= 1;
+                                        magicTwo.direction = -1;
+                                        magicTwo.sprite.scale.x *= 1;
                                     } else {
-                                        magic.direction = 1;
-                                        magic.sprite.scale.x *= -1;
+                                        magicTwo.direction = 1;
+                                        magicTwo.sprite.scale.x *= -1;
                                     }
-                                    magicArr.push(magic);
-                                    app.stage.addChild(magic.sprite);
+                                    magicArrTwo.push(magicTwo);
+                                    app.stage.addChild(magicTwo.sprite);
                                 }
                             }
                         },                      false);
@@ -936,7 +939,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                         magicArr.splice(i, 1);
                                     }
                                 }
-                                
+                                for (let i: number = 0; i < magicArrTwo.length; i++) {
+                                    let magicTwo: Magic = magicArrTwo[i];
+                                    magicTwo.sprite.x += (2 * magicTwo.direction);
+                                    if (isOffScreen(magicArrTwo[i].sprite)) {
+                                        app.stage.removeChild(magicArrTwo[i].sprite);
+                                        magicArrTwo.splice(i, 1);
+                                    }
+                                }
                                 // PLAYER ONE MOVING
                                 p1.sprite.x += (A + D) * speed;
                                 // p1.sprite.y += (S) * speed;
