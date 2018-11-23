@@ -741,6 +741,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             const UP: number = 38;
                             const RIGHT: number = 39;
                             const DOWN: number = 40;
+                            const ATTACK: number = 191;
                             if (e.keyCode === LEFT) {
                                 left = -1;
                                 if (p2.sprite.scale.x < 0) {
@@ -764,6 +765,19 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             } else if (e.keyCode === DOWN) {
                                 if (!grounded(p2.sprite)) {
                                     down = 1;
+                                }
+                            } else if (e.keyCode === ATTACK) {
+                                if (magicArr.length < 3) {
+                                    let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+                                    let magic: Magic = new Magic(sprite);
+                                    magic.getPoint(p2.sprite.x, p2.sprite.y + 20);
+                                    if (facingLeft(p2.sprite)) {
+                                        magic.direction = -1;
+                                    } else {
+                                        magic.direction = 1;
+                                    }
+                                    magicArr.push(magic);
+                                    app.stage.addChild(magic.sprite);
                                 }
                             }
                         },                      false);
