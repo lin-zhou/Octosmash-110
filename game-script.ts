@@ -69,14 +69,6 @@ app.stage.addChild(gameBG);
 const acc: number = 0.05;
 const speed: number = 1.5;
 const  weapSpeed: number = 2;
-// WEAPONS
-
-// let magic: Sprite = Sprite.fromImage("./Magic_Blast.png");
-// magic.scale.x = 1;
-// magic.scale.y = 1;
-let magicTwo: Sprite = Sprite.fromImage("./Magic_Blast.png");
-magicTwo.scale.x = 1;
-magicTwo.scale.y = 1;
 
 // For some reason, we can't loop without this. Maybe try to get rid of it somehow?
 class Looper {
@@ -91,14 +83,8 @@ for (let i: number = 1; i <= 4; i++) {
     let loop: Looper = new Looper(sprite);
     loops.push(loop);
 }
-// TWO PLAYER GAME
 
-class Player {
-    sprite: Sprite;
-    vel: number = 0;
-    jumpCount: number = 0;
-}
-
+// MAGIC
 class Magic {
     sprite: Sprite;
     x: number = 0;
@@ -116,12 +102,14 @@ class Magic {
 
 let magic = new Magic (Sprite.fromImage("./Magic_Blast.png"));
 let magicArr: Magic[] = [];
-let shootCount1 = 0;
+let shootCount: number = 0;
 
-// let magicWeapon = new Weapon();
-// magicWeapon.sprite = magic;
-// let magicWeaponTwo = new Weapon();
-// magicWeaponTwo.sprite = magicTwo;
+// TWO PLAYER GAME
+class Player {
+    sprite: Sprite;
+    vel: number = 0;
+    jumpCount: number = 0;
+}
 
 let p1 = new Player();
 p1.sprite = cyrus1;
@@ -178,15 +166,12 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
             S = 1;
         }          
     } else if (e.keyCode === ATTACK) {
-        shootCount1++;
         if (magicArr.length < 5) {
-            // Create a new Magic object every time the 3 key is pressed
+            shootCount++;
             let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
             let magic: Magic = new Magic(sprite);
             magic.getPoint(p1.sprite.x, p1.sprite.y);
-            // Use player's coordinates as arguments for getPoint()
             magicArr.push(magic);
-            // Adds new Magic object to magicArr
             app.stage.addChild(magic.sprite);
         }
     }
@@ -334,15 +319,6 @@ let rightResetLeft = (unit: Sprite): void => {
 let rightResetRight = (unit: Sprite): void => {
     unit.x = 788;
 };
-let resetWeaponX = (unit: Sprite): void => {
-    unit.x = p1.sprite.x;
-    magic.vel = 0;
-};
-let resetWeaponY = (unit: Sprite): void => {
-    unit.y = p2.sprite.y;
-    magic.vel = 0;
-};
-
        
 let hitback = (unit: Sprite): void => {
     unit.x += 60;
@@ -396,21 +372,12 @@ app.ticker.add((delta: number): void => {
 }
         for (let i: number = 0; i < magicArr.length; i++) {
             let magic: Magic = magicArr[i];
-            // Arrow on magic in this frame on the stack points to magicArr[i] in the heap
             magic.sprite.x += 1 * magic.direction;
-        }
-            // Weapons attack
-        // if (p1.sprite.scale.x >= 0 ) {
-        //     magic.sprite.x += (keyThree) * -weapSpeed;
-        // } else if ( p1.sprite.scale.x < 0) {
-        //     magic.sprite.x += (keyThree) * weapSpeed;
-        // }               
-        // if (magic.vel < 1) {
-        //     magic.vel += weapSpeed;
-        // }
-        magicTwo.x += (keyThree) * weapSpeed;
-        if (isOutOfBounds(magic.sprite)) {
-            app.stage.removeChild(magic.sprite);
+            if (isOutOfBounds(magicArr[i].sprite)) {
+                app.stage.removeChild(magicArr[i].sprite);
+                shootCount--;
+                magicArr.splice(i, 1);
+            }
         }
         // PLAYER ONE MOVING
         p1.sprite.x += (A + D) * speed;
