@@ -703,8 +703,10 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     magic.getPoint(p1.sprite.x, p1.sprite.y + 20);
                                     if (facingLeft(p1.sprite)) {
                                         magic.direction = -1;
+                                        magic.sprite.scale.x *= 1;
                                     } else {
                                         magic.direction = 1;
+                                        magic.sprite.scale.x *= -1;
                                     }
                                     magicArr.push(magic);
                                     app.stage.addChild(magic.sprite);
@@ -773,8 +775,10 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     magic.getPoint(p2.sprite.x, p2.sprite.y + 20);
                                     if (facingLeft(p2.sprite)) {
                                         magic.direction = -1;
+                                        magic.sprite.scale.x *= 1;
                                     } else {
                                         magic.direction = 1;
+                                        magic.sprite.scale.x *= -1;
                                     }
                                     magicArr.push(magic);
                                     app.stage.addChild(magic.sprite);
@@ -926,7 +930,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
 
                                 for (let i: number = 0; i < magicArr.length; i++) {
                                     let magic: Magic = magicArr[i];
-                                    magic.sprite.x += 2 * magic.direction;
+                                    magic.sprite.x += (2 * magic.direction);
                                     if (isOffScreen(magicArr[i].sprite)) {
                                         app.stage.removeChild(magicArr[i].sprite);
                                         magicArr.splice(i, 1);
