@@ -180,6 +180,7 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
             S = 1;
         }          
     } else if (e.keyCode === ATTACK) {
+        if (shootCount1 < 1) {
         // Create a new Magic object every time the 3 key is pressed
         let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
         let magic: Magic = new Magic(sprite);
@@ -188,24 +189,10 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
         magicArr.push(magic);
         // Adds new Magic object to magicArr
         app.stage.addChild(magic.sprite);
-        
-        // shootCount1++;
-        // magic = new Magic(Sprite.fromImage("./Magic_Blast.png"));
-        // magic.sprite.x = 50 + shootCount1 * 100;
-        // app.stage.addChild(magic.sprite);
-        // // if (orientation < 0) { 
-        // magic.sprite.scale.x *= 1;
-        // magic.sprite.x = p1.sprite.x;
-        // magic.sprite.y = p1.sprite.y;
-        // // app.stage.addChild(magic.sprite);
-        // keyThree = 1;
-        // // } else if (orientation >= 0) {
-        // //     magic.sprite.scale.x *= -1;
-        // //     magic.sprite.x = p1.sprite.x;
-        // //     magic.sprite.y = p1.sprite.y;
-        // //     // app.stage.addChild(magic.sprite);
-        // //     keyThree = 1;
-        // // }
+        shootCount1 += 1;
+        } else {
+            shootCount1 = 0;
+        }
     }
 },                      false);
 
