@@ -1,7 +1,9 @@
 import {
     Sprite,
     Application,
-    Graphics
+    Graphics,
+    DisplayObject,
+    Rectangle
 } from "pixi.js";
 
 import {
@@ -39,28 +41,17 @@ import {
 // npm install pixi.js
 // npm install @types/pixi.js
 
-
-/* NOTES
-    - Attempted to make this object-oriented, had difficulty due to two separate applications
-*/
-
-/* MAJOR TO DOS
-    - Add weapons and, you know, combat stuff
-*/
-
 /* TO FIX
     - Figure out how to get rid of the looper function while still looping
     - Movement issues:
         - Finicky places in the corners of the stage
         - Sometimes can't jump after walking off stage
-        - Phase through the ground when holding down after jumping
         - Weird jump when holding "up" or "w" keys
             - Holding up shouldn't do anything different than just tapping it once
 */
 
 /* OTHER THINGS TO DO IF TIME ALLOWS
     - Characters who look farther back should appear farther back
-    - Color change for "next" and "play" buttons in character selection screen
     - Multiply lives + respawning
     - Sound effects!
 */
@@ -68,7 +59,6 @@ import {
 // SET UP - START MENU
 const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
-
 
 // NUMBERS FOR MOTION
 const acc: number = 0.05;
@@ -88,6 +78,24 @@ for (let i: number = 1; i <= 4; i++) {
     let loop: Looper = new Looper(sprite);
     loops.push(loop);
 }
+
+// MAGIC
+class Magic {
+    sprite: Sprite;
+    x: number = 0;
+    y: number = 0;
+    direction: number = 1;
+    constructor(sprite: Sprite) {
+        this.sprite = sprite;
+    }
+    getPoint(unitX: number, unitY: number): void {
+        this.sprite.x += unitX;
+        this.sprite.y += unitY;
+    }
+}
+
+let magic = new Magic(Sprite.fromImage("./Magic_Blast.png"));
+let magicArr: Magic[] = [];
 
 // TWO PLAYER GAME
 class Player {
@@ -663,6 +671,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             const UP: number = 87;
                             const RIGHT: number = 68;
                             const DOWN: number = 83;
+                            const ATTACK: number = 51;
                             if (e.keyCode === LEFT) {
                                 A = -1;
                                 if (p1.sprite.scale.x < 0) {
@@ -686,6 +695,19 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             } else if (e.keyCode === DOWN) {
                                 if (!grounded(p1.sprite)) {
                                     S = 1;
+                                }
+                            } else if (e.keyCode === ATTACK) {
+                                if (magicArr.length < 3) {
+                                    let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+                                    let magic: Magic = new Magic(sprite);
+                                    magic.getPoint(p1.sprite.x, p1.sprite.y + 20);
+                                    if (facingLeft(p1.sprite)) {
+                                        magic.direction = -1;
+                                    } else {
+                                        magic.direction = 1;
+                                    }
+                                    magicArr.push(magic);
+                                    app.stage.addChild(magic.sprite);
                                 }
                             }
                         },                      false);
@@ -769,6 +791,10 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
                         };
 
+                        let isOffScreen = (sprite: Sprite): boolean => {
+                            return sprite.x <= -40 || sprite.x >= 1024 * .85 || sprite.y <= 0 || sprite.y >= 576 * .85;
+                        };
+
                         let facingLeft = (unit: Sprite) => unit.scale.x >= 0;
                         let facingRight = (unit: Sprite) => unit.scale.x < 0;
 
@@ -825,6 +851,23 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             unit.x = 788;
                         };
 
+                        // BATTLE FUNCTIONS
+                        let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
+                            let ab: Rectangle = a.getBounds();
+                            let bb: Rectangle = b.getBounds();
+                            return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+                        };
+
+                        let hitback = (unit: Sprite): void => {
+                            unit.x += 60;
+                        };
+                        if (isColliding(p2.sprite, magic.sprite)) {
+                            hitback(p2.sprite);
+                        }
+                        if (isColliding(p1.sprite, p2.sprite)) {
+                            leftResetLeft(p1.sprite);
+                        }
+
                         // END GAME + TEXT
                         let gameOver: boolean = false;
                         let winner: Sprite;
@@ -857,19 +900,28 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                         winner = p1.sprite;
                                     }
                                     if (winner === p2.sprite && !winnerExists) {
-                                        let message = new PIXI.Text("Player Two Wins.", style);
+                                        let message = new PIXI.Text("Player Two Wins", style);
                                         handleWin(game, message);
                                         winnerExists = true;
                                     } else if (winner === p1.sprite && !winnerExists) {
-                                        let message = new PIXI.Text("Player One Wins.", style);
+                                        let message = new PIXI.Text("Player One Wins", style);
                                         handleWin(game, message);
                                         winnerExists = true;
+                                    }
+                                }
+
+                                for (let i: number = 0; i < magicArr.length; i++) {
+                                    let magic: Magic = magicArr[i];
+                                    magic.sprite.x += 2 * magic.direction;
+                                    if (isOffScreen(magicArr[i].sprite)) {
+                                        app.stage.removeChild(magicArr[i].sprite);
+                                        magicArr.splice(i, 1);
                                     }
                                 }
                                 
                                 // PLAYER ONE MOVING
                                 p1.sprite.x += (A + D) * speed;
-                                p1.sprite.y += (S) * speed;
+                                // p1.sprite.y += (S) * speed;
                                 if (p1.vel < 1) {
                                     p1.vel += acc;
                                 } else if (grounded(p1.sprite)) {
@@ -888,7 +940,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
 
                                 // PLAYER TWO MOVING
                                 p2.sprite.x += (left + right) * speed;
-                                p2.sprite.y += (down) * speed;
+                                // p2.sprite.y += (down) * speed;
                                 if (p2.vel < 1) {
                                     p2.vel += acc;
                                 } else if (grounded(p2.sprite)) {
