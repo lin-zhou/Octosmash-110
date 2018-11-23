@@ -6,20 +6,29 @@ import {
 } from "pixi.js";
 
 import {
-    alfyn,
-    cyrus,
-    hannit,
-    olberic,
-    ophelia,
-    primrose,
-    therion,
-    tressa
+    alfyn1,
+    alfyn2,
+    cyrus1,
+    cyrus2,
+    hannit1,
+    hannit2,
+    olberic1,
+    olberic2,
+    ophelia1,
+    ophelia2,
+    primrose1,
+    primrose2,
+    therion1,
+    therion2,
+    tressa1,
+    tressa2
 } from "./characters-script";
 
 import {
     style,
     gameStyle
 } from "./fonts-script";
+let orientation = 1;
 
 // Note: How To Download Pixi.js (because sometimes it randomly doesn't work)
 // npm install pixi.js
@@ -60,11 +69,11 @@ app.stage.addChild(gameBG);
 const acc: number = 0.05;
 const speed: number = 1.5;
 const  weapSpeed: number = 2;
-
 // WEAPONS
-let magic: Sprite = Sprite.fromImage("./Magic_Blast.png");
-magic.scale.x = 1;
-magic.scale.y = 1;
+
+// let magic: Sprite = Sprite.fromImage("./Magic_Blast.png");
+// magic.scale.x = 1;
+// magic.scale.y = 1;
 let magicTwo: Sprite = Sprite.fromImage("./Magic_Blast.png");
 magicTwo.scale.x = 1;
 magicTwo.scale.y = 1;
@@ -75,41 +84,56 @@ class Looper {
         this.sprite = sprite;
     }
 }
-
 let loops: Looper[] = [];
 for (let i: number = 1; i <= 4; i++) {
     let sprite: Sprite = Sprite.fromImage("nonexistent");
     let loop: Looper = new Looper(sprite);
     loops.push(loop);
 }
-
 // TWO PLAYER GAME
-class Weapon {
-    sprite: Sprite;
-    vel: number = 0;
-    shootCount: number = 0;
-}
-let magicWeapon = new Weapon();
-magicWeapon.sprite = magic;
-
-let magicWeaponTwo = new Weapon();
-magicWeaponTwo.sprite = magicTwo;
 
 class Player {
     sprite: Sprite;
     vel: number = 0;
     jumpCount: number = 0;
 }
+class Weapon {
+    sprite: Sprite;
+    vel: number = 0;
+    shootCount: number = 0;
+}
+class Magic {
+    sprite: Sprite;
+    x: number = 0;
+    y: number = 0;
+    direction: number = 1;
+    vel: number = 0;
+    constructor(sprite: Sprite) {
+        this.sprite = sprite;
+    }
+    getPoint(unitX: number, unitY: number): void {
+        this.sprite.x += unitX;
+        this.sprite.y += unitY;
+    }
+}
+let shootCount1 = 0;
+let magic = new Magic (Sprite.fromImage("./Magic_Blast.png"));
+let magicArr: Magic[] = [];
+
+// let magicWeapon = new Weapon();
+// magicWeapon.sprite = magic;
+// let magicWeaponTwo = new Weapon();
+// magicWeaponTwo.sprite = magicTwo;
 
 let p1 = new Player();
-p1.sprite = cyrus;
+p1.sprite = cyrus1;
 p1.sprite.x = 225;
 p1.sprite.y = 205;
 p1.sprite.scale.x *= -1;
 app.stage.addChild(p1.sprite);
 
 let p2 = new Player();
-p2.sprite = hannit;
+p2.sprite = hannit1;
 p2.sprite.x = 640;
 p2.sprite.y = 205;
 app.stage.addChild(p2.sprite);
@@ -128,12 +152,13 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     const RIGHT: number = 68;
     const DOWN: number = 83;
     const ATTACK: number = 51;
-
+   
     if (e.keyCode === LEFT) {
         A = -1;
         if (p1.sprite.scale.x < 0) {
             p1.sprite.scale.x *= -1;
             p1.sprite.x -= 65;
+            orientation = 1;
         }
     } else if (e.keyCode === UP) {
         W = -1;
@@ -148,26 +173,39 @@ window.addEventListener("keydown", (e: KeyboardEvent): void  => {
         if (p1.sprite.scale.x >= 0 ) {
             p1.sprite.scale.x *= -1;
             p1.sprite.x += 65;
+            orientation = -1;
         }
     } else if (e.keyCode === DOWN) {
         if (!grounded(p1.sprite)) {
             S = 1;
         }          
     } else if (e.keyCode === ATTACK) {
-        if (p1.sprite.scale.x < 0) { 
-            magicWeapon.sprite.x = p1.sprite.x;
-            magicWeapon.sprite.y = p1.sprite.y;
-            magicWeapon.shootCount++;
-            app.stage.addChild(magicWeapon.sprite);
-            keyThree = 1;
-        } else if (p1.sprite.scale.x >= 0) {
-            magicWeapon.sprite.scale.x *= -1;
-            magicWeapon.sprite.x = p1.sprite.x;
-            magicWeapon.sprite.y = p1.sprite.y;
-            magicWeapon.shootCount++;
-            app.stage.addChild(magicWeapon.sprite);
-            keyThree = 1;
-        }
+        // Create a new Magic object every time the 3 key is pressed
+        let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+        let magic: Magic = new Magic(sprite);
+        magic.getPoint(p1.sprite.x, p1.sprite.y);
+        // Use player's coordinates as arguments for getPoint()
+        magicArr.push(magic);
+        // Adds new Magic object to magicArr
+        app.stage.addChild(magic.sprite);
+        
+        // shootCount1++;
+        // magic = new Magic(Sprite.fromImage("./Magic_Blast.png"));
+        // magic.sprite.x = 50 + shootCount1 * 100;
+        // app.stage.addChild(magic.sprite);
+        // // if (orientation < 0) { 
+        // magic.sprite.scale.x *= 1;
+        // magic.sprite.x = p1.sprite.x;
+        // magic.sprite.y = p1.sprite.y;
+        // // app.stage.addChild(magic.sprite);
+        // keyThree = 1;
+        // // } else if (orientation >= 0) {
+        // //     magic.sprite.scale.x *= -1;
+        // //     magic.sprite.x = p1.sprite.x;
+        // //     magic.sprite.y = p1.sprite.y;
+        // //     // app.stage.addChild(magic.sprite);
+        // //     keyThree = 1;
+        // // }
     }
 },                      false);
 
@@ -177,6 +215,7 @@ window.addEventListener("keyup", (e: KeyboardEvent): void  => {
     const UP: number = 87;
     const RIGHT: number = 68;
     const DOWN: number = 83;
+    const ATTACK: number = 51;
     if (e.keyCode === LEFT) {
         A = 0;
     } else if (e.keyCode === UP) {
@@ -185,7 +224,10 @@ window.addEventListener("keyup", (e: KeyboardEvent): void  => {
         D = 0;
     } else if (e.keyCode === DOWN) {
         S = 0;
+    } else if (e.keyCode === ATTACK) {
+        keyThree = 0;
     }
+    
 },                      false);
 
 // PLAYER TWO MOVE CONTROLS
@@ -267,6 +309,9 @@ let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
     let bb: Rectangle = b.getBounds();
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
 };
+// let tryColliding = (a: Sprite, b: Sprite): boolean => {
+
+// }
 let canJump = (unit: Sprite): boolean => {
     if (grounded(unit)) {
         if (unit === p1.sprite) {
@@ -287,13 +332,7 @@ let canJump = (unit: Sprite): boolean => {
     }
     return false;
 };
-       
-let hitback = (unit: Sprite): void => {
-    unit.x -= 30;
-};
-if (isColliding(p2.sprite, magicWeapon.sprite)) {
-    hitback(p2.sprite);
-}
+
 // GENERAL RESET FUNCTIONS
 let resetY = (unit: Sprite): void => {
     unit.y = 205;
@@ -317,12 +356,23 @@ let rightResetRight = (unit: Sprite): void => {
 };
 let resetWeaponX = (unit: Sprite): void => {
     unit.x = p1.sprite.x;
-    magicWeapon.vel = 0;
+    magic.vel = 0;
 };
 let resetWeaponY = (unit: Sprite): void => {
     unit.y = p2.sprite.y;
-    magicWeapon.vel = 0;
+    magic.vel = 0;
 };
+
+       
+let hitback = (unit: Sprite): void => {
+    unit.x += 60;
+};
+if (isColliding(p2.sprite, magic.sprite)) {
+    hitback(p2.sprite);
+}
+if (isColliding(p1.sprite, p2.sprite)) {
+    leftResetLeft(p1.sprite);
+}
 // END GAME + TEXT
 let gameOver: boolean = false;
 let winner: Sprite;
@@ -364,22 +414,23 @@ app.ticker.add((delta: number): void => {
                 winnerExists = true;
             }
 }
+        for (let i: number = 0; i < magicArr.length; i++) {
+            let magic: Magic = magicArr[i];
+            // Arrow on magic in this frame on the stack points to magicArr[i] in the heap
+            magic.sprite.x += 1 * magic.direction;
+        }
             // Weapons attack
         if (p1.sprite.scale.x >= 0 ) {
-            magic.x += (keyThree) * -weapSpeed;
+            magic.sprite.x += (keyThree) * -weapSpeed;
         } else if ( p1.sprite.scale.x < 0) {
-            magic.x += (keyThree) * weapSpeed;
+            magic.sprite.x += (keyThree) * weapSpeed;
         }               
-        if (magicWeapon.vel < 1) {
-            magicWeapon.vel += weapSpeed;
+        if (magic.vel < 1) {
+            magic.vel += weapSpeed;
         }
-        // magicTwo.x += (keyThree) * weapSpeed;
-    
-        if (isOutOfBounds(magicWeapon.sprite)) {
-            resetWeaponX(magic);
-            resetWeaponY(magic);
-            
-
+        magicTwo.x += (keyThree) * weapSpeed;
+        if (isOutOfBounds(magic.sprite)) {
+            app.stage.removeChild(magic.sprite);
         }
         // PLAYER ONE MOVING
         p1.sprite.x += (A + D) * speed;
@@ -420,7 +471,7 @@ app.ticker.add((delta: number): void => {
         p2.sprite.y = p2.sprite.y + p2.vel;
     // Weapons Moving
         if (keyThree === 1) {
-            magicWeapon.sprite.x += .5;
+            magic.sprite.x -= .01;
         }
         // PLAYER ONE RESTRAINTS
         if (grounded(p1.sprite)) {
