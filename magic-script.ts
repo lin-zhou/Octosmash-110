@@ -23,37 +23,26 @@ class Magic {
 
 let magicArr: Magic[] = [];
 
-let keyThree: number = 0;
-
 window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     console.log("key: " + e.keyCode);
     const ATTACK: number = 51;
 
     if (e.keyCode === ATTACK) {
-        keyThree = 1;
-        if (keyThree === 1) {
-            let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-            let magic: Magic = new Magic(sprite);
-            magic.getPoint(50, 50);
-            magicArr.push(magic);
-            app.stage.addChild(magic.sprite);
-        }
+        // Create a new Magic object every time the 3 key is pressed
+        let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+        let magic: Magic = new Magic(sprite);
+        magic.getPoint(50, 50);
+        // Use player's coordinates as arguments for getPoint()
+        magicArr.push(magic);
+        // Adds new Magic object to magicArr
+        app.stage.addChild(magic.sprite);
     }
-},                      false);
-
-window.addEventListener("keyup", (e: KeyboardEvent): void  => {
-    console.log("key: " + e.keyCode);
-    const ATTACK: number = 51;
-
-    if (e.keyCode === ATTACK) {
-        keyThree = 0;
-    }
-    
 },                      false);
 
 app.ticker.add((delta: number): void => {
     for (let i: number = 0; i < magicArr.length; i++) {
         let magic: Magic = magicArr[i];
+        // Arrow on magic in this frame on the stack points to magicArr[i] in the heap
         magic.sprite.x += 10 * magic.direction;
     }
 },             false);
