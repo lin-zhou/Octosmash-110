@@ -94,8 +94,12 @@ class Magic {
     }
 }
 
-let magic = new Magic(Sprite.fromImage("./Magic_Blast.png"));
-let magicTwo = new Magic(Sprite.fromImage("./Magic_Blast.png"));
+// let magicOne = new Magic(Sprite.fromImage("./Magic_Blast.png"));
+// let magicTwo = new Magic(Sprite.fromImage("./Magic_Blast.png"));
+// let magicOne: Sprite = (Sprite.fromImage("./Magic_Blast.png"));
+// let magicTwoOut: Sprite = (Sprite.fromImage("./Magic_Blast.png"));
+// let magicTwo: Magic = new Magic(magicTwoOut);
+
 
 let magicArr: Magic[] = [];
 let magicArrTwo: Magic[] = [];
@@ -675,6 +679,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             const RIGHT: number = 68;
                             const DOWN: number = 83;
                             const ATTACK: number = 51;
+
                             if (e.keyCode === LEFT) {
                                 A = -1;
                                 if (p1.sprite.scale.x < 0) {
@@ -714,6 +719,8 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     magicArr.push(magic);
                                     app.stage.addChild(magic.sprite);
                                 }
+                            } else if (isColliding(p1.sprite, p2.sprite)) {
+                                hitback(p1.sprite);
                             }
                         },                      false);
 
@@ -747,6 +754,9 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             const RIGHT: number = 39;
                             const DOWN: number = 40;
                             const ATTACK: number = 191;
+                            let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+                            let magicTwo: Magic = new Magic(sprite);
+                            let magicOne: Magic = new Magic(sprite);
                             if (e.keyCode === LEFT) {
                                 left = -1;
                                 if (p2.sprite.scale.x < 0) {
@@ -773,8 +783,8 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 }
                             } else if (e.keyCode === ATTACK) {
                                 if (magicArrTwo.length < 3) {
-                                    let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-                                    let magicTwo: Magic = new Magic(sprite);
+                                    // let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+                                    // let magicTwo: Magic = new Magic(sprite);
                                     magicTwo.getPoint(p2.sprite.x, p2.sprite.y + 20);
                                     if (facingLeft(p2.sprite)) {
                                         magicTwo.direction = -1;
@@ -785,7 +795,11 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     }
                                     magicArrTwo.push(magicTwo);
                                     app.stage.addChild(magicTwo.sprite);
-                                }
+                                }  
+                            } else if (isColliding(p1.sprite, p2.sprite)) {
+                                hitback(p2.sprite);
+                            } else if (isColliding(magicTwo.sprite, p1.sprite)) {
+                                hitback(p1.sprite);
                             }
                         },                      false);
 
@@ -871,7 +885,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         let rightResetRight = (unit: Sprite): void => {
                             unit.x = 788;
                         };
-
+       
                         // BATTLE FUNCTIONS
                         let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
                             let ab: Rectangle = a.getBounds();
@@ -882,13 +896,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         let hitback = (unit: Sprite): void => {
                             unit.x += 60;
                         };
-                        if (isColliding(p2.sprite, magic.sprite)) {
-                            hitback(p2.sprite);
-                        }
-                        if (isColliding(p1.sprite, p2.sprite)) {
-                            leftResetLeft(p1.sprite);
-                        }
-
+                    
                         // END GAME + TEXT
                         let gameOver: boolean = false;
                         let winner: Sprite;
