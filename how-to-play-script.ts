@@ -73,8 +73,8 @@ p2Attack.x = 495;
 p2Attack.y = 205;
 app.stage.addChild(p2Attack);
 
-const explanation0 = new PIXI.Text("Each player can only have four attacks on screen at once.", howToStyle);
-explanation0.x = 200;
+const explanation0 = new PIXI.Text("Each player can only have four projectiles on screen at once.", howToStyle);
+explanation0.x = 182;
 explanation0.y = 285;
 app.stage.addChild(explanation0);
 
