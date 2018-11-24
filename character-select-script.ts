@@ -305,14 +305,14 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         app.stage.addChild(playBox);
 
         let play = new PIXI.Text("PLAY", nextStyle);
-        play.x = 712;
+        play.x = 714;
         play.y = 421;
         app.stage.addChild(play);
 
         app.stage.addChild(reselect);
 
         let activePlay = new PIXI.Text("PLAY", activeNextStyle);
-        activePlay.x = 712;
+        activePlay.x = 714;
         activePlay.y = 421;
 
         window.addEventListener("click", (e: MouseEvent): void  => {
