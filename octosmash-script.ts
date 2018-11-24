@@ -42,8 +42,7 @@ import {
 // npm install @types/pixi.js
 
 /* TO DO
-    - Collisions between bullets and units
-    - How to Play Screen
+    - "How To Play" Screen
 */
 
 /* TO FIX
@@ -903,8 +902,12 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
                         };
 
-                        let hitback = (unit: Sprite): void => {
+                        let hitRight = (unit: Sprite): void => {
                             unit.x += 60;
+                        };
+
+                        let hitLeft = (unit: Sprite): void => {
+                            unit.x -= 60;
                         };
                     
                         // END GAME + TEXT
@@ -953,7 +956,11 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     let magic: Magic = magicArr[i];
                                     magic.sprite.x += (2 * magic.direction);
                                     if (isColliding(p2.sprite, magic.sprite)) {
-                                        hitback(p2.sprite);
+                                        if (magic.direction >= 0) { 
+                                        hitRight(p2.sprite);
+                                        } else {
+                                            hitLeft(p2.sprite);
+                                        }
                                         app.stage.removeChild(magicArr[i].sprite);
                                         magicArr.splice(i, 1);
                                     } else if (isOffScreen(magicArr[i].sprite)) {
@@ -961,11 +968,16 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                         magicArr.splice(i, 1);
                                     }
                                 }
+
                                 for (let i: number = 0; i < magicArrTwo.length; i++) {
                                     let magicTwo: Magic = magicArrTwo[i];
                                     magicTwo.sprite.x += (2 * magicTwo.direction);
                                     if (isColliding(p1.sprite, magicTwo.sprite)) {
-                                        hitback(p1.sprite);
+                                        if (magicTwo.direction >= 0) {
+                                        hitRight(p1.sprite);
+                                        } else {
+                                            hitLeft(p1.sprite);
+                                        }
                                         app.stage.removeChild(magicArrTwo[i].sprite);
                                         magicArrTwo.splice(i, 1);
                                     } else if (isOffScreen(magicArrTwo[i].sprite)) {
