@@ -28,7 +28,7 @@ import {
 import {
     startStyle,
     style,
-    gameStyle,
+    gameTextStyle,
     howToTitleStyle,
     howToStyle,
     selectStyle,
@@ -36,7 +36,8 @@ import {
     nextStyle,
     activeNextStyle,
     reselectStyle,
-    activeReselectStyle
+    activeReselectStyle,
+    playAgainStyle
 } from "./fonts-script";
 
 
@@ -55,6 +56,7 @@ import {
     - Different colored magic blast sprites either between p1 and p2 or for each character
     - Multiply lives + respawning
     - Sound effects!
+    - Replay button --> runGame() method
     - Damage system + hit back further if more damaged
         - Idea
             - Damage property in Player class
@@ -65,7 +67,7 @@ import {
     - Characters who look farther back should appear farther back
         - Low priority
         - Idea
-            - Degree of forwardness (different name) property in player class
+            - Degree of forwardness (give this a different name) property in player class
             - If statements that assign a value for degree of forwardness based on what sprite the player has
                 - Can do this during character selection
                 - Higher degree of forwardness = more front-appearing
@@ -776,426 +778,10 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && hasChosen && e.x >= 701 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
                                 console.log("Game Starting");
 
-                                // BUILD IN-GAME COMPONENTS
-                                let gameBG: Sprite = Sprite.fromImage("./Final_Destination_Stage.png");
-                                gameBG.scale.x = .85;
-                                gameBG.scale.y = .85;
-                                app.stage.addChild(gameBG);
+                                let game = new Game();
+                                game.runGame();
 
-                                app.stage.addChild(p1.sprite);
-                                app.stage.addChild(p2.sprite);
-
-                                // p1.sprite MOVE CONTROLS
-                                let A: number = 0;
-                                let D: number = 0;
-                                let S: number = 0;
-                                let W: number = 0;
-                                let lastKey1: number = 0;
-
-                                window.addEventListener("keydown", (e: KeyboardEvent): void  => {
-                                    console.log("key: " + e.keyCode);
-                                    const LEFT: number = 65;
-                                    const UP: number = 87;
-                                    const RIGHT: number = 68;
-                                    const DOWN: number = 83;
-                                    const ATTACK: number = 51;
-
-                                    if (e.keyCode === LEFT) {
-                                        A = -1;
-                                        if (p1.sprite.scale.x < 0) {
-                                            p1.sprite.scale.x *= -1;
-                                            p1.sprite.x -= 65;
-                                        }
-                                    } else if (e.keyCode === UP) {
-                                        W = -1;
-                                        if (!(lastKey1 === 87)) {
-                                            if (canJump(p1)) {
-                                                p1.vel = -4;
-                                                p1.jumpCount++;
-                                            }
-                                            lastKey1 = 87;
-                                        }
-                                    } else if (e.keyCode === RIGHT) {
-                                        D = 1;
-                                        if (p1.sprite.scale.x >= 0) {
-                                            p1.sprite.scale.x *= -1;
-                                            p1.sprite.x += 65;
-                                        }
-                                    } else if (e.keyCode === DOWN) {
-                                        if (!grounded(p1.sprite)) {
-                                            S = 1;
-                                        }
-                                    } else if (e.keyCode === ATTACK) {
-                                        if (!(lastKey1 === 51)) {
-                                            if (magicArr.length < 4) {
-                                                let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-                                                let magic: Magic = new Magic(sprite);
-                                                magic.getPoint(p1.sprite.x, p1.sprite.y + 20);
-                                                if (facingLeft(p1.sprite)) {
-                                                    magic.direction = -1;
-                                                    magic.sprite.scale.x *= 1;
-                                                } else {
-                                                    magic.direction = 1;
-                                                    magic.sprite.scale.x *= -1;
-                                                }
-                                                magicArr.push(magic);
-                                                app.stage.addChild(magic.sprite);
-                                            }
-                                            lastKey1 = 51;
-                                        }
-                                    }
-                                },                      false);
-
-                                window.addEventListener("keyup", (e: KeyboardEvent): void  => {
-                                    console.log("key: " + e.keyCode);
-                                    const LEFT: number = 65;
-                                    const UP: number = 87;
-                                    const RIGHT: number = 68;
-                                    const DOWN: number = 83;
-                                    const ATTACK: number = 51;
-                                    if (e.keyCode === LEFT) {
-                                        A = 0;
-                                    } else if (e.keyCode === UP) {
-                                        W = 0;
-                                        lastKey1 = 0;
-                                    } else if (e.keyCode === RIGHT) {
-                                        D = 0;
-                                    } else if (e.keyCode === DOWN) {
-                                        S = 0;
-                                    } else if (e.keyCode === ATTACK) {
-                                        lastKey1 = 0;
-                                    }
-                                },                      false);
-
-                                // PLAYER TWO MOVE CONTROLS
-                                let left: number = 0;
-                                let right: number = 0;
-                                let down: number = 0;
-                                let up: number = 0;
-                                let lastKey2: number = 0;
-
-                                window.addEventListener("keydown", (e: KeyboardEvent): void  => {
-                                    console.log("key: " + e.keyCode);
-                                    const LEFT: number = 37;
-                                    const UP: number = 38;
-                                    const RIGHT: number = 39;
-                                    const DOWN: number = 40;
-                                    const ATTACK: number = 191;
-
-                                    if (e.keyCode === LEFT) {
-                                        left = -1;
-                                        if (p2.sprite.scale.x < 0) {
-                                            p2.sprite.scale.x *= -1;
-                                            p2.sprite.x -= 65;
-                                        }
-                                    } else if (e.keyCode === UP) {
-                                        up = -1;
-                                        if (!(lastKey2 === 38)) {
-                                            if (canJump(p2)) {
-                                                p2.vel = -4;
-                                                p2.jumpCount++;
-                                            }
-                                            lastKey2 = 38;
-                                        }
-                                    } else if (e.keyCode === RIGHT) {
-                                        right = 1;
-                                        if (p2.sprite.scale.x >= 0) {
-                                            p2.sprite.scale.x *= -1;
-                                            p2.sprite.x += 65;
-                                        }
-                                    } else if (e.keyCode === DOWN) {
-                                        if (!grounded(p2.sprite)) {
-                                            down = 1;
-                                        }
-                                    } else if (e.keyCode === ATTACK) {
-                                        if (!(lastKey2 === 191)) {
-                                            if (magicArrTwo.length < 4) {
-                                                let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-                                                let magicTwo: Magic = new Magic(sprite);
-                                                magicTwo.getPoint(p2.sprite.x, p2.sprite.y + 20);
-                                                if (facingLeft(p2.sprite)) {
-                                                    magicTwo.direction = -1;
-                                                    magicTwo.sprite.scale.x *= 1;
-                                                } else {
-                                                    magicTwo.direction = 1;
-                                                    magicTwo.sprite.scale.x *= -1;
-                                                }
-                                                magicArrTwo.push(magicTwo);
-                                                app.stage.addChild(magicTwo.sprite);
-                                            }
-                                            lastKey2 = 191;
-                                        }
-                                    }
-                                },                      false);
-
-
-                                window.addEventListener("keyup", (e: KeyboardEvent): void  => {
-                                    console.log("key: " + e.keyCode);
-                                    const LEFT: number = 37;
-                                    const UP: number = 38;
-                                    const RIGHT: number = 39;
-                                    const DOWN: number = 40;
-                                    const ATTACK: number = 191;
-                                    if (e.keyCode === LEFT) {
-                                        left = 0;
-                                    } else if (e.keyCode === UP) {
-                                        up = 0;
-                                        lastKey2 = 0;
-                                    } else if (e.keyCode === RIGHT) {
-                                        right = 0;
-                                    } else if (e.keyCode === DOWN) {
-                                        down = 0;
-                                    } else if (e.keyCode === ATTACK) {
-                                        lastKey2 = 0;
-                                    }
-                                },                      false);
-
-                                // HELPER FUNCTIONS
-                                let isOutOfBounds = (unit: Sprite): boolean => {
-                                    return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
-                                };
-
-                                let isOffScreen = (sprite: Sprite): boolean => {
-                                    return sprite.x <= -40 || sprite.x >= 1024 * .85 || sprite.y <= 0 || sprite.y >= 576 * .85;
-                                };
-
-                                let facingLeft = (unit: Sprite) => unit.scale.x >= 0;
-                                let facingRight = (unit: Sprite) => unit.scale.x < 0;
-
-                                let groundedLeftward = (unit: Sprite) => (facingLeft(unit) && (unit.y >= 205 && unit.y <= 207 && (unit.x < 718 && unit.x > 62)));
-                                let groundedRightward = (unit: Sprite) => (facingRight(unit) && (unit.y >= 205 && unit.y <= 207 && (unit.x < 788 && unit.x > 135)));
-                                let grounded = (unit: Sprite) => (groundedLeftward(unit) || groundedRightward(unit));
-
-                                let underStageLeftWard = (unit: Sprite) => (facingLeft(unit) && (unit.y >= 208 && unit.y <= 295) && (unit.x < 718 && unit.x > 62));
-                                let underStageRightWard = (unit: Sprite) => (facingRight(unit) && (unit.y >= 208 && unit.y <= 295) && (unit.x < 788 && unit.x > 135));
-                                let underStage = (unit: Sprite) => (underStageLeftWard(unit) || underStageRightWard(unit));
-
-                                let offSides = (unit: Sprite) => ((facingLeft(unit) && (unit.x <= 62 || unit.x >= 718)) || (facingRight(unit) && (unit.x <= 135 || unit.x >= 788)));
-
-                                let resetJump = (player: Player) => player.jumpCount = 0;
-
-                                let canJump = (player: Player): boolean => {
-                                    if (grounded(player.sprite)) {
-                                        if (player === p1) {
-                                            resetJump(p1);
-                                            return true;
-                                        } else if (player === p2) {
-                                            resetJump(p2);
-                                            return true;
-                                        }
-                                    } else if (player === p1) {
-                                        if (p1.jumpCount < 2) {
-                                            return true;
-                                        }
-                                    } else if (player === p2) {
-                                        if (p2.jumpCount < 2) {
-                                            return true;
-                                        }
-                                    }
-                                    return false;
-                                };
-
-                                // GENERAL RESET FUNCTIONS
-                                let resetY = (unit: Sprite): void => {
-                                    unit.y = 205;
-                                };
-
-                                let resetLowY = (unit: Sprite): void => {
-                                    unit.y = 295;
-                                };
-
-                                let leftResetLeft = (unit: Sprite): void => {
-                                    unit.x = 62;
-                                };
-                                let leftResetRight = (unit: Sprite): void => {
-                                    unit.x = 718;
-                                };
-                                let rightResetLeft = (unit: Sprite): void => {
-                                    unit.x = 135;
-                                };
-                                let rightResetRight = (unit: Sprite): void => {
-                                    unit.x = 788;
-                                };
-            
-                                // BATTLE FUNCTIONS
-                                let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
-                                    let ab: Rectangle = a.getBounds();
-                                    let bb: Rectangle = b.getBounds();
-                                    return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
-                                };
-
-                                let hitRight = (unit: Sprite): void => {
-                                    unit.x += 60;
-                                };
-
-                                let hitLeft = (unit: Sprite): void => {
-                                    unit.x -= 60;
-                                };
-                            
-                                // END GAME + TEXT
-                                let gameOver: boolean = false;
-                                let winner: Player;
-                                let winnerExists: boolean = false;
-
-                                let game = new PIXI.Text("GAME!", gameStyle);
-
-                                let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
-                                    gameMessage.x = 305;
-                                    gameMessage.y = 180;
-                                    message.x = 292;
-                                    message.y = 280;
-                                    app.stage.addChild(gameMessage);
-                                    app.stage.addChild(message);
-                                };
-
-                                // RUN GAME
-                                app.ticker.add((delta: number): void => {
-                                    for (let i: number = 0; i < loops.length; i++) {
-                                        
-                                        // END GAME TEST
-                                        if (isOutOfBounds(p1.sprite) || isOutOfBounds(p2.sprite)) {
-                                            gameOver = true;
-                                        }
-
-                                        if (gameOver) {
-                                            if (isOutOfBounds(p1.sprite)) {
-                                                winner = p2;
-                                            } else if (isOutOfBounds(p2.sprite)) {
-                                                winner = p1;
-                                            }
-                                            if (winner === p2 && !winnerExists) {
-                                                let message = new PIXI.Text("Player Two Wins", style);
-                                                handleWin(game, message);
-                                                winnerExists = true;
-                                            } else if (winner === p1 && !winnerExists) {
-                                                let message = new PIXI.Text("Player One Wins", style);
-                                                handleWin(game, message);
-                                                winnerExists = true;
-                                            }
-                                        }
-
-                                        for (let i: number = 0; i < magicArr.length; i++) {
-                                            let magic: Magic = magicArr[i];
-                                            magic.sprite.x += (2 * magic.direction);
-                                            if (isColliding(p2.sprite, magic.sprite)) {
-                                                if (magic.direction >= 0) { 
-                                                hitRight(p2.sprite);
-                                                } else {
-                                                    hitLeft(p2.sprite);
-                                                }
-                                                app.stage.removeChild(magicArr[i].sprite);
-                                                magicArr.splice(i, 1);
-                                            } else if (isOffScreen(magicArr[i].sprite)) {
-                                                app.stage.removeChild(magicArr[i].sprite);
-                                                magicArr.splice(i, 1);
-                                            }
-                                        }
-
-                                        for (let i: number = 0; i < magicArrTwo.length; i++) {
-                                            let magicTwo: Magic = magicArrTwo[i];
-                                            magicTwo.sprite.x += (2 * magicTwo.direction);
-                                            if (isColliding(p1.sprite, magicTwo.sprite)) {
-                                                if (magicTwo.direction >= 0) {
-                                                hitRight(p1.sprite);
-                                                } else {
-                                                    hitLeft(p1.sprite);
-                                                }
-                                                app.stage.removeChild(magicArrTwo[i].sprite);
-                                                magicArrTwo.splice(i, 1);
-                                            } else if (isOffScreen(magicArrTwo[i].sprite)) {
-                                                app.stage.removeChild(magicArrTwo[i].sprite);
-                                                magicArrTwo.splice(i, 1);
-                                            }
-                                        }
-
-                                        // PLAYER ONE MOVING
-                                        p1.sprite.x += (A + D) * speed;
-                                        // p1.sprite.y += (S) * speed;
-                                        if (p1.vel < 1.5) {
-                                            p1.vel += acc;
-                                        } else if (grounded(p1.sprite)) {
-                                            p1.vel = 0;
-                                            resetY(p1.sprite);
-                                        } else if (underStage(p1.sprite)) {
-                                            p1.vel = 0;
-                                            resetLowY(p1.sprite);
-                                        } else if (underStage(p1.sprite)) {
-                                            p1.vel = 0;
-                                            resetLowY(p1.sprite);
-                                        } else {
-                                            p1.vel = 1;
-                                        }
-                                        p1.sprite.y += p1.vel;
-
-                                        // PLAYER TWO MOVING
-                                        p2.sprite.x += (left + right) * speed;
-                                        // p2.sprite.y += (down) * speed;
-                                        if (p2.vel < 1.5) {
-                                            p2.vel += acc;
-                                        } else if (grounded(p2.sprite)) {
-                                            p2.vel = 0;
-                                            resetY(p2.sprite);
-                                        } else if (underStage(p2.sprite)) {
-                                            p2.vel = 0;
-                                            resetLowY(p2.sprite);
-                                        } else if (underStage(p2.sprite)) {
-                                            p2.vel = 0;
-                                            resetLowY(p2.sprite);
-                                        } else {
-                                            p2.vel = 1;
-                                        }
-                                        p2.sprite.y = p2.sprite.y + p2.vel;
-
-                                        // PLAYER ONE RESTRAINTS
-                                        if (grounded(p1.sprite)) {
-                                            resetY(p1.sprite);
-                                        }
-                                        if (underStage(p1.sprite)) {
-                                            resetLowY(p1.sprite);
-                                        }
-                                        if (facingLeft(p1.sprite)) {
-                                            if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x > 62 && p1.sprite.x <= 64)) {
-                                                leftResetLeft(p1.sprite);
-                                            }
-                                            if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x < 718 && p1.sprite.x >= 716)) {
-                                                leftResetRight(p1.sprite);
-                                            }
-                                        } else {
-                                            if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x > 135 && p1.sprite.x <= 137)) {
-                                                rightResetLeft(p1.sprite);
-                                            }
-                                            if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x < 788 && p1.sprite.x >= 786)) {
-                                                rightResetRight(p1.sprite);
-                                            }
-                                        }
-
-                                        // PLAYER TWO RESTRAINTS
-                                        if (grounded(p2.sprite)) {
-                                            resetY(p2.sprite);
-                                        }
-                                        if (underStage(p2.sprite)) {
-                                            resetLowY(p2.sprite);
-                                        }
-                                        if (facingLeft(p2.sprite)) {
-                                            if ((p2.sprite.y >= 207 && p2.sprite.y <= 292) && (p2.sprite.x > 62 && p2.sprite.x <= 64)) {
-                                                leftResetLeft(p2.sprite);
-                                            }
-                                            if ((p2.sprite.y >= 207 && p2.sprite.y <= 292) && (p2.sprite.x < 718 && p2.sprite.x >= 716)) {
-                                                leftResetRight(p2.sprite);
-                                            }
-                                        } else {
-                                            if ((p2.sprite.y <= 292 && p2.sprite.y >= 207) && (p2.sprite.x > 135 && p2.sprite.x <= 137)) {
-                                                rightResetLeft(p2.sprite);
-                                            }
-                                            if ((p2.sprite.y <= 292 && p2.sprite.y >= 207) && (p2.sprite.x < 788 && p2.sprite.x >= 786)) {
-                                                rightResetRight(p2.sprite);
-                                            }
-                                        }
-                                    }   
-                                }
-                                );
-
-                        }
+                            }
                         },                      false);
 
                     }
@@ -1204,3 +790,455 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         },                      false);
     }
 },                      false);
+
+
+// HELPER FUNCTIONS
+let isOutOfBounds = (unit: Sprite): boolean => {
+    return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
+};
+
+let isOffScreen = (sprite: Sprite): boolean => {
+    return sprite.x <= -40 || sprite.x >= 1024 * .85 || sprite.y <= 0 || sprite.y >= 576 * .85;
+};
+
+let facingLeft = (unit: Sprite) => unit.scale.x >= 0;
+let facingRight = (unit: Sprite) => unit.scale.x < 0;
+
+let groundedLeftward = (unit: Sprite) => (facingLeft(unit) && (unit.y >= 205 && unit.y <= 207 && (unit.x < 718 && unit.x > 62)));
+let groundedRightward = (unit: Sprite) => (facingRight(unit) && (unit.y >= 205 && unit.y <= 207 && (unit.x < 788 && unit.x > 135)));
+let grounded = (unit: Sprite) => (groundedLeftward(unit) || groundedRightward(unit));
+
+let underStageLeftWard = (unit: Sprite) => (facingLeft(unit) && (unit.y >= 208 && unit.y <= 295) && (unit.x < 718 && unit.x > 62));
+let underStageRightWard = (unit: Sprite) => (facingRight(unit) && (unit.y >= 208 && unit.y <= 295) && (unit.x < 788 && unit.x > 135));
+let underStage = (unit: Sprite) => (underStageLeftWard(unit) || underStageRightWard(unit));
+
+let offSides = (unit: Sprite) => ((facingLeft(unit) && (unit.x <= 62 || unit.x >= 718)) || (facingRight(unit) && (unit.x <= 135 || unit.x >= 788)));
+
+let resetJump = (player: Player) => player.jumpCount = 0;
+
+let canJump = (player: Player): boolean => {
+    if (grounded(player.sprite)) {
+        if (player === p1) {
+            resetJump(p1);
+            return true;
+        } else if (player === p2) {
+            resetJump(p2);
+            return true;
+        }
+    } else if (player === p1) {
+        if (p1.jumpCount < 2) {
+            return true;
+        }
+    } else if (player === p2) {
+        if (p2.jumpCount < 2) {
+            return true;
+        }
+    }
+    return false;
+};
+
+// GENERAL RESET FUNCTIONS
+let resetY = (unit: Sprite): void => {
+    unit.y = 205;
+};
+
+let resetLowY = (unit: Sprite): void => {
+    unit.y = 295;
+};
+
+let leftResetLeft = (unit: Sprite): void => {
+    unit.x = 62;
+};
+let leftResetRight = (unit: Sprite): void => {
+    unit.x = 718;
+};
+let rightResetLeft = (unit: Sprite): void => {
+    unit.x = 135;
+};
+let rightResetRight = (unit: Sprite): void => {
+    unit.x = 788;
+};
+
+// BATTLE FUNCTIONS
+let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
+    let ab: Rectangle = a.getBounds();
+    let bb: Rectangle = b.getBounds();
+    return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+};
+
+let hitRight = (unit: Sprite): void => {
+    unit.x += 60;
+};
+
+let hitLeft = (unit: Sprite): void => {
+    unit.x -= 60;
+};
+
+class Game {
+
+    gameBG: Sprite = Sprite.fromImage("./Final_Destination_Stage.png");
+
+    // PLAYER ONE CONTROLS
+    A: number = 0;
+    D: number = 0;
+    S: number = 0;
+    W: number = 0;
+    lastKey1: number = 0;
+
+    // PLAY TWO CONTROLS
+    left: number = 0;
+    right: number = 0;
+    down: number = 0;
+    up: number = 0;
+    lastKey2: number = 0;
+
+    // END GAME
+    gameOver: boolean = false;
+    winner: Player;
+    winnerExists: boolean = false;
+    gameText: PIXI.Text = new PIXI.Text("GAME!", gameTextStyle);
+
+    runGame(): void {
+        // BUILD IN-GAME COMPONENTS
+        this.gameBG.scale.x = .85;
+        this.gameBG.scale.y = .85;
+        app.stage.addChild(this.gameBG);
+
+        app.stage.addChild(p1.sprite);
+        app.stage.addChild(p2.sprite);
+
+        // PLAYER ONE MOVE CONTROLS
+        window.addEventListener("keydown", (e: KeyboardEvent): void  => {
+            console.log("key: " + e.keyCode);
+            const LEFT: number = 65;
+            const UP: number = 87;
+            const RIGHT: number = 68;
+            const DOWN: number = 83;
+            const ATTACK: number = 51;
+
+            if (e.keyCode === LEFT) {
+                this.A = -1;
+                if (p1.sprite.scale.x < 0) {
+                    p1.sprite.scale.x *= -1;
+                    p1.sprite.x -= 65;
+                }
+            } else if (e.keyCode === UP) {
+                this.W = -1;
+                if (!(this.lastKey1 === 87)) {
+                    if (canJump(p1)) {
+                        p1.vel = -4;
+                        p1.jumpCount++;
+                    }
+                    this.lastKey1 = 87;
+                }
+            } else if (e.keyCode === RIGHT) {
+                this.D = 1;
+                if (p1.sprite.scale.x >= 0) {
+                    p1.sprite.scale.x *= -1;
+                    p1.sprite.x += 65;
+                }
+            } else if (e.keyCode === DOWN) {
+                if (!grounded(p1.sprite)) {
+                    this.S = 1;
+                }
+            } else if (e.keyCode === ATTACK) {
+                if (!(this.lastKey1 === 51)) {
+                    if (magicArr.length < 4) {
+                        let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+                        let magic: Magic = new Magic(sprite);
+                        magic.getPoint(p1.sprite.x, p1.sprite.y + 20);
+                        if (facingLeft(p1.sprite)) {
+                            magic.direction = -1;
+                            magic.sprite.scale.x *= 1;
+                        } else {
+                            magic.direction = 1;
+                            magic.sprite.scale.x *= -1;
+                        }
+                        magicArr.push(magic);
+                        app.stage.addChild(magic.sprite);
+                    }
+                    this.lastKey1 = 51;
+                }
+            }
+        },                      false);
+
+        window.addEventListener("keyup", (e: KeyboardEvent): void  => {
+            console.log("key: " + e.keyCode);
+            const LEFT: number = 65;
+            const UP: number = 87;
+            const RIGHT: number = 68;
+            const DOWN: number = 83;
+            const ATTACK: number = 51;
+            if (e.keyCode === LEFT) {
+                this.A = 0;
+            } else if (e.keyCode === UP) {
+                this.W = 0;
+                this.lastKey1 = 0;
+            } else if (e.keyCode === RIGHT) {
+                this.D = 0;
+            } else if (e.keyCode === DOWN) {
+                this.S = 0;
+            } else if (e.keyCode === ATTACK) {
+                this.lastKey1 = 0;
+            }
+        },                      false);
+
+        window.addEventListener("keydown", (e: KeyboardEvent): void  => {
+            console.log("key: " + e.keyCode);
+            const LEFT: number = 37;
+            const UP: number = 38;
+            const RIGHT: number = 39;
+            const DOWN: number = 40;
+            const ATTACK: number = 191;
+
+            if (e.keyCode === LEFT) {
+                this.left = -1;
+                if (p2.sprite.scale.x < 0) {
+                    p2.sprite.scale.x *= -1;
+                    p2.sprite.x -= 65;
+                }
+            } else if (e.keyCode === UP) {
+                this.up = -1;
+                if (!(this.lastKey2 === 38)) {
+                    if (canJump(p2)) {
+                        p2.vel = -4;
+                        p2.jumpCount++;
+                    }
+                    this.lastKey2 = 38;
+                }
+            } else if (e.keyCode === RIGHT) {
+                this.right = 1;
+                if (p2.sprite.scale.x >= 0) {
+                    p2.sprite.scale.x *= -1;
+                    p2.sprite.x += 65;
+                }
+            } else if (e.keyCode === DOWN) {
+                if (!grounded(p2.sprite)) {
+                    this.down = 1;
+                }
+            } else if (e.keyCode === ATTACK) {
+                if (!(this.lastKey2 === 191)) {
+                    if (magicArrTwo.length < 4) {
+                        let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+                        let magicTwo: Magic = new Magic(sprite);
+                        magicTwo.getPoint(p2.sprite.x, p2.sprite.y + 20);
+                        if (facingLeft(p2.sprite)) {
+                            magicTwo.direction = -1;
+                            magicTwo.sprite.scale.x *= 1;
+                        } else {
+                            magicTwo.direction = 1;
+                            magicTwo.sprite.scale.x *= -1;
+                        }
+                        magicArrTwo.push(magicTwo);
+                        app.stage.addChild(magicTwo.sprite);
+                    }
+                    this.lastKey2 = 191;
+                }
+            }
+        },                      false);
+
+
+        window.addEventListener("keyup", (e: KeyboardEvent): void  => {
+            console.log("key: " + e.keyCode);
+            const LEFT: number = 37;
+            const UP: number = 38;
+            const RIGHT: number = 39;
+            const DOWN: number = 40;
+            const ATTACK: number = 191;
+            if (e.keyCode === LEFT) {
+                this.left = 0;
+            } else if (e.keyCode === UP) {
+                this.up = 0;
+                this.lastKey2 = 0;
+            } else if (e.keyCode === RIGHT) {
+                this.right = 0;
+            } else if (e.keyCode === DOWN) {
+                this.down = 0;
+            } else if (e.keyCode === ATTACK) {
+                this.lastKey2 = 0;
+            }
+        },                      false);
+
+        // END GAME
+        let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
+            gameMessage.x = 305;
+            gameMessage.y = 180;
+            message.x = 292;
+            message.y = 280;
+            app.stage.addChild(gameMessage);
+            app.stage.addChild(message);
+        };
+
+        // RUN GAME
+        app.ticker.add((delta: number): void => {
+            for (let i: number = 0; i < loops.length; i++) {
+                
+                // END GAME TEST
+                if (isOutOfBounds(p1.sprite) || isOutOfBounds(p2.sprite)) {
+                    this.gameOver = true;
+                }
+
+                if (this.gameOver) {
+                    if (isOutOfBounds(p1.sprite)) {
+                        this.winner = p2;
+                    } else if (isOutOfBounds(p2.sprite)) {
+                        this.winner = p1;
+                    }
+                    if (this.winner === p2 && !this.winnerExists) {
+                        let message = new PIXI.Text("Player Two Wins", style);
+                        handleWin(this.gameText, message);
+                        this.winnerExists = true;
+                    } else if (this.winner === p1 && !this.winnerExists) {
+                        let message = new PIXI.Text("Player One Wins", style);
+                        handleWin(this.gameText, message);
+                        this.winnerExists = true;
+                    }
+                    /* WORK-IN-PROGRESS: Press enter key to replay without having to choose characters again.
+                        - Might have to variables in globals to save p1 and p2 sprites
+                        - Save starting locations
+                    */
+                    // let playAgain = new PIXI.Text("Press ENTER to play again", playAgainStyle);
+                    // playAgain.x = 327;
+                    // playAgain.y = 330;
+                    // app.stage.addChild(playAgain);
+
+                    // let orRefresh = new PIXI.Text("or refresh to choose new characters", playAgainStyle);
+                    // orRefresh.x = 293;
+                    // orRefresh.y = 350;
+                    // app.stage.addChild(orRefresh);
+
+                    // window.addEventListener("keydown", (e: KeyboardEvent): void  => {
+                    //     console.log("Running Game...");
+                    //     const REPLAY: number = 13;
+                    //     if (e.keyCode === REPLAY) {
+                    //         app.stage.removeChild(p1.sprite);
+                    //         app.stage.removeChild(p2.sprite);
+                    //         let game = new Game();
+                    //         game.runGame();
+                    //     }
+                    // },                      false);
+
+                }
+
+                // PROJECTILES
+                for (let i: number = 0; i < magicArr.length; i++) {
+                    let magic: Magic = magicArr[i];
+                    magic.sprite.x += (2 * magic.direction);
+                    if (isColliding(p2.sprite, magic.sprite)) {
+                        if (magic.direction >= 0) { 
+                        hitRight(p2.sprite);
+                        } else {
+                            hitLeft(p2.sprite);
+                        }
+                        app.stage.removeChild(magicArr[i].sprite);
+                        magicArr.splice(i, 1);
+                    } else if (isOffScreen(magicArr[i].sprite)) {
+                        app.stage.removeChild(magicArr[i].sprite);
+                        magicArr.splice(i, 1);
+                    }
+                }
+
+                for (let i: number = 0; i < magicArrTwo.length; i++) {
+                    let magicTwo: Magic = magicArrTwo[i];
+                    magicTwo.sprite.x += (2 * magicTwo.direction);
+                    if (isColliding(p1.sprite, magicTwo.sprite)) {
+                        if (magicTwo.direction >= 0) {
+                        hitRight(p1.sprite);
+                        } else {
+                            hitLeft(p1.sprite);
+                        }
+                        app.stage.removeChild(magicArrTwo[i].sprite);
+                        magicArrTwo.splice(i, 1);
+                    } else if (isOffScreen(magicArrTwo[i].sprite)) {
+                        app.stage.removeChild(magicArrTwo[i].sprite);
+                        magicArrTwo.splice(i, 1);
+                    }
+                }
+
+                // PLAYER ONE MOVING
+                p1.sprite.x += (this.A + this.D) * speed;
+                // p1.sprite.y += (S) * speed;
+                if (p1.vel < 1.5) {
+                    p1.vel += acc;
+                } else if (grounded(p1.sprite)) {
+                    p1.vel = 0;
+                    resetY(p1.sprite);
+                } else if (underStage(p1.sprite)) {
+                    p1.vel = 0;
+                    resetLowY(p1.sprite);
+                } else if (underStage(p1.sprite)) {
+                    p1.vel = 0;
+                    resetLowY(p1.sprite);
+                } else {
+                    p1.vel = 1;
+                }
+                p1.sprite.y += p1.vel;
+
+                // PLAYER TWO MOVING
+                p2.sprite.x += (this.left + this.right) * speed;
+                // p2.sprite.y += (down) * speed;
+                if (p2.vel < 1.5) {
+                    p2.vel += acc;
+                } else if (grounded(p2.sprite)) {
+                    p2.vel = 0;
+                    resetY(p2.sprite);
+                } else if (underStage(p2.sprite)) {
+                    p2.vel = 0;
+                    resetLowY(p2.sprite);
+                } else if (underStage(p2.sprite)) {
+                    p2.vel = 0;
+                    resetLowY(p2.sprite);
+                } else {
+                    p2.vel = 1;
+                }
+                p2.sprite.y = p2.sprite.y + p2.vel;
+
+                // PLAYER ONE RESTRAINTS
+                if (grounded(p1.sprite)) {
+                    resetY(p1.sprite);
+                }
+                if (underStage(p1.sprite)) {
+                    resetLowY(p1.sprite);
+                }
+                if (facingLeft(p1.sprite)) {
+                    if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x > 62 && p1.sprite.x <= 64)) {
+                        leftResetLeft(p1.sprite);
+                    }
+                    if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x < 718 && p1.sprite.x >= 716)) {
+                        leftResetRight(p1.sprite);
+                    }
+                } else {
+                    if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x > 135 && p1.sprite.x <= 137)) {
+                        rightResetLeft(p1.sprite);
+                    }
+                    if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x < 788 && p1.sprite.x >= 786)) {
+                        rightResetRight(p1.sprite);
+                    }
+                }
+
+                // PLAYER TWO RESTRAINTS
+                if (grounded(p2.sprite)) {
+                    resetY(p2.sprite);
+                }
+                if (underStage(p2.sprite)) {
+                    resetLowY(p2.sprite);
+                }
+                if (facingLeft(p2.sprite)) {
+                    if ((p2.sprite.y >= 207 && p2.sprite.y <= 292) && (p2.sprite.x > 62 && p2.sprite.x <= 64)) {
+                        leftResetLeft(p2.sprite);
+                    }
+                    if ((p2.sprite.y >= 207 && p2.sprite.y <= 292) && (p2.sprite.x < 718 && p2.sprite.x >= 716)) {
+                        leftResetRight(p2.sprite);
+                    }
+                } else {
+                    if ((p2.sprite.y <= 292 && p2.sprite.y >= 207) && (p2.sprite.x > 135 && p2.sprite.x <= 137)) {
+                        rightResetLeft(p2.sprite);
+                    }
+                    if ((p2.sprite.y <= 292 && p2.sprite.y >= 207) && (p2.sprite.x < 788 && p2.sprite.x >= 786)) {
+                        rightResetRight(p2.sprite);
+                    }
+                }
+            }
+        },             false);
+    }
+}
