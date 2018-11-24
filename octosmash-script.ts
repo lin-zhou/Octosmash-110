@@ -56,7 +56,6 @@ import {
     - Different colored magic blast sprites either between p1 and p2 or for each character
     - Multiply lives + respawning
     - Sound effects!
-    - Replay button --> runGame() method
     - Damage system + hit back further if more damaged
         - Idea
             - Damage property in Player class
@@ -64,6 +63,7 @@ import {
             - Would have to increase damage property's value each time a unit was hit by a magic blast
         - Healing items/other item spawns
     - Nicer title screen
+    - Make the "press ENTER" text less ugly
     - Characters who look farther back should appear farther back
         - Low priority
         - Idea
@@ -119,6 +119,8 @@ let magicArrTwo: Magic[] = [];
 // TWO PLAYER GAME
 class Player {
     sprite: Sprite;
+    startX: number;
+    startY: number = 205;
     vel: number = 0;
     jumpCount: number = 0;
 }
@@ -139,6 +141,7 @@ app.stage.addChild(startMessage);
 
 let onHowTo = false;
 let choosing = false;
+let isPlaying = false;
 
 // HOW TO PLAY SCREEN
 window.addEventListener("click", (e: MouseEvent): void  => {
@@ -211,8 +214,8 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         p2Attack.y = 205;
         app.stage.addChild(p2Attack);
 
-        const explanation0 = new PIXI.Text("Each player can only have four attacks on screen at once.", howToStyle);
-        explanation0.x = 200;
+        const explanation0 = new PIXI.Text("Each player can only have four projectiles on screen at once.", howToStyle);
+        explanation0.x = 182;
         explanation0.y = 285;
         app.stage.addChild(explanation0);
 
@@ -357,7 +360,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p1choose && canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Ophelia");
                         p1.sprite = ophelia1;
-                        p1.sprite.x = 210;
+                        p1.sprite.x = p1.startX = 210;
                         p1.sprite.y = 205;
                         if (p1.sprite.scale.x >= 0) {
                             p1.sprite.scale.x *= -1;
@@ -381,7 +384,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p1choose && canChoose && e.x >= 153 && e.x <= 246 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Cyrus");
                         p1.sprite = cyrus1;
-                        p1.sprite.x = 225;
+                        p1.sprite.x = p1.startX = 225;
                         p1.sprite.y = 205;
                         if (p1.sprite.scale.x >= 0) {
                             p1.sprite.scale.x *= -1;
@@ -405,7 +408,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p1choose && canChoose && e.x >= 252 && e.x <= 342 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Tressa");
                         p1.sprite = tressa1;
-                        p1.sprite.x = 210;
+                        p1.sprite.x = p1.startX = 210;
                         p1.sprite.y = 205;
                         if (p1.sprite.scale.x >= 0) {
                             p1.sprite.scale.x *= -1;
@@ -429,7 +432,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p1choose && canChoose && e.x >= 349 && e.x <= 438 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Olberic");
                         p1.sprite = olberic1;
-                        p1.sprite.x = 225;
+                        p1.sprite.x = p1.startX = 225;
                         p1.sprite.y = 205;
                         if (p1.sprite.scale.x >= 0) {
                             p1.sprite.scale.x *= -1;
@@ -453,7 +456,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p1choose && canChoose && e.x >= 446 && e.x <= 536 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Primrose");
                         p1.sprite = primrose1;
-                        p1.sprite.x = 210;
+                        p1.sprite.x = p1.startX = 210;
                         p1.sprite.y = 205;
                         if (p1.sprite.scale.x >= 0) {
                             p1.sprite.scale.x *= -1;
@@ -477,7 +480,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p1choose && canChoose && e.x >= 544 && e.x <= 634 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Alfyn");
                         p1.sprite = alfyn1;
-                        p1.sprite.x = 212;
+                        p1.sprite.x = p1.startX = 212;
                         p1.sprite.y = 205;
                         if (p1.sprite.scale.x >= 0) {
                             p1.sprite.scale.x *= -1;
@@ -501,7 +504,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p1choose && canChoose && e.x >= 642 && e.x <= 732 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Therion");
                         p1.sprite = therion1;
-                        p1.sprite.x = 217;
+                        p1.sprite.x = p1.startX = 217;
                         p1.sprite.y = 205;
                         if (p1.sprite.scale.x >= 0) {
                             p1.sprite.scale.x *= -1;
@@ -525,7 +528,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p1choose && canChoose && e.x >= 738 && e.x <= 828 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Hannit");
                         p1.sprite = hannit1;
-                        p1.sprite.x = 215;
+                        p1.sprite.x = p1.startX = 215;
                         p1.sprite.y = 205;
                         if (p1.sprite.scale.x >= 0) {
                             p1.sprite.scale.x *= -1;
@@ -599,7 +602,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Ophelia");
                                 p2.sprite = ophelia2;
-                                p2.sprite.x = 650;
+                                p2.sprite.x = p2.startX = 650;
                                 p2.sprite.y = 205;
 
                                 blockBox = new Graphics();
@@ -620,7 +623,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && canChoose && e.x >= 153 && e.x <= 246 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Cyrus");
                                 p2.sprite = cyrus2;
-                                p2.sprite.x = 637;
+                                p2.sprite.x = p2.startX = 637;
                                 p2.sprite.y = 205;
 
                                 blockBox = new Graphics();
@@ -641,7 +644,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && canChoose && e.x >= 252 && e.x <= 342 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Tressa");
                                 p2.sprite = tressa2;
-                                p2.sprite.x = 655;
+                                p2.sprite.x = p2.startX = 655;
                                 p2.sprite.y = 205;
 
                                 blockBox = new Graphics();
@@ -662,7 +665,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && canChoose && e.x >= 349 && e.x <= 438 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Olberic");
                                 p2.sprite = olberic2;
-                                p2.sprite.x = 640;
+                                p2.sprite.x = p2.startX = 640;
                                 p2.sprite.y = 205;
 
                                 blockBox = new Graphics();
@@ -683,7 +686,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && canChoose && e.x >= 446 && e.x <= 536 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Primrose");
                                 p2.sprite = primrose2;
-                                p2.sprite.x = 655;
+                                p2.sprite.x = p2.startX = 655;
                                 p2.sprite.y = 205;
 
                                 blockBox = new Graphics();
@@ -704,7 +707,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && canChoose && e.x >= 544 && e.x <= 634 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Alfyn");
                                 p2.sprite = alfyn2;
-                                p2.sprite.x = 652;
+                                p2.sprite.x = p2.startX = 652;
                                 p2.sprite.y = 205;
 
                                 blockBox = new Graphics();
@@ -725,7 +728,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && canChoose && e.x >= 642 && e.x <= 732 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Therion");
                                 p2.sprite = therion2;
-                                p2.sprite.x = 648;
+                                p2.sprite.x = p2.startX = 648;
                                 p2.sprite.y = 205;
 
                                 blockBox = new Graphics();
@@ -746,7 +749,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && canChoose && e.x >= 738 && e.x <= 828 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Hannit");
                                 p2.sprite = hannit2;
-                                p2.sprite.x = 650;
+                                p2.sprite.x = p2.startX = 650;
                                 p2.sprite.y = 205;
 
                                 blockBox = new Graphics();
@@ -777,6 +780,8 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             // "PLAY" --> START GAME
                             if (p2choose && hasChosen && e.x >= 701 && e.x <= 827 && e.y >= 428 && e.y <= 473) {
                                 console.log("Game Starting");
+
+                                isPlaying = true;
 
                                 let game = new Game();
                                 game.runGame();
@@ -1079,6 +1084,7 @@ class Game {
                 }
 
                 if (this.gameOver) {
+                    isPlaying = false;
                     if (isOutOfBounds(p1.sprite)) {
                         this.winner = p2;
                     } else if (isOutOfBounds(p2.sprite)) {
@@ -1093,30 +1099,48 @@ class Game {
                         handleWin(this.gameText, message);
                         this.winnerExists = true;
                     }
-                    /* WORK-IN-PROGRESS: Press enter key to replay without having to choose characters again.
-                        - Might have to variables in globals to save p1 and p2 sprites
-                        - Save starting locations
-                    */
-                    // let playAgain = new PIXI.Text("Press ENTER to play again", playAgainStyle);
-                    // playAgain.x = 327;
-                    // playAgain.y = 330;
-                    // app.stage.addChild(playAgain);
 
-                    // let orRefresh = new PIXI.Text("or refresh to choose new characters", playAgainStyle);
-                    // orRefresh.x = 293;
-                    // orRefresh.y = 350;
-                    // app.stage.addChild(orRefresh);
+                    let playAgain = new PIXI.Text("Press ENTER to play again", playAgainStyle);
+                    playAgain.x = 327;
+                    playAgain.y = 330;
+                    app.stage.addChild(playAgain);
 
-                    // window.addEventListener("keydown", (e: KeyboardEvent): void  => {
-                    //     console.log("Running Game...");
-                    //     const REPLAY: number = 13;
-                    //     if (e.keyCode === REPLAY) {
-                    //         app.stage.removeChild(p1.sprite);
-                    //         app.stage.removeChild(p2.sprite);
-                    //         let game = new Game();
-                    //         game.runGame();
-                    //     }
-                    // },                      false);
+                    let orRefresh = new PIXI.Text("or refresh to choose new characters", playAgainStyle);
+                    orRefresh.x = 293;
+                    orRefresh.y = 350;
+                    app.stage.addChild(orRefresh);
+
+                    window.addEventListener("keydown", (e: KeyboardEvent): void  => {
+                        console.log("Running Game...");
+                        const REPLAY: number = 13;
+                        if (!isPlaying && e.keyCode === REPLAY) {
+                            app.stage.removeChild(p1.sprite);
+                            app.stage.removeChild(p2.sprite);
+                            app.stage.removeChild(this.gameBG);
+                            app.stage.removeChild(playAgain);
+                            app.stage.removeChild(orRefresh);
+
+                            this.gameOver = false;
+                            this.winnerExists = false;
+
+                            app.stage.addChild(this.gameBG);
+
+                            p1.sprite.x = p1.startX;
+                            p1.sprite.y = p1.startY;
+                            if (facingLeft(p1.sprite)) {
+                                p1.sprite.scale.x += -1;
+                            }
+                            p2.sprite.x = p2.startX;
+                            p2.sprite.y = p2.startY;
+                            if (facingRight(p2.sprite)) {
+                                p2.sprite.scale.x *= -1;
+                            }
+                            app.stage.addChild(p1.sprite);
+                            app.stage.addChild(p2.sprite);
+
+                            isPlaying = true;
+                        }
+                    },                      false);
 
                 }
 
