@@ -26,7 +26,7 @@ import {
 
 import {
     style,
-    gameStyle
+    gameTextStyle
 } from "./fonts-script";
 let orientation = 1;
 
@@ -335,7 +335,7 @@ let gameOver: boolean = false;
 let winner: Sprite;
 let winnerExists: boolean = false;
 
-let game = new PIXI.Text("GAME!", gameStyle);
+let game = new PIXI.Text("GAME!", gameTextStyle);
 
 let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
     gameMessage.x = 305;
