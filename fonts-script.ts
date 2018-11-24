@@ -30,7 +30,7 @@ export let style = new PIXI.TextStyle({
     wordWrapWidth: 440
 });
 
-export let gameStyle = new PIXI.TextStyle({
+export let gameTextStyle = new PIXI.TextStyle({
     fontFamily: "Arial",
     fontSize: 75,
     fontWeight: "bold",
@@ -44,6 +44,32 @@ export let gameStyle = new PIXI.TextStyle({
     dropShadowDistance: 6,
     wordWrap: true,
     wordWrapWidth: 440
+});
+
+export let howToTitleStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 30,
+    fill: ["#ffffff"],
+    stroke: "#000000",
+    strokeThickness: 3,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+});
+
+export let howToStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 20,
+    fill: ["#ffffff"],
+    stroke: "#000000",
+    strokeThickness: 3,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
 });
 
 export let selectStyle = new PIXI.TextStyle({
@@ -112,6 +138,16 @@ export let nameStyle = new PIXI.TextStyle({
     dropShadowBlur: 4,
     dropShadowAngle: Math.PI / 6,
     dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 500
+});
+
+export let playAgainStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 20,
+    fill: ["#ffffff"],
+    stroke: "#000000",
+    strokeThickness: 3,
     wordWrap: true,
     wordWrapWidth: 500
 });
