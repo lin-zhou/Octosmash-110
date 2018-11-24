@@ -37,21 +37,30 @@ import {
     activeReselectStyle
 } from "./fonts-script";
 
-// Note: How To Download Pixi.js (because sometimes it randomly doesn't work)
+// Note: How To Download Pixi.js (in case you need to reinstall after pulling for COMP class)
 // npm install pixi.js
 // npm install @types/pixi.js
 
+/* TO DO
+    - Collisions between bullets and units
+    - How to Play Screen
+*/
+
 /* TO FIX
-    - Figure out how to get rid of the looper function while still looping
-    - Movement issues:
-        - Finicky places in the corners of the stage
-        - Sometimes can't jump after walking off stage
+    - Only one player can shoot at a time
+        - Not as big of a problem now that players can't hold to shoot
+    - Finicky places in the corners of the stage
+    - Sometimes can't jump after walking off stage
 */
 
 /* OTHER THINGS TO DO IF TIME ALLOWS
-    - Characters who look farther back should appear farther back
+    - Different colored magic blast sprites either between p1 and p2 or for each character
     - Multiply lives + respawning
     - Sound effects!
+    - Damage system + hit back further if more damaged
+        - Healing items/other item spawns
+    - Nicer title screen
+    - Characters who look farther back should appear farther back
 */
 
 // SET UP - START MENU
@@ -83,7 +92,6 @@ class Magic {
     x: number = 0;
     y: number = 0;
     direction: number = 1;
-    player: Player;
     constructor(sprite: Sprite) {
         this.sprite = sprite;
     }
@@ -716,8 +724,6 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     }
                                     lastKey1 = 51;
                                 }
-                            } else if (isColliding(p1.sprite, p2.sprite)) {
-                                hitback(p1.sprite);
                             }
                         },                      false);
 
@@ -800,8 +806,6 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     }
                                     lastKey2 = 191;
                                 }
-                            } else if (isColliding(p1.sprite, p2.sprite)) {
-                                hitback(p2.sprite);
                             }
                         },                      false);
 
@@ -948,7 +952,11 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 for (let i: number = 0; i < magicArr.length; i++) {
                                     let magic: Magic = magicArr[i];
                                     magic.sprite.x += (2 * magic.direction);
-                                    if (isOffScreen(magicArr[i].sprite)) {
+                                    if (isColliding(p2.sprite, magic.sprite)) {
+                                        hitback(p2.sprite);
+                                        app.stage.removeChild(magicArr[i].sprite);
+                                        magicArr.splice(i, 1);
+                                    } else if (isOffScreen(magicArr[i].sprite)) {
                                         app.stage.removeChild(magicArr[i].sprite);
                                         magicArr.splice(i, 1);
                                     }
@@ -956,7 +964,11 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 for (let i: number = 0; i < magicArrTwo.length; i++) {
                                     let magicTwo: Magic = magicArrTwo[i];
                                     magicTwo.sprite.x += (2 * magicTwo.direction);
-                                    if (isOffScreen(magicArrTwo[i].sprite)) {
+                                    if (isColliding(p1.sprite, magicTwo.sprite)) {
+                                        hitback(p1.sprite);
+                                        app.stage.removeChild(magicArrTwo[i].sprite);
+                                        magicArrTwo.splice(i, 1);
+                                    } else if (isOffScreen(magicArrTwo[i].sprite)) {
                                         app.stage.removeChild(magicArrTwo[i].sprite);
                                         magicArrTwo.splice(i, 1);
                                     }
