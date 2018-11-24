@@ -46,8 +46,6 @@ import {
     - Movement issues:
         - Finicky places in the corners of the stage
         - Sometimes can't jump after walking off stage
-        - Weird jump when holding "up" or "w" keys
-            - Holding up shouldn't do anything different than just tapping it once
 */
 
 /* OTHER THINGS TO DO IF TIME ALLOWS
@@ -93,13 +91,6 @@ class Magic {
         this.sprite.y += unitY;
     }
 }
-
-// let magicOne = new Magic(Sprite.fromImage("./Magic_Blast.png"));
-// let magicTwo = new Magic(Sprite.fromImage("./Magic_Blast.png"));
-// let magicOne: Sprite = (Sprite.fromImage("./Magic_Blast.png"));
-// let magicTwoOut: Sprite = (Sprite.fromImage("./Magic_Blast.png"));
-// let magicTwo: Magic = new Magic(magicTwoOut);
-
 
 let magicArr: Magic[] = [];
 let magicArrTwo: Magic[] = [];
@@ -671,6 +662,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         let D: number = 0;
                         let S: number = 0;
                         let W: number = 0;
+                        let lastKey1: number = 0;
 
                         window.addEventListener("keydown", (e: KeyboardEvent): void  => {
                             console.log("key: " + e.keyCode);
@@ -688,11 +680,12 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 }
                             } else if (e.keyCode === UP) {
                                 W = -1;
-                                if (canJump(p1.sprite)) {
-                                    p1.vel =  -3.5;
-                                    p1.jumpCount++;
-                                } else {
-                                    p1.vel = 0;
+                                if (!(lastKey1 === 87)) {
+                                    if (canJump(p1.sprite)) {
+                                        p1.vel =  -3.5;
+                                        p1.jumpCount++;
+                                    }
+                                    lastKey1 = 87;
                                 }
                             } else if (e.keyCode === RIGHT) {
                                 D = 1;
@@ -705,7 +698,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     S = 1;
                                 }
                             } else if (e.keyCode === ATTACK) {
-                                if (magicArr.length < 3) {
+                                if (magicArr.length < 4) {
                                     let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
                                     let magic: Magic = new Magic(sprite);
                                     magic.getPoint(p1.sprite.x, p1.sprite.y + 20);
@@ -734,6 +727,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 A = 0;
                             } else if (e.keyCode === UP) {
                                 W = 0;
+                                lastKey1 = 0;
                             } else if (e.keyCode === RIGHT) {
                                 D = 0;
                             } else if (e.keyCode === DOWN) {
@@ -746,6 +740,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         let right: number = 0;
                         let down: number = 0;
                         let up: number = 0;
+                        let lastKey2: number = 0;
 
                         window.addEventListener("keydown", (e: KeyboardEvent): void  => {
                             console.log("key: " + e.keyCode);
@@ -754,9 +749,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             const RIGHT: number = 39;
                             const DOWN: number = 40;
                             const ATTACK: number = 191;
-                            let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-                            let magicTwo: Magic = new Magic(sprite);
-                            let magicOne: Magic = new Magic(sprite);
+
                             if (e.keyCode === LEFT) {
                                 left = -1;
                                 if (p2.sprite.scale.x < 0) {
@@ -765,11 +758,12 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 }
                             } else if (e.keyCode === UP) {
                                 up = -1;
-                                if (canJump(p2.sprite)) {
-                                    p2.vel =  -3.5;
-                                    p2.jumpCount++;
-                                } else {
-                                    p2.vel = 0;
+                                if (!(lastKey2 === 38)) {
+                                    if (canJump(p2.sprite)) {
+                                        p2.vel =  -3.5;
+                                        p2.jumpCount++;
+                                    }
+                                    lastKey2 = 38;
                                 }
                             } else if (e.keyCode === RIGHT) {
                                 right = 1;
@@ -782,9 +776,9 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     down = 1;
                                 }
                             } else if (e.keyCode === ATTACK) {
-                                if (magicArrTwo.length < 3) {
-                                    // let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-                                    // let magicTwo: Magic = new Magic(sprite);
+                                let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+                                let magicTwo: Magic = new Magic(sprite);
+                                if (magicArrTwo.length < 4) {
                                     magicTwo.getPoint(p2.sprite.x, p2.sprite.y + 20);
                                     if (facingLeft(p2.sprite)) {
                                         magicTwo.direction = -1;
@@ -798,8 +792,6 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 }  
                             } else if (isColliding(p1.sprite, p2.sprite)) {
                                 hitback(p2.sprite);
-                            } else if (isColliding(magicTwo.sprite, p1.sprite)) {
-                                hitback(p1.sprite);
                             }
                         },                      false);
 
@@ -814,6 +806,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 left = 0;
                             } else if (e.keyCode === UP) {
                                 up = 0;
+                                lastKey2 = 0;
                             } else if (e.keyCode === RIGHT) {
                                 right = 0;
                             } else if (e.keyCode === DOWN) {
