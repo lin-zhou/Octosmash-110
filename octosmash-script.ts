@@ -83,6 +83,7 @@ class Magic {
     x: number = 0;
     y: number = 0;
     direction: number = 1;
+    player: Player;
     constructor(sprite: Sprite) {
         this.sprite = sprite;
     }
@@ -698,19 +699,22 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     S = 1;
                                 }
                             } else if (e.keyCode === ATTACK) {
-                                if (magicArr.length < 4) {
-                                    let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-                                    let magic: Magic = new Magic(sprite);
-                                    magic.getPoint(p1.sprite.x, p1.sprite.y + 20);
-                                    if (facingLeft(p1.sprite)) {
-                                        magic.direction = -1;
-                                        magic.sprite.scale.x *= 1;
-                                    } else {
-                                        magic.direction = 1;
-                                        magic.sprite.scale.x *= -1;
+                                if (!(lastKey1 === 51)) {
+                                    if (magicArr.length < 4) {
+                                        let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+                                        let magic: Magic = new Magic(sprite);
+                                        magic.getPoint(p1.sprite.x, p1.sprite.y + 20);
+                                        if (facingLeft(p1.sprite)) {
+                                            magic.direction = -1;
+                                            magic.sprite.scale.x *= 1;
+                                        } else {
+                                            magic.direction = 1;
+                                            magic.sprite.scale.x *= -1;
+                                        }
+                                        magicArr.push(magic);
+                                        app.stage.addChild(magic.sprite);
                                     }
-                                    magicArr.push(magic);
-                                    app.stage.addChild(magic.sprite);
+                                    lastKey1 = 51;
                                 }
                             } else if (isColliding(p1.sprite, p2.sprite)) {
                                 hitback(p1.sprite);
@@ -723,6 +727,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             const UP: number = 87;
                             const RIGHT: number = 68;
                             const DOWN: number = 83;
+                            const ATTACK: number = 51;
                             if (e.keyCode === LEFT) {
                                 A = 0;
                             } else if (e.keyCode === UP) {
@@ -732,6 +737,8 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 D = 0;
                             } else if (e.keyCode === DOWN) {
                                 S = 0;
+                            } else if (e.keyCode === ATTACK) {
+                                lastKey1 = 0;
                             }
                         },                      false);
 
@@ -776,20 +783,23 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                     down = 1;
                                 }
                             } else if (e.keyCode === ATTACK) {
-                                let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
-                                let magicTwo: Magic = new Magic(sprite);
-                                if (magicArrTwo.length < 4) {
-                                    magicTwo.getPoint(p2.sprite.x, p2.sprite.y + 20);
-                                    if (facingLeft(p2.sprite)) {
-                                        magicTwo.direction = -1;
-                                        magicTwo.sprite.scale.x *= 1;
-                                    } else {
-                                        magicTwo.direction = 1;
-                                        magicTwo.sprite.scale.x *= -1;
+                                if (!(lastKey2 === 191)) {
+                                    if (magicArrTwo.length < 4) {
+                                        let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
+                                        let magicTwo: Magic = new Magic(sprite);
+                                        magicTwo.getPoint(p2.sprite.x, p2.sprite.y + 20);
+                                        if (facingLeft(p2.sprite)) {
+                                            magicTwo.direction = -1;
+                                            magicTwo.sprite.scale.x *= 1;
+                                        } else {
+                                            magicTwo.direction = 1;
+                                            magicTwo.sprite.scale.x *= -1;
+                                        }
+                                        magicArrTwo.push(magicTwo);
+                                        app.stage.addChild(magicTwo.sprite);
                                     }
-                                    magicArrTwo.push(magicTwo);
-                                    app.stage.addChild(magicTwo.sprite);
-                                }  
+                                    lastKey2 = 191;
+                                }
                             } else if (isColliding(p1.sprite, p2.sprite)) {
                                 hitback(p2.sprite);
                             }
@@ -802,6 +812,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             const UP: number = 38;
                             const RIGHT: number = 39;
                             const DOWN: number = 40;
+                            const ATTACK: number = 191;
                             if (e.keyCode === LEFT) {
                                 left = 0;
                             } else if (e.keyCode === UP) {
@@ -811,6 +822,8 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                                 right = 0;
                             } else if (e.keyCode === DOWN) {
                                 down = 0;
+                            } else if (e.keyCode === ATTACK) {
+                                lastKey2 = 0;
                             }
                         },                      false);
 
