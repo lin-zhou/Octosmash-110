@@ -97,5 +97,8 @@ app.stage.addChild(spacebar);
 
 window.addEventListener("keydown", (e: KeyboardEvent): void  => {
     console.log("To selection...");
+    const START: number = 32;
+    if (e.keyCode === START) {
     // Character Selection starts here!
+    }
 },                      false);
