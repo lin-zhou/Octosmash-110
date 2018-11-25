@@ -59,6 +59,19 @@ export let howToTitleStyle = new PIXI.TextStyle({
     dropShadowDistance: 6,
 });
 
+export let howToSubStyle = new PIXI.TextStyle({
+    fontFamily: "Times New Roman",
+    fontSize: 22,
+    fill: ["#ffffff"],
+    stroke: "#000000",
+    strokeThickness: 3,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6
+});
+
 export let howToStyle = new PIXI.TextStyle({
     fontFamily: "Times New Roman",
     fontSize: 20,
@@ -150,4 +163,36 @@ export let playAgainStyle = new PIXI.TextStyle({
     strokeThickness: 3,
     wordWrap: true,
     wordWrapWidth: 500
+});
+
+export let damageStyle = new PIXI.TextStyle({
+    fontFamily: "Arial",
+    fontSize: 30,
+    fontWeight: "bold",
+    fill: ["#000000", "#DE8526"], // gradient
+    stroke: "#ffffff",
+    strokeThickness: 5,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 440
+});
+
+export let playerDamageStyle = new PIXI.TextStyle({
+    fontFamily: "Arial",
+    fontSize: 20,
+    fontWeight: "bold",
+    fill: ["#000000", "#DE8526"], // gradient
+    stroke: "#ffffff",
+    strokeThickness: 5,
+    dropShadow: true,
+    dropShadowColor: "#000000",
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 440
 });
