@@ -37,7 +37,9 @@ import {
     activeNextStyle,
     reselectStyle,
     activeReselectStyle,
-    playAgainStyle
+    playAgainStyle,
+    damageStyle,
+    playerDamageStyle
 } from "./fonts-script";
 
 
@@ -50,18 +52,16 @@ import {
         - Not as big of a problem now that players can't hold to shoot
     - Finicky places in the corners of the stage
     - Sometimes can't jump after walking off stage***
+    - Game gets slower with ever ENTER reset
 */
 
 /* OTHER THINGS TO DO IF TIME ALLOWS
     - Different colored magic blast sprites either between p1 and p2 or for each character
     - Multiply lives + respawning
     - Sound effects!
-    - Damage system + hit back further if more damaged
-        - Idea
-            - Damage property in Player class
-            - Hit(Left/Right) functions take in player and change player.sprite.x by +/- (constant + amount of increase * damage taken)
-            - Would have to increase damage property's value each time a unit was hit by a magic blast
-        - Healing items/other item spawns
+    - Sidestep
+    - Blocking
+    - Healing items/other item spawns
     - Nicer title screen
     - Make the "press ENTER" text less ugly
     - Characters who look farther back should appear farther back
@@ -123,10 +123,32 @@ class Player {
     startY: number = 205;
     vel: number = 0;
     jumpCount: number = 0;
+    damage: number = 0;
 }
 
 let p1 = new Player();
 let p2 = new Player();
+
+// DAMAGE DISPLAY
+let damageToString = (player: Player): string => player.damage + "";
+
+let previousP1Damage = 0;
+let previousP2Damage = 0;
+
+let p1DamageDisplay = new PIXI.Text(damageToString(p1), damageStyle);
+p1DamageDisplay.x = 300;
+p1DamageDisplay.y = 440;
+
+let p2DamageDisplay = new PIXI.Text(damageToString(p2), damageStyle);
+p2DamageDisplay.x = 630;
+p2DamageDisplay.y = 440;
+
+let p1Name = new PIXI.Text("Player One", playerDamageStyle);
+p1Name.x = 185;
+p1Name.y = 447;
+let p2Name = new PIXI.Text("Player Two", playerDamageStyle);
+p2Name.x = 515;
+p2Name.y = 447;
 
 // START SCREEN
 let startScreen: Sprite = Sprite.fromImage("./Start_Screen.png");
@@ -139,6 +161,7 @@ startMessage.x = 460;
 startMessage.y = 375;
 app.stage.addChild(startMessage);
 
+// LIMIT EVENT LISTENERS
 let onHowTo = false;
 let choosing = false;
 let isPlaying = false;
@@ -871,12 +894,12 @@ let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
 };
 
-let hitRight = (unit: Sprite): void => {
-    unit.x += 60;
+let hitRight = (player: Player): void => {
+    player.sprite.x += 30 + (player.damage * 5);
 };
 
-let hitLeft = (unit: Sprite): void => {
-    unit.x -= 60;
+let hitLeft = (player: Player): void => {
+    player.sprite.x -= 30 + (player.damage * 5);
 };
 
 class Game {
@@ -911,6 +934,11 @@ class Game {
 
         app.stage.addChild(p1.sprite);
         app.stage.addChild(p2.sprite);
+
+        app.stage.addChild(p1DamageDisplay);
+        app.stage.addChild(p2DamageDisplay);
+        app.stage.addChild(p1Name);
+        app.stage.addChild(p2Name);
 
         // PLAYER ONE MOVE CONTROLS
         window.addEventListener("keydown", (e: KeyboardEvent): void  => {
@@ -1085,6 +1113,8 @@ class Game {
 
                 if (this.gameOver) {
                     isPlaying = false;
+                    p1.damage = 0;
+                    p2.damage = 0;
                     if (isOutOfBounds(p1.sprite)) {
                         this.winner = p2;
                     } else if (isOutOfBounds(p2.sprite)) {
@@ -1116,7 +1146,7 @@ class Game {
                         if (!isPlaying && e.keyCode === REPLAY) {
                             app.stage.removeChild(p1.sprite);
                             app.stage.removeChild(p2.sprite);
-                            app.stage.removeChild(this.gameBG);
+
                             app.stage.removeChild(playAgain);
                             app.stage.removeChild(orRefresh);
 
@@ -1149,10 +1179,12 @@ class Game {
                     let magic: Magic = magicArr[i];
                     magic.sprite.x += (2 * magic.direction);
                     if (isColliding(p2.sprite, magic.sprite)) {
+                        previousP2Damage = p2.damage;
+                        p2.damage += 2;
                         if (magic.direction >= 0) { 
-                        hitRight(p2.sprite);
+                        hitRight(p2);
                         } else {
-                            hitLeft(p2.sprite);
+                            hitLeft(p2);
                         }
                         app.stage.removeChild(magicArr[i].sprite);
                         magicArr.splice(i, 1);
@@ -1166,10 +1198,12 @@ class Game {
                     let magicTwo: Magic = magicArrTwo[i];
                     magicTwo.sprite.x += (2 * magicTwo.direction);
                     if (isColliding(p1.sprite, magicTwo.sprite)) {
+                        previousP1Damage = p1.damage;
+                        p1.damage += 2;
                         if (magicTwo.direction >= 0) {
-                        hitRight(p1.sprite);
+                        hitRight(p1);
                         } else {
-                            hitLeft(p1.sprite);
+                            hitLeft(p1);
                         }
                         app.stage.removeChild(magicArrTwo[i].sprite);
                         magicArrTwo.splice(i, 1);
@@ -1178,6 +1212,23 @@ class Game {
                         magicArrTwo.splice(i, 1);
                     }
                 }
+
+                // DAMAGE DISPLAY
+                if (!(p1.damage === previousP1Damage)) {
+                    app.stage.removeChild(p1DamageDisplay);
+                    p1DamageDisplay = new PIXI.Text(damageToString(p1), damageStyle);
+                    p1DamageDisplay.x = 300;
+                    p1DamageDisplay.y = 440;
+                    app.stage.addChild(p1DamageDisplay);
+                    }
+
+                if (!(p2.damage === previousP2Damage)) {
+                    app.stage.removeChild(p2DamageDisplay);
+                    p2DamageDisplay = new PIXI.Text(damageToString(p2), damageStyle);
+                    p2DamageDisplay.x = 630;
+                    p2DamageDisplay.y = 440;
+                    app.stage.addChild(p2DamageDisplay);
+                    }
 
                 // PLAYER ONE MOVING
                 p1.sprite.x += (this.A + this.D) * speed;
