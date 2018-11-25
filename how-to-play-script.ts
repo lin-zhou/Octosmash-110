@@ -91,10 +91,15 @@ r.x = 37;
 r.y = 251;
 app.stage.addChild(r);
 
-const p1Sidestep = new PIXI.Text("Sidestep with the R key.", howToStyle);
+const p1Sidestep = new PIXI.Text("Press R while moving to sidestep", howToStyle);
 p1Sidestep.x = 81;
-p1Sidestep.y = 255;
+p1Sidestep.y = 248;
 app.stage.addChild(p1Sidestep);
+
+const p1Block = new PIXI.Text("or while stationary to shield.", howToStyle);
+p1Block.x = 81;
+p1Block.y = 267;
+app.stage.addChild(p1Block);
 
 const comma: Sprite = Sprite.fromImage("./Comma_Key.png");
 comma.scale.x = .065;
@@ -103,10 +108,15 @@ comma.x = 456;
 comma.y = 250;
 app.stage.addChild(comma);
 
-const p2Sidestep = new PIXI.Text("Sidestep with the comma key.", howToStyle);
+const p2Sidestep = new PIXI.Text("Press the comma while moving to sidestep", howToStyle);
 p2Sidestep.x = 500;
-p2Sidestep.y = 255;
+p2Sidestep.y = 248;
 app.stage.addChild(p2Sidestep);
+
+const p2Block = new PIXI.Text("or while stationary to shield.", howToStyle);
+p2Block.x = 500;
+p2Block.y = 267;
+app.stage.addChild(p2Block);
 
 const explanation0 = new PIXI.Text("Each player can only have four projectiles on screen at once.", howToStyle);
 explanation0.x = 182;
