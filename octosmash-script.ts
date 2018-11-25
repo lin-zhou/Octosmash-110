@@ -30,6 +30,7 @@ import {
     style,
     gameTextStyle,
     howToTitleStyle,
+    howToSubStyle,
     howToStyle,
     selectStyle,
     nameStyle,
@@ -51,24 +52,24 @@ import {
     - Only one player can shoot at a time
         - Not as big of a problem now that players can't hold to shoot
     - Finicky places in the corners of the stage
-    - Sometimes can't jump after walking off stage***
-    - Game gets slower with ever ENTER reset
+    - Sometimes can't jump after walking off stage
+    - Game gets slower with every ENTER reset
 */
 
 /* OTHER THINGS TO DO IF TIME ALLOWS
     - Different colored magic blast sprites either between p1 and p2 or for each character
     - Multiply lives + respawning
     - Sound effects!
-    - Sidestep
     - Blocking
+        - Can put on same key for sidestep, only for not moving or shooting
     - Healing items/other item spawns
     - Nicer title screen
     - Make the "press ENTER" text less ugly
     - Characters who look farther back should appear farther back
         - Low priority
         - Idea
-            - Degree of forwardness (give this a different name) property in player class
-            - If statements that assign a value for degree of forwardness based on what sprite the player has
+            - howForward property in player class
+            - If statements that assign a value (0-7) for howForward based on what sprite the player has
                 - Can do this during character selection
                 - Higher degree of forwardness = more front-appearing
             - If (p1.degreeOfForwardness < p2.degreeOfForwardness), render p1's sprite before p2's
@@ -140,14 +141,14 @@ p1DamageDisplay.x = 300;
 p1DamageDisplay.y = 440;
 
 let p2DamageDisplay = new PIXI.Text(damageToString(p2), damageStyle);
-p2DamageDisplay.x = 630;
+p2DamageDisplay.x = 650;
 p2DamageDisplay.y = 440;
 
 let p1Name = new PIXI.Text("Player One", playerDamageStyle);
 p1Name.x = 185;
 p1Name.y = 447;
 let p2Name = new PIXI.Text("Player Two", playerDamageStyle);
-p2Name.x = 515;
+p2Name.x = 535;
 p2Name.y = 447;
 
 // START SCREEN
@@ -165,6 +166,10 @@ app.stage.addChild(startMessage);
 let onHowTo = false;
 let choosing = false;
 let isPlaying = false;
+let p1MovingLeft = false;
+let p1MovingRight = false;
+let p2MovingLeft = false;
+let p2MovingRight = false;
 
 // HOW TO PLAY SCREEN
 window.addEventListener("click", (e: MouseEvent): void  => {
@@ -187,76 +192,110 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         app.stage.addChild(black);
 
         const howTo = new PIXI.Text("> HOW TO PLAY <", howToTitleStyle);
-        howTo.x = 310;
+        howTo.x = 305;
         howTo.y = 25;
         app.stage.addChild(howTo);
+
+        const playerOne = new PIXI.Text("PLAYER ONE", howToSubStyle);
+        playerOne.x = 143;
+        playerOne.y = 80;
+        app.stage.addChild(playerOne);
+
+        const playerTwo = new PIXI.Text("PLAYER TWO", howToSubStyle);
+        playerTwo.x = 590;
+        playerTwo.y = 80;
+        app.stage.addChild(playerTwo);
 
         const WASD: Sprite = Sprite.fromImage("./WASD.png");
         WASD.scale.x = .1;
         WASD.scale.y = .1;
         WASD.x = 22;
-        WASD.y = 110;
+        WASD.y = 115;
         app.stage.addChild(WASD);
 
         const p1Move = new PIXI.Text("Player One moves with WASD.", howToStyle);
         p1Move.x = 110;
-        p1Move.y = 115;
+        p1Move.y = 120;
         app.stage.addChild(p1Move);
 
         const arrowKeys: Sprite = Sprite.fromImage("./Arrow_Keys.png");
         arrowKeys.scale.x = .3;
         arrowKeys.scale.y = .3;
         arrowKeys.x = 450;
-        arrowKeys.y = 112;
+        arrowKeys.y = 117;
         app.stage.addChild(arrowKeys);
 
         const p2Move = new PIXI.Text("Player Two moves with arrow keys.", howToStyle);
         p2Move.x = 525;
-        p2Move.y = 115;
+        p2Move.y = 120;
         app.stage.addChild(p2Move);
 
         const threeKey: Sprite = Sprite.fromImage("./3_Key.png");
         threeKey.x = 37;
-        threeKey.y = 200;
+        threeKey.y = 195;
         app.stage.addChild(threeKey);
 
-        const p1Attack = new PIXI.Text("Player One attacks using the 3 key.", howToStyle);
+        const p1Attack = new PIXI.Text("Use the 3 key to shoot projectiles.", howToStyle);
         p1Attack.x = 76;
-        p1Attack.y = 205;
+        p1Attack.y = 200;
         app.stage.addChild(p1Attack);
 
-        const backslash: Sprite = Sprite.fromImage("./Backslash_Key.png");
-        backslash.scale.x = .19;
-        backslash.scale.y = .19;
-        backslash.x = 450;
-        backslash.y = 197;
-        app.stage.addChild(backslash);
+        const slash: Sprite = Sprite.fromImage("./Backslash_Key.png");
+        slash.scale.x = .19;
+        slash.scale.y = .19;
+        slash.x = 450;
+        slash.y = 192;
+        app.stage.addChild(slash);
 
-        const p2Attack = new PIXI.Text("Player Two attacks with the backslash key.", howToStyle);
+        const p2Attack = new PIXI.Text("Use the forward slash to shoot projectiles.", howToStyle);
         p2Attack.x = 495;
-        p2Attack.y = 205;
+        p2Attack.y = 200;
         app.stage.addChild(p2Attack);
+
+        const r: Sprite = Sprite.fromImage("./R_Key.png");
+        r.scale.x = .07;
+        r.scale.y = .07;
+        r.x = 37;
+        r.y = 251;
+        app.stage.addChild(r);
+
+        const p1Sidestep = new PIXI.Text("Sidestep with the R key.", howToStyle);
+        p1Sidestep.x = 81;
+        p1Sidestep.y = 255;
+        app.stage.addChild(p1Sidestep);
+
+        const comma: Sprite = Sprite.fromImage("./Comma_Key.png");
+        comma.scale.x = .065;
+        comma.scale.y = .065;
+        comma.x = 456;
+        comma.y = 250;
+        app.stage.addChild(comma);
+
+        const p2Sidestep = new PIXI.Text("Sidestep with the comma key.", howToStyle);
+        p2Sidestep.x = 500;
+        p2Sidestep.y = 255;
+        app.stage.addChild(p2Sidestep);
 
         const explanation0 = new PIXI.Text("Each player can only have four projectiles on screen at once.", howToStyle);
         explanation0.x = 182;
-        explanation0.y = 285;
+        explanation0.y = 315;
         app.stage.addChild(explanation0);
 
         const explanation1 = new PIXI.Text("Knock your opponent off the screen to win.", howToStyle);
         explanation1.x = 252;
-        explanation1.y = 312;
+        explanation1.y = 342;
         app.stage.addChild(explanation1);
 
         const pressToStart = new PIXI.Text("PRESS                                                   TO PLAY", howToTitleStyle);
         pressToStart.x = 134;
-        pressToStart.y = 390;
+        pressToStart.y = 405;
         app.stage.addChild(pressToStart);
 
         const spacebar: Sprite = Sprite.fromImage("./Space_Bar.png");
         spacebar.scale.x = .9;
         spacebar.scale.y = .9;
         spacebar.x = 235;
-        spacebar.y = 373;
+        spacebar.y = 388;
         app.stage.addChild(spacebar);
 
         window.addEventListener("keydown", (e: KeyboardEvent): void  => {
@@ -274,8 +313,12 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 app.stage.removeChild(pressToStart);
                 app.stage.removeChild(explanation1);
                 app.stage.removeChild(explanation0);
+                app.stage.removeChild(p2Sidestep);
+                app.stage.removeChild(comma);
+                app.stage.removeChild(p1Sidestep);
+                app.stage.removeChild(r);
                 app.stage.removeChild(p2Attack);
-                app.stage.removeChild(backslash);
+                app.stage.removeChild(slash);
                 app.stage.removeChild(p1Attack);
                 app.stage.removeChild(threeKey);
                 app.stage.removeChild(p2Move);
@@ -865,6 +908,14 @@ let canJump = (player: Player): boolean => {
     return false;
 };
 
+let sideStepLeft = (player: Player): void => {
+    player.sprite.x -= 30;
+};
+
+let sideStepRight = (player: Player): void => {
+    player.sprite.x += 30;
+};
+
 // GENERAL RESET FUNCTIONS
 let resetY = (unit: Sprite): void => {
     unit.y = 205;
@@ -948,34 +999,59 @@ class Game {
             const RIGHT: number = 68;
             const DOWN: number = 83;
             const ATTACK: number = 51;
+            const SIDESTEP: number = 82;
 
             if (e.keyCode === LEFT) {
+                p1MovingLeft = true;
                 this.A = -1;
                 if (p1.sprite.scale.x < 0) {
                     p1.sprite.scale.x *= -1;
                     p1.sprite.x -= 65;
                 }
+                window.addEventListener("keydown", (e: KeyboardEvent): void => {
+                    if (grounded(p1.sprite) && p1MovingLeft && !p1MovingRight && !(this.lastKey1 === SIDESTEP) && e.keyCode === SIDESTEP) {
+                        sideStepLeft(p1);
+                        this.lastKey1 = SIDESTEP;
+                    }
+                },                      false);
+                window.addEventListener("keyup", (e: KeyboardEvent): void => {
+                    if (e.keyCode === SIDESTEP) {
+                        this.lastKey1 = 0;
+                    }
+                },                      false);
             } else if (e.keyCode === UP) {
                 this.W = -1;
-                if (!(this.lastKey1 === 87)) {
+                if (!(this.lastKey1 === UP)) {
                     if (canJump(p1)) {
                         p1.vel = -4;
                         p1.jumpCount++;
                     }
-                    this.lastKey1 = 87;
+                    this.lastKey1 = UP;
                 }
             } else if (e.keyCode === RIGHT) {
+                p1MovingRight = true;
                 this.D = 1;
                 if (p1.sprite.scale.x >= 0) {
                     p1.sprite.scale.x *= -1;
                     p1.sprite.x += 65;
                 }
+                window.addEventListener("keydown", (e: KeyboardEvent): void => {
+                    if (grounded(p1.sprite) && p1MovingRight && !p1MovingLeft && !(this.lastKey1 === SIDESTEP) && e.keyCode === SIDESTEP) {
+                        sideStepRight(p1);
+                        this.lastKey1 = SIDESTEP;
+                    }
+                },                      false);
+                window.addEventListener("keyup", (e: KeyboardEvent): void => {
+                    if (e.keyCode === SIDESTEP) {
+                        this.lastKey1 = 0;
+                    }
+                },                      false);
             } else if (e.keyCode === DOWN) {
                 if (!grounded(p1.sprite)) {
                     this.S = 1;
                 }
             } else if (e.keyCode === ATTACK) {
-                if (!(this.lastKey1 === 51)) {
+                if (!(this.lastKey1 === ATTACK)) {
                     if (magicArr.length < 4) {
                         let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
                         let magic: Magic = new Magic(sprite);
@@ -990,7 +1066,7 @@ class Game {
                         magicArr.push(magic);
                         app.stage.addChild(magic.sprite);
                     }
-                    this.lastKey1 = 51;
+                    this.lastKey1 = ATTACK;
                 }
             }
         },                      false);
@@ -1003,14 +1079,19 @@ class Game {
             const DOWN: number = 83;
             const ATTACK: number = 51;
             if (e.keyCode === LEFT) {
+                p1MovingLeft = false;
                 this.A = 0;
+                this.lastKey1 = 0;
             } else if (e.keyCode === UP) {
                 this.W = 0;
                 this.lastKey1 = 0;
             } else if (e.keyCode === RIGHT) {
+                p1MovingRight = false;
                 this.D = 0;
+                this.lastKey1 = 0;
             } else if (e.keyCode === DOWN) {
                 this.S = 0;
+                this.lastKey1 = 0;
             } else if (e.keyCode === ATTACK) {
                 this.lastKey1 = 0;
             }
@@ -1023,34 +1104,59 @@ class Game {
             const RIGHT: number = 39;
             const DOWN: number = 40;
             const ATTACK: number = 191;
+            const SIDESTEP: number = 188;
 
             if (e.keyCode === LEFT) {
+                p2MovingLeft = true;
                 this.left = -1;
                 if (p2.sprite.scale.x < 0) {
                     p2.sprite.scale.x *= -1;
                     p2.sprite.x -= 65;
                 }
+                window.addEventListener("keydown", (e: KeyboardEvent): void => {
+                    if (grounded(p2.sprite) && p2MovingLeft && !p2MovingRight && !(this.lastKey2 === SIDESTEP) && e.keyCode === SIDESTEP) {
+                        sideStepLeft(p2);
+                        this.lastKey2 = SIDESTEP;
+                    }
+                },                      false);
+                window.addEventListener("keyup", (e: KeyboardEvent): void => {
+                    if (e.keyCode === SIDESTEP) {
+                        this.lastKey2 = 0;
+                    }
+                },                      false);
             } else if (e.keyCode === UP) {
                 this.up = -1;
-                if (!(this.lastKey2 === 38)) {
+                if (!(this.lastKey2 === UP)) {
                     if (canJump(p2)) {
                         p2.vel = -4;
                         p2.jumpCount++;
                     }
-                    this.lastKey2 = 38;
+                    this.lastKey2 = UP;
                 }
             } else if (e.keyCode === RIGHT) {
+                p2MovingRight = true;
                 this.right = 1;
                 if (p2.sprite.scale.x >= 0) {
                     p2.sprite.scale.x *= -1;
                     p2.sprite.x += 65;
                 }
+                window.addEventListener("keydown", (e: KeyboardEvent): void => {
+                    if (grounded(p2.sprite) && p2MovingRight && !p2MovingLeft && !(this.lastKey2 === SIDESTEP) && e.keyCode === SIDESTEP) {
+                        sideStepRight(p2);
+                        this.lastKey2 = SIDESTEP;
+                    }
+                },                      false);
+                window.addEventListener("keyup", (e: KeyboardEvent): void => {
+                    if (e.keyCode === SIDESTEP) {
+                        this.lastKey2 = 0;
+                    }
+                },                      false);
             } else if (e.keyCode === DOWN) {
                 if (!grounded(p2.sprite)) {
                     this.down = 1;
                 }
             } else if (e.keyCode === ATTACK) {
-                if (!(this.lastKey2 === 191)) {
+                if (!(this.lastKey2 === ATTACK)) {
                     if (magicArrTwo.length < 4) {
                         let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
                         let magicTwo: Magic = new Magic(sprite);
@@ -1065,7 +1171,7 @@ class Game {
                         magicArrTwo.push(magicTwo);
                         app.stage.addChild(magicTwo.sprite);
                     }
-                    this.lastKey2 = 191;
+                    this.lastKey2 = ATTACK;
                 }
             }
         },                      false);
@@ -1078,15 +1184,21 @@ class Game {
             const RIGHT: number = 39;
             const DOWN: number = 40;
             const ATTACK: number = 191;
+
             if (e.keyCode === LEFT) {
+                p2MovingLeft = false;
                 this.left = 0;
+                this.lastKey2 = 0;
             } else if (e.keyCode === UP) {
                 this.up = 0;
                 this.lastKey2 = 0;
             } else if (e.keyCode === RIGHT) {
+                p2MovingRight = false;
                 this.right = 0;
+                this.lastKey2 = 0;
             } else if (e.keyCode === DOWN) {
                 this.down = 0;
+                this.lastKey2 = 0;
             } else if (e.keyCode === ATTACK) {
                 this.lastKey2 = 0;
             }
@@ -1180,7 +1292,9 @@ class Game {
                     magic.sprite.x += (2 * magic.direction);
                     if (isColliding(p2.sprite, magic.sprite)) {
                         previousP2Damage = p2.damage;
-                        p2.damage += 2;
+                        if (p2.damage <= 999) {
+                            p2.damage += 2;
+                        }
                         if (magic.direction >= 0) { 
                         hitRight(p2);
                         } else {
@@ -1199,7 +1313,9 @@ class Game {
                     magicTwo.sprite.x += (2 * magicTwo.direction);
                     if (isColliding(p1.sprite, magicTwo.sprite)) {
                         previousP1Damage = p1.damage;
-                        p1.damage += 2;
+                        if (p1.damage <= 999) {
+                            p1.damage += 2;
+                        }
                         if (magicTwo.direction >= 0) {
                         hitRight(p1);
                         } else {
@@ -1225,7 +1341,7 @@ class Game {
                 if (!(p2.damage === previousP2Damage)) {
                     app.stage.removeChild(p2DamageDisplay);
                     p2DamageDisplay = new PIXI.Text(damageToString(p2), damageStyle);
-                    p2DamageDisplay.x = 630;
+                    p2DamageDisplay.x = 650;
                     p2DamageDisplay.y = 440;
                     app.stage.addChild(p2DamageDisplay);
                     }
