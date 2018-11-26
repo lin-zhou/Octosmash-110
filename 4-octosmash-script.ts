@@ -55,6 +55,7 @@ import {
     - Sometimes can't jump after walking off stage
     - Game gets slower with every ENTER reset
     - Sometimes moves super fast after shielding or sidestepping
+    - Display damage on reset***
 */
 
 /* OTHER THINGS TO DO IF TIME ALLOWS
@@ -1366,10 +1367,19 @@ class Game {
                             app.stage.removeChild(playAgain);
                             app.stage.removeChild(orRefresh);
 
+                            app.stage.removeChild(p1DamageDisplay);
+                            app.stage.removeChild(p2DamageDisplay);
+                            app.stage.removeChild(p1Name);
+                            app.stage.removeChild(p2Name);
+
                             this.gameOver = false;
                             this.winnerExists = false;
 
                             app.stage.addChild(this.gameBG);
+                            app.stage.addChild(p1DamageDisplay);
+                            app.stage.addChild(p2DamageDisplay);
+                            app.stage.addChild(p1Name);
+                            app.stage.addChild(p2Name);
 
                             p1.sprite.x = p1.startX;
                             p1.sprite.y = p1.startY;
