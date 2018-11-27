@@ -54,6 +54,7 @@ import {
     - Finicky places in the corners of the stage
     - Sometimes can't jump after walking off stage
     - Game gets slower with every ENTER reset
+        - Remove all old objects
     - Sometimes moves super fast after shielding or sidestepping
     - Display damage on reset***
 */
@@ -65,7 +66,7 @@ import {
     - Shielding System
         - Shield can only take x number of hits
             - Cooldown = x number of hits must be taken by the player maybe
-        - Shield should disappear when falling
+        - Maybe make shield a property in player class
     - Healing items/other item spawns
     - Nicer title screen
     - Make the "press ENTER" text less ugly
@@ -88,7 +89,7 @@ document.body.appendChild(app.view);
 const acc: number = 0.08;
 const speed: number = 1.5;
 
-// For some reason, we can't loop without this. Maybe try to get rid of it somehow?
+// LOOPS IN THE TICKER
 class Looper {
     sprite: Sprite;
     constructor(sprite: Sprite) {
@@ -1094,7 +1095,7 @@ class Game {
                     }
                     this.lastKey1 = ATTACK;
                 }
-            } else if (!moving(p1) && !p1.shooting && e.keyCode === SIDESTEP) {
+            } else if (grounded(p1.sprite) && !moving(p1) && !p1.shooting && e.keyCode === SIDESTEP) {
                 p1.shieldUp = true;
                 if (facingLeft(p1.sprite)) {
                     if (p1Shield.scale.x < 0) {
@@ -1242,7 +1243,7 @@ class Game {
                     }
                     this.lastKey2 = ATTACK;
                 }
-            } else if (!moving(p2) && !p2.shooting && e.keyCode === SIDESTEP) {
+            } else if (grounded(p2.sprite) && !moving(p2) && !p2.shooting && e.keyCode === SIDESTEP) {
                 p2.shieldUp = true;
                 if (facingLeft(p2.sprite)) {
                     if (p2Shield.scale.x < 0) {
@@ -1405,11 +1406,11 @@ class Game {
 
                 }
 
-                if (moving(p1) || p1.shooting) {
+                if (moving(p1) || p1.shooting || !grounded(p1.sprite)) {
                     p1.shieldUp = false;
                     app.stage.removeChild(p1Shield);
                 }
-                if (moving(p2) || p2.shooting) {
+                if (moving(p2) || p2.shooting || !grounded(p2.sprite)) {
                     p2.shieldUp = false;
                     app.stage.removeChild(p2Shield);
                 }
