@@ -62,8 +62,10 @@ import {
     - Different colored magic blast sprites either between p1 and p2 or for each character
     - Multiple lives + respawning
     - Sound effects!
-    - Blocking
-        - Can put on same key for sidestep, only for not moving or shooting
+    - Shielding System
+        - Shield can only take x number of hits
+            - Cooldown = x number of hits must be taken by the player maybe
+        - Shield should disappear when falling
     - Healing items/other item spawns
     - Nicer title screen
     - Make the "press ENTER" text less ugly
@@ -127,6 +129,10 @@ class Player {
     vel: number = 0;
     jumpCount: number = 0;
     damage: number = 0;
+    shieldUp: boolean = false;
+    movingLeft: boolean = false;
+    movingRight: boolean = false;
+    shooting: boolean = false;
 }
 
 let p1 = new Player();
@@ -135,11 +141,11 @@ let p2 = new Player();
 let p1Shield: Sprite = Sprite.fromImage("./Red_Shield.png");
 p1Shield.scale.x = .2;
 p1Shield.scale.y = .2;
-p1Shield.alpha = .75;
+p1Shield.alpha = .6;
 let p2Shield: Sprite = Sprite.fromImage("./Blue_Shield.png");
 p2Shield.scale.x = .2;
 p2Shield.scale.y = .2;
-p2Shield.alpha = .75;
+p2Shield.alpha = .6;
 
 // DAMAGE DISPLAY
 let damageToString = (player: Player): string => player.damage + "";
@@ -177,12 +183,6 @@ app.stage.addChild(startMessage);
 let onHowTo = false;
 let choosing = false;
 let isPlaying = false;
-let p1MovingLeft = false;
-let p1MovingRight = false;
-let p2MovingLeft = false;
-let p2MovingRight = false;
-let shieldUp1 = false;
-let shieldUp2 = false;
 
 // HOW TO PLAY SCREEN
 window.addEventListener("click", (e: MouseEvent): void  => {
@@ -887,8 +887,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
 
 
 // HELPER FUNCTIONS
-let p1Moving = () => p1MovingLeft || p1MovingRight;
-let p2Moving = () => p2MovingLeft || p2MovingRight;
+let moving = (p: Player) => p.movingLeft || p.movingRight;
 
 let isOutOfBounds = (unit: Sprite): boolean => {
     return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
@@ -1028,14 +1027,14 @@ class Game {
             const SIDESTEP: number = 82;
 
             if (e.keyCode === LEFT) {
-                p1MovingLeft = true;
+                p1.movingLeft = true;
                 this.A = -1;
                 if (p1.sprite.scale.x < 0) {
                     p1.sprite.scale.x *= -1;
                     p1.sprite.x -= 65;
                 }
                 window.addEventListener("keydown", (e: KeyboardEvent): void => {
-                    if (grounded(p1.sprite) && p1MovingLeft && !p1MovingRight && !(this.lastKey1 === SIDESTEP) && e.keyCode === SIDESTEP) {
+                    if (grounded(p1.sprite) && p1.movingLeft && !p1.movingRight && !(this.lastKey1 === SIDESTEP) && e.keyCode === SIDESTEP) {
                         sideStepLeft(p1);
                         this.lastKey1 = SIDESTEP;
                     }
@@ -1055,14 +1054,14 @@ class Game {
                     this.lastKey1 = UP;
                 }
             } else if (e.keyCode === RIGHT) {
-                p1MovingRight = true;
+                p1.movingRight = true;
                 this.D = 1;
                 if (p1.sprite.scale.x >= 0) {
                     p1.sprite.scale.x *= -1;
                     p1.sprite.x += 65;
                 }
                 window.addEventListener("keydown", (e: KeyboardEvent): void => {
-                    if (grounded(p1.sprite) && p1MovingRight && !p1MovingLeft && !(this.lastKey1 === SIDESTEP) && e.keyCode === SIDESTEP) {
+                    if (grounded(p1.sprite) && p1.movingRight && !p1.movingLeft && !(this.lastKey1 === SIDESTEP) && e.keyCode === SIDESTEP) {
                         sideStepRight(p1);
                         this.lastKey1 = SIDESTEP;
                     }
@@ -1077,6 +1076,7 @@ class Game {
                     this.S = 1;
                 }
             } else if (e.keyCode === ATTACK) {
+                p1.shooting = true;
                 if (!(this.lastKey1 === ATTACK)) {
                     if (magicArr.length < 4) {
                         let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
@@ -1094,8 +1094,8 @@ class Game {
                     }
                     this.lastKey1 = ATTACK;
                 }
-            } else if (!p1Moving() && e.keyCode === SIDESTEP) {
-                shieldUp1 = true;
+            } else if (!moving(p1) && !p1.shooting && e.keyCode === SIDESTEP) {
+                p1.shieldUp = true;
                 if (facingLeft(p1.sprite)) {
                     if (p1Shield.scale.x < 0) {
                         p1Shield.scale.x *= -1;
@@ -1108,6 +1108,7 @@ class Game {
                     p1Shield.x = p1.sprite.x - 3;
                     } else if (p1.sprite === alfyn1) {
                         p1Shield.x = p1.sprite.x - 15;
+                        p1Shield.y += 3;
                     } else if (p1.sprite === therion1 || p1.sprite === hannit1) {
                         p1Shield.x = p1.sprite.x - 8;
                     }
@@ -1142,24 +1143,25 @@ class Game {
             const SIDESTEP: number = 82;
 
             if (e.keyCode === LEFT) {
-                p1MovingLeft = false;
+                p1.movingLeft = false;
                 this.A = 0;
                 this.lastKey1 = 0;
             } else if (e.keyCode === UP) {
                 this.W = 0;
                 this.lastKey1 = 0;
             } else if (e.keyCode === RIGHT) {
-                p1MovingRight = false;
+                p1.movingRight = false;
                 this.D = 0;
                 this.lastKey1 = 0;
             } else if (e.keyCode === DOWN) {
                 this.S = 0;
                 this.lastKey1 = 0;
             } else if (e.keyCode === ATTACK) {
+                p1.shooting = false;
                 this.lastKey1 = 0;
-            } else if (e.keyCode === SIDESTEP && shieldUp1) {
+            } else if (e.keyCode === SIDESTEP && p1.shieldUp) {
                 app.stage.removeChild(p1Shield);
-                shieldUp1 = false;
+                p1.shieldUp = false;
             }
         },                      false);
 
@@ -1173,14 +1175,14 @@ class Game {
             const SIDESTEP: number = 188;
 
             if (e.keyCode === LEFT) {
-                p2MovingLeft = true;
+                p2.movingLeft = true;
                 this.left = -1;
                 if (p2.sprite.scale.x < 0) {
                     p2.sprite.scale.x *= -1;
                     p2.sprite.x -= 65;
                 }
                 window.addEventListener("keydown", (e: KeyboardEvent): void => {
-                    if (grounded(p2.sprite) && p2MovingLeft && !p2MovingRight && !(this.lastKey2 === SIDESTEP) && e.keyCode === SIDESTEP) {
+                    if (grounded(p2.sprite) && p2.movingLeft && !p2.movingRight && !(this.lastKey2 === SIDESTEP) && e.keyCode === SIDESTEP) {
                         sideStepLeft(p2);
                         this.lastKey2 = SIDESTEP;
                     }
@@ -1200,14 +1202,14 @@ class Game {
                     this.lastKey2 = UP;
                 }
             } else if (e.keyCode === RIGHT) {
-                p2MovingRight = true;
+                p2.movingRight = true;
                 this.right = 1;
                 if (p2.sprite.scale.x >= 0) {
                     p2.sprite.scale.x *= -1;
                     p2.sprite.x += 65;
                 }
                 window.addEventListener("keydown", (e: KeyboardEvent): void => {
-                    if (grounded(p2.sprite) && p2MovingRight && !p2MovingLeft && !(this.lastKey2 === SIDESTEP) && e.keyCode === SIDESTEP) {
+                    if (grounded(p2.sprite) && p2.movingRight && !p2.movingLeft && !(this.lastKey2 === SIDESTEP) && e.keyCode === SIDESTEP) {
                         sideStepRight(p2);
                         this.lastKey2 = SIDESTEP;
                     }
@@ -1222,6 +1224,7 @@ class Game {
                     this.down = 1;
                 }
             } else if (e.keyCode === ATTACK) {
+                p2.shooting = true;
                 if (!(this.lastKey2 === ATTACK)) {
                     if (magicArrTwo.length < 4) {
                         let sprite: Sprite = Sprite.fromImage("./Magic_Blast.png");
@@ -1239,8 +1242,8 @@ class Game {
                     }
                     this.lastKey2 = ATTACK;
                 }
-            } else if (!p1Moving() && e.keyCode === SIDESTEP) {
-                shieldUp2 = true;
+            } else if (!moving(p2) && !p2.shooting && e.keyCode === SIDESTEP) {
+                p2.shieldUp = true;
                 if (facingLeft(p2.sprite)) {
                     if (p2Shield.scale.x < 0) {
                         p2Shield.scale.x *= -1;
@@ -1253,6 +1256,7 @@ class Game {
                     p2Shield.x = p2.sprite.x - 3;
                     } else if (p2.sprite === alfyn2) {
                         p2Shield.x = p2.sprite.x - 15;
+                        p2Shield.y += 3;
                     } else if (p2.sprite === therion2 || p2.sprite === hannit2) {
                         p2Shield.x = p2.sprite.x - 8;
                     }
@@ -1288,24 +1292,25 @@ class Game {
             const SIDESTEP: number = 188;
 
             if (e.keyCode === LEFT) {
-                p2MovingLeft = false;
+                p2.movingLeft = false;
                 this.left = 0;
                 this.lastKey2 = 0;
             } else if (e.keyCode === UP) {
                 this.up = 0;
                 this.lastKey2 = 0;
             } else if (e.keyCode === RIGHT) {
-                p2MovingRight = false;
+                p2.movingRight = false;
                 this.right = 0;
                 this.lastKey2 = 0;
             } else if (e.keyCode === DOWN) {
                 this.down = 0;
                 this.lastKey2 = 0;
             } else if (e.keyCode === ATTACK) {
+                p2.shooting = false;
                 this.lastKey2 = 0;
-            } else if (e.keyCode === SIDESTEP && shieldUp2) {
+            } else if (e.keyCode === SIDESTEP && p2.shieldUp) {
                 app.stage.removeChild(p2Shield);
-                shieldUp2 = false;
+                p2.shieldUp = false;
             }
         },                      false);
 
@@ -1400,12 +1405,12 @@ class Game {
 
                 }
 
-                if (p1Moving()) {
-                    shieldUp1 = false;
+                if (moving(p1) || p1.shooting) {
+                    p1.shieldUp = false;
                     app.stage.removeChild(p1Shield);
                 }
-                if (p2Moving()) {
-                    shieldUp2 = false;
+                if (moving(p2) || p2.shooting) {
+                    p2.shieldUp = false;
                     app.stage.removeChild(p2Shield);
                 }
 
@@ -1414,7 +1419,7 @@ class Game {
                     let magic: Magic = magicArr[i];
                     magic.sprite.x += (2 * magic.direction);
                     if (isColliding(p2.sprite, magic.sprite)) {
-                        if (!shieldUp2) {
+                        if (!p2.shieldUp) {
                             previousP2Damage = p2.damage;
                             if (p2.damage <= 999) {
                                 p2.damage += 2;
@@ -1437,7 +1442,7 @@ class Game {
                     let magicTwo: Magic = magicArrTwo[i];
                     magicTwo.sprite.x += (2 * magicTwo.direction);
                     if (isColliding(p1.sprite, magicTwo.sprite)) {
-                        if (!shieldUp1) {
+                        if (!p1.shieldUp) {
                             previousP1Damage = p1.damage;
                             if (p1.damage <= 999) {
                                 p1.damage += 2;
