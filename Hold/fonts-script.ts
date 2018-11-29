@@ -1,3 +1,5 @@
+import { isTSTypeAliasDeclaration } from "babel-types";
+
 export let startStyle = new PIXI.TextStyle({
     fontFamily: "Arial",
     fontSize: 80,
@@ -16,7 +18,7 @@ export let startStyle = new PIXI.TextStyle({
 
 export let style = new PIXI.TextStyle({
     fontFamily: "Arial",
-    fontSize: 36,
+    fontSize: 40,
     fontWeight: "bold",
     fill: ["#ffffff", "#00ff99"], // gradient
     stroke: "#4a1850",
@@ -32,7 +34,7 @@ export let style = new PIXI.TextStyle({
 
 export let gameTextStyle = new PIXI.TextStyle({
     fontFamily: "Arial",
-    fontSize: 75,
+    fontSize: 90,
     fontWeight: "bold",
     fill: ["#ffffff", "#00ff99"], // gradient
     stroke: "#4a1850",
@@ -156,8 +158,9 @@ export let nameStyle = new PIXI.TextStyle({
 });
 
 export let playAgainStyle = new PIXI.TextStyle({
-    fontFamily: "Times New Roman",
-    fontSize: 20,
+    fontFamily: "Georgia, serif",
+    fontStyle: "italic",
+    fontSize: 17,
     fill: ["#ffffff"],
     stroke: "#000000",
     strokeThickness: 3,
