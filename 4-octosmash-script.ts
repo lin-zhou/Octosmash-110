@@ -1317,9 +1317,9 @@ class Game {
 
         // END GAME
         let handleWin = (gameMessage: PIXI.Text, message: PIXI.Text): void => {
-            gameMessage.x = 305;
+            gameMessage.x = 278;
             gameMessage.y = 180;
-            message.x = 292;
+            message.x = 275;
             message.y = 280;
             app.stage.addChild(gameMessage);
             app.stage.addChild(message);
