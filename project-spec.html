@@ -1,74 +1,81 @@
-Title: Octosmash 110
+<!DOCTYPE HTML>
+<html>
+    <html>
+        <h1> Title: Octosmash 110 </h1>
+    </html>
+    <h2>Link: http://apps.introcs.com/linzhou/z-hack-110/octosmash-110.html</h2>
 
-Description: Multiplayer projectile-based fighting game inspired by Super Smash Flash, using characters from Nintendo's Octopath Traveler
+<h2> Description: Multiplayer projectile-based fighting game inspired by Super Smash Flash, using characters from Nintendo's Octopath Traveler</h2>
 
-Team Members: Lindsay Zhou and Shara He
+<h2>Team Members: Lindsay Zhou and Shara He</h2>
 
-110 Programming Concepts Used:
-    - Object-oriented programming
-        - Player and magic (projectile) classes and their respective methods were used to implement game logic.
-        - The game itself is an object. One future goal is to make it so that clicking enter at the end creates a new Game and runs it.
-        - We relied heavily on properties for things that were similar in our game, like the different individual bullets and the players.
-    - Arrays
-        - Arrays were used to keep track of the projectile weapons on the screen. This allowed us to limit the number of projectiles that could exist at once.
-    - For loops
-        - We used for loops in the ticker so that the game would run continuously.
-        - For loops also helped to limit the projectiles within the arrays based on the array length.
-    - If statements
-        - We used if statements to check for many player inputs.
-            - This includes keyboard events for movement. If the input was a certain key, the player would move in the corresponding direction.
-        - If statements also determined which character sprite would render based on the players' choices.
-            - If the player clicked within a specific region on the display, the program would assign a corresponding character sprite to the player object.
+<h3>Programming Concepts Used:</h3>
+    <p>- Object-oriented programming </p>
+        <p>- Player and magic (projectile) classes and their respective methods were used to implement game logic.</p>
+        <p>- The game itself is an object. One future goal is to make it so that clicking enter at the end creates a new Game and runs it.</p>
+        <p>- We relied heavily on properties for things that were similar in our game, like the different individual bullets and the players.</p>
+    <p>- Arrays</p>
+        <p>- Arrays were used to keep track of the projectile weapons on the screen. This allowed us to limit the number of projectiles that could exist at once.</p>
+    <p>- For loops</p>
+        <p>- We used for loops in the ticker so that the game would run continuously.</p>
+        <p>- For loops also helped to limit the projectiles within the arrays based on the array length.</p>
+    <p>- If statements</p>
+        <p>- We used if statements to check for many player inputs.</p>
+            <p>- This includes keyboard events for movement. If the input was a certain key, the player would move in the corresponding direction.</p>
+        <p>- If statements also determined which character sprite would render based on the players' choices.</p>
+            <p>- If the player clicked within a specific region on the display, the program would assign a corresponding character sprite to the player object.</p>
 
-Challenges Overcome/New Concepts Learned:
-    - We learned to work with aspects of the PixiJS library.
-    - We struggled transitioning from functional to object-oriented programming, which is generally more appropriate for a video game.
-        - Many of the classes we have now still need to be adjusted for OOP.
-    - We worked with event listeners for keyboard and mouse events.
-    - This was our first experience working with HTML and CSS.
+<h3>Challenges Overcome/New Concepts Learned:</h3>
+    <p>- We learned to work with aspects of the PixiJS library.</p>
+    <p>- We struggled transitioning from functional to object-oriented programming, which is generally more appropriate for a video game.</p>
+    <p> - Many of the classes we have now still need to be adjusted for OOP.</p>
+    <p> - We worked with event listeners for keyboard and mouse events.</p>
+    <p>  - This was our first experience working with HTML and CSS.</p>
 
-Link: http://apps.introcs.com/linzhou/z-hack-110/octosmash-110.html
 
-Individual Contributions:
-    Lindsay:
-        - Start & selection screens
-        - Character sprites
-        - Double jump + gravity
-        - Shielding & sidestep
-        - Movement
-            - Reflecting sprite after turning around (+ changing sprite location to adjust visually)
-        - Damage counter + weighted knockback
-    Shara:
-        - Projectiles
-            - Collision
-            - Projectile reflection
-    Both:
-        - Boundaries for stage
-        - Movement controls
-        - Fonts & PIXI.Text
-        - Creative design & planning!
 
-Goals Achieved:
-    - Functional motion
-    - Attacking & damage
-    - Game Over state
-    - Decent visual presentation
-    - Multiple character options
+<h3>Individual Contributions:</h3>
+<h4> Lindsay:</h4>
+<p> - Start & selection screens</p>
+<p>     - Character sprites</p>
+<p>     - Double jump + gravity</p>
+<p>     - Shielding & sidestep</p>
+<p>     - Movement</p>
+<p>         - Reflecting sprite after turning around (+ changing sprite location to adjust visually)</p>
+<p>     - Damage counter + weighted knockback</p>
+<h4> Shara:</h4>
+<p>     - Projectiles</p>
+<p>         - Collision</p>
+<p>         - Projectile reflection</p>
+<p>     - Project spec HTML</p>
+<h4> Both:</h4>
+<p>     - Boundaries for stage</p>
+<p>     - Movement controls</p>
+<p>     - Fonts & PIXI.Text</p>
+<p>     - Creative design & planning!</p>
 
-Future Work:
-    - Rewriting with more OOP/simplifying code/eliminating repetitive code
-    - Allow for up to four players
-    - Multiple stages to choose from
-    - Fix finicky places in the corners of the stage
-        - Sometimes can't jump after walking off stage
-    - Call runGame() method again instead of stacking sprites on top of each other
-    - Different colored magic blast sprites either between p1 and p2 or for each character
-    - Multiple lives + respawning
-    - Sound effects!
-    - For the Shielding System
-        - Shield can only take x number of hits
-            - Cooldown = x number of hits must be taken by the player maybe
-        - Maybe make shield a property in player class
-    - Healing items/other item spawns
-    - Nicer title screen
-    - More visual refinement
+<h3>Goals Achieved:</h3>
+<p> - Functional motion</p>
+<p> - Attacking & damage</p>
+<p> - Game Over state</p>
+<p> -Decent visual presentation</p>
+<p> - Multiple character options</p>
+
+<h3>Future Work:</h3>
+<p> - Rewriting with more OOP/simplifying code/eliminating repetitive code</p>
+<p> - Allow for up to four players</p>
+<p> - Multiple stages to choose from</p>
+<p> - Fix finicky places in the corners of the stage</p>
+<p>     - Sometimes can't jump after walking off stage</p>
+<p> - Call runGame() method again instead of stacking sprites on top of each other</p>
+<p> - Different colored magic blast sprites either between p1 and p2 or for each character</p>
+<p> - Multiple lives + respawning</p>
+<p> - Sound effects!</p>
+<p> - For the Shielding System</p>
+<p>     - Shield can only take x number of hits</p>
+<p>         - Cooldown = x number of hits must be taken by the player maybe</p>
+<p>    - Maybe make shield a property in player class</p>
+<p> - Healing items/other item spawns</p>
+<p> - Nicer title screen</p>
+<p> - More visual refinement</p>
+</html>
