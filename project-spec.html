@@ -1,0 +1,74 @@
+Title: Octosmash 110
+
+Description: Multiplayer projectile-based fighting game inspired by Super Smash Flash, using characters from Nintendo's Octopath Traveler
+
+Team Members: Lindsay Zhou and Shara He
+
+110 Programming Concepts Used:
+    - Object-oriented programming
+        - Player and magic (projectile) classes and their respective methods were used to implement game logic.
+        - The game itself is an object. One future goal is to make it so that clicking enter at the end creates a new Game and runs it.
+        - We relied heavily on properties for things that were similar in our game, like the different individual bullets and the players.
+    - Arrays
+        - Arrays were used to keep track of the projectile weapons on the screen. This allowed us to limit the number of projectiles that could exist at once.
+    - For loops
+        - We used for loops in the ticker so that the game would run continuously.
+        - For loops also helped to limit the projectiles within the arrays based on the array length.
+    - If statements
+        - We used if statements to check for many player inputs.
+            - This includes keyboard events for movement. If the input was a certain key, the player would move in the corresponding direction.
+        - If statements also determined which character sprite would render based on the players' choices.
+            - If the player clicked within a specific region on the display, the program would assign a corresponding character sprite to the player object.
+
+Challenges Overcome/New Concepts Learned:
+    - We learned to work with aspects of the PixiJS library.
+    - We struggled transitioning from functional to object-oriented programming, which is generally more appropriate for a video game.
+        - Many of the classes we have now still need to be adjusted for OOP.
+    - We worked with event listeners for keyboard and mouse events.
+    - This was our first experience working with HTML and CSS.
+
+Link: http://apps.introcs.com/linzhou/z-hack-110/octosmash-110.html
+
+Individual Contributions:
+    Lindsay:
+        - Start & selection screens
+        - Character sprites
+        - Double jump + gravity
+        - Shielding & sidestep
+        - Movement
+            - Reflecting sprite after turning around (+ changing sprite location to adjust visually)
+        - Damage counter + weighted knockback
+    Shara:
+        - Projectiles
+            - Collision
+            - Projectile reflection
+    Both:
+        - Boundaries for stage
+        - Movement controls
+        - Fonts & PIXI.Text
+        - Creative design & planning!
+
+Goals Achieved:
+    - Functional motion
+    - Attacking & damage
+    - Game Over state
+    - Decent visual presentation
+    - Multiple character options
+
+Future Work:
+    - Rewriting with more OOP/simplifying code/eliminating repetitive code
+    - Allow for up to four players
+    - Multiple stages to choose from
+    - Fix finicky places in the corners of the stage
+        - Sometimes can't jump after walking off stage
+    - Call runGame() method again instead of stacking sprites on top of each other
+    - Different colored magic blast sprites either between p1 and p2 or for each character
+    - Multiple lives + respawning
+    - Sound effects!
+    - For the Shielding System
+        - Shield can only take x number of hits
+            - Cooldown = x number of hits must be taken by the player maybe
+        - Maybe make shield a property in player class
+    - Healing items/other item spawns
+    - Nicer title screen
+    - More visual refinement
