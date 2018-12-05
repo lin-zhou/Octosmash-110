@@ -56,7 +56,6 @@ import {
     - Game gets slower with every ENTER reset
         - Remove all old objects
     - Sometimes moves super fast after shielding or sidestepping
-    - Display damage on reset***
 */
 
 /* OTHER THINGS TO DO IF TIME ALLOWS
