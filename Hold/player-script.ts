@@ -19,13 +19,19 @@ import {
     tressa2
 } from "./characters-script";
 
+import {
+    facingLeft,
+    facingRight
+} from "./helper-script";
+
 export class Player {
     sprite: Sprite;
     startX: number;
     startY: number = 205;
     vel: number = 0;
-    jumpCount: number = 0;
     damage: number = 0;
+    jumpCount: number = 0;
+    canJump: boolean = true;
     shieldUp: boolean = false;
     movingLeft: boolean = false;
     movingRight: boolean = false;
@@ -136,4 +142,79 @@ export class Player {
         }
     }
 
+    resetJump() {
+        this.jumpCount = 0;
+    }
+
+    useShield() {
+        if (facingLeft(this.sprite)) {
+            if (this.shield.scale.x < 0) {
+                this.shield.scale.x *= -1;
+            }
+            if (this.sprite === ophelia1 || this.sprite === tressa1 || this.sprite === primrose1 || this.sprite === ophelia2 || this.sprite === tressa2 || this.sprite === primrose2) {
+                this.shield.x = this.sprite.x - 12;
+            } else if (this.sprite === cyrus1 || this.sprite === cyrus2) {
+                this.shield.x = this.sprite.x - 2;
+            } else if (this.sprite === olberic1 || this.sprite === olberic2) {
+            this.shield.x = this.sprite.x - 3;
+            } else if (this.sprite === alfyn1 || this.sprite === alfyn2) {
+                this.shield.x = this.sprite.x - 15;
+                this.shield.y += 3;
+            } else if (this.sprite === therion1 || this.sprite === hannit1 || this.sprite === therion2 || this.sprite === hannit2) {
+                this.shield.x = this.sprite.x - 8;
+            }
+        } else if (facingRight(this.sprite)) {
+            if (this.shield.scale.x >= 0) {
+                this.shield.scale.x *= -1;
+            }
+            if (this.sprite === ophelia1 || this.sprite === tressa1 || this.sprite === primrose1 || this.sprite === ophelia2 || this.sprite === tressa2 || this.sprite === primrose2) {
+                this.shield.x = this.sprite.x + 12;
+            } else if (this.sprite === cyrus1 || this.sprite === cyrus2) {
+                this.shield.x = this.sprite.x;
+            } else if (this.sprite === olberic1 || this.sprite === olberic2) {
+                this.shield.x = this.sprite.x + 3;
+            } else if (this.sprite === alfyn1 || this.sprite === alfyn2) {
+                this.shield.x = this.sprite.x + 15;
+            } else if (this.sprite === therion1 || this.sprite === hannit1 || this.sprite === therion2 || this.sprite === hannit2) {
+                this.shield.x = this.sprite.x + 8;
+            }
+        }
+        this.shield.y = this.sprite.y - 5;
+    }
+
+    sideStepLeft() {
+        this.sprite.x -= 30;
+    }
+
+    sideStepRight() {
+        this.sprite.x += 30;
+    }
+
+    resetY() {
+        this.sprite.y = 205;
+    }
+
+    resetLowY() {
+        this.sprite.y = 295;
+    }
+
+    leftResetLeft() {
+        this.sprite.x = 62;
+    }
+
+    leftResetRight() {
+        this.sprite.x = 718;
+    }
+
+    rightResetLeft() {
+        this.sprite.x = 135;
+    }
+
+    rightResetRight() {
+        this.sprite.x = 788;
+    }
+
 }
+
+export let p1 = new Player(1);
+export let p2 = new Player(2);
