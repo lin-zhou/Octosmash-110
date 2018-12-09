@@ -25,7 +25,7 @@ import {
     tressa2
 } from "./characters-script";
 
-import { Player } from "./player-script";
+import { Player, p1, p2 } from "./player-script";
 
 import {
     startStyle,
@@ -122,11 +122,6 @@ class Magic {
 
 let magicArr: Magic[] = [];
 let magicArrTwo: Magic[] = [];
-
-// TWO PLAYER GAME
-
-let p1 = new Player(1);
-let p2 = new Player(2);
 
 // DAMAGE DISPLAY
 let damageToString = (player: Player): string => player.damage + "";
@@ -858,36 +853,6 @@ let canJump = (player: Player): boolean => {
     return false;
 };
 
-let sideStepLeft = (player: Player): void => {
-    player.sprite.x -= 30;
-};
-
-let sideStepRight = (player: Player): void => {
-    player.sprite.x += 30;
-};
-
-// GENERAL RESET FUNCTIONS
-let resetY = (unit: Sprite): void => {
-    unit.y = 205;
-};
-
-let resetLowY = (unit: Sprite): void => {
-    unit.y = 295;
-};
-
-let leftResetLeft = (unit: Sprite): void => {
-    unit.x = 62;
-};
-let leftResetRight = (unit: Sprite): void => {
-    unit.x = 718;
-};
-let rightResetLeft = (unit: Sprite): void => {
-    unit.x = 135;
-};
-let rightResetRight = (unit: Sprite): void => {
-    unit.x = 788;
-};
-
 // BATTLE FUNCTIONS
 let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
     let ab: Rectangle = a.getBounds();
@@ -960,7 +925,7 @@ class Game {
                 }
                 window.addEventListener("keydown", (e: KeyboardEvent): void => {
                     if (grounded(p1.sprite) && p1.movingLeft && !p1.movingRight && !(this.lastKey1 === SIDESTEP) && e.keyCode === SIDESTEP) {
-                        sideStepLeft(p1);
+                        p1.sideStepLeft();
                         this.lastKey1 = SIDESTEP;
                     }
                 },                      false);
@@ -987,7 +952,7 @@ class Game {
                 }
                 window.addEventListener("keydown", (e: KeyboardEvent): void => {
                     if (grounded(p1.sprite) && p1.movingRight && !p1.movingLeft && !(this.lastKey1 === SIDESTEP) && e.keyCode === SIDESTEP) {
-                        sideStepRight(p1);
+                        p1.sideStepRight();
                         this.lastKey1 = SIDESTEP;
                     }
                 },                      false);
@@ -1021,39 +986,7 @@ class Game {
                 }
             } else if (grounded(p1.sprite) && !moving(p1) && !p1.shooting && e.keyCode === SIDESTEP) {
                 p1.shieldUp = true;
-                if (facingLeft(p1.sprite)) {
-                    if (p1.shield.scale.x < 0) {
-                        p1.shield.scale.x *= -1;
-                    }
-                    if (p1.sprite === ophelia1 || p1.sprite === tressa1 || p1.sprite === primrose1) {
-                        p1.shield.x = p1.sprite.x - 12;
-                    } else if (p1.sprite === cyrus1) {
-                        p1.shield.x = p1.sprite.x - 2;
-                    } else if (p1.sprite === olberic1) {
-                    p1.shield.x = p1.sprite.x - 3;
-                    } else if (p1.sprite === alfyn1) {
-                        p1.shield.x = p1.sprite.x - 15;
-                        p1.shield.y += 3;
-                    } else if (p1.sprite === therion1 || p1.sprite === hannit1) {
-                        p1.shield.x = p1.sprite.x - 8;
-                    }
-                } else if (facingRight(p1.sprite)) {
-                    if (p1.shield.scale.x >= 0) {
-                        p1.shield.scale.x *= -1;
-                    }
-                    if (p1.sprite === ophelia1 || p1.sprite === tressa1 || p1.sprite === primrose1) {
-                        p1.shield.x = p1.sprite.x + 12;
-                    } else if (p1.sprite === cyrus1) {
-                        p1.shield.x = p1.sprite.x;
-                    } else if (p1.sprite === olberic1) {
-                        p1.shield.x = p1.sprite.x + 3;
-                    } else if (p1.sprite === alfyn1) {
-                        p1.shield.x = p1.sprite.x + 15;
-                    } else if (p1.sprite === therion1 || p1.sprite === hannit1) {
-                        p1.shield.x = p1.sprite.x + 8;
-                    }
-                }
-                p1.shield.y = p1.sprite.y - 5;
+                p1.useShield();
                 app.stage.addChild(p1.shield);
             }
         },                      false);
@@ -1108,7 +1041,7 @@ class Game {
                 }
                 window.addEventListener("keydown", (e: KeyboardEvent): void => {
                     if (grounded(p2.sprite) && p2.movingLeft && !p2.movingRight && !(this.lastKey2 === SIDESTEP) && e.keyCode === SIDESTEP) {
-                        sideStepLeft(p2);
+                        p2.sideStepLeft();
                         this.lastKey2 = SIDESTEP;
                     }
                 },                      false);
@@ -1135,7 +1068,7 @@ class Game {
                 }
                 window.addEventListener("keydown", (e: KeyboardEvent): void => {
                     if (grounded(p2.sprite) && p2.movingRight && !p2.movingLeft && !(this.lastKey2 === SIDESTEP) && e.keyCode === SIDESTEP) {
-                        sideStepRight(p2);
+                        p2.sideStepRight();
                         this.lastKey2 = SIDESTEP;
                     }
                 },                      false);
@@ -1169,39 +1102,7 @@ class Game {
                 }
             } else if (grounded(p2.sprite) && !moving(p2) && !p2.shooting && e.keyCode === SIDESTEP) {
                 p2.shieldUp = true;
-                if (facingLeft(p2.sprite)) {
-                    if (p2.shield.scale.x < 0) {
-                        p2.shield.scale.x *= -1;
-                    }
-                    if (p2.sprite === ophelia2 || p2.sprite === tressa2 || p2.sprite === primrose2) {
-                        p2.shield.x = p2.sprite.x - 12;
-                    } else if (p2.sprite === cyrus2) {
-                        p2.shield.x = p2.sprite.x - 2;
-                    } else if (p2.sprite === olberic2) {
-                    p2.shield.x = p2.sprite.x - 3;
-                    } else if (p2.sprite === alfyn2) {
-                        p2.shield.x = p2.sprite.x - 15;
-                        p2.shield.y += 3;
-                    } else if (p2.sprite === therion2 || p2.sprite === hannit2) {
-                        p2.shield.x = p2.sprite.x - 8;
-                    }
-                } else if (facingRight(p2.sprite)) {
-                    if (p2.shield.scale.x >= 0) {
-                        p2.shield.scale.x *= -1;
-                    }
-                    if (p2.sprite === ophelia2 || p2.sprite === tressa2 || p2.sprite === primrose2) {
-                        p2.shield.x = p2.sprite.x + 12;
-                    } else if (p2.sprite === cyrus2) {
-                        p2.shield.x = p2.sprite.x;
-                    } else if (p2.sprite === olberic2) {
-                        p2.shield.x = p2.sprite.x + 3;
-                    } else if (p2.sprite === alfyn2) {
-                        p2.shield.x = p2.sprite.x + 15;
-                    } else if (p2.sprite === therion2 || p2.sprite === hannit2) {
-                        p2.shield.x = p2.sprite.x + 8;
-                    }
-                }
-                p2.shield.y = p2.sprite.y - 5;
+                p2.useShield();
                 app.stage.addChild(p2.shield);
             }
         },                      false);
@@ -1410,13 +1311,10 @@ class Game {
                     p1.vel += acc;
                 } else if (grounded(p1.sprite)) {
                     p1.vel = 0;
-                    resetY(p1.sprite);
+                    p1.resetY();
                 } else if (underStage(p1.sprite)) {
                     p1.vel = 0;
-                    resetLowY(p1.sprite);
-                } else if (underStage(p1.sprite)) {
-                    p1.vel = 0;
-                    resetLowY(p1.sprite);
+                    p1.resetLowY();
                 } else {
                     p1.vel = 1;
                 }
@@ -1429,13 +1327,10 @@ class Game {
                     p2.vel += acc;
                 } else if (grounded(p2.sprite)) {
                     p2.vel = 0;
-                    resetY(p2.sprite);
+                    p2.resetY();
                 } else if (underStage(p2.sprite)) {
                     p2.vel = 0;
-                    resetLowY(p2.sprite);
-                } else if (underStage(p2.sprite)) {
-                    p2.vel = 0;
-                    resetLowY(p2.sprite);
+                    p2.resetLowY();
                 } else {
                     p2.vel = 1;
                 }
@@ -1443,47 +1338,47 @@ class Game {
 
                 // PLAYER ONE RESTRAINTS
                 if (grounded(p1.sprite)) {
-                    resetY(p1.sprite);
+                    p1.resetY();
                 }
                 if (underStage(p1.sprite)) {
-                    resetLowY(p1.sprite);
+                    p1.resetLowY();
                 }
                 if (facingLeft(p1.sprite)) {
                     if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x > 62 && p1.sprite.x <= 64)) {
-                        leftResetLeft(p1.sprite);
+                        p1.leftResetLeft();
                     }
                     if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x < 718 && p1.sprite.x >= 716)) {
-                        leftResetRight(p1.sprite);
+                        p1.leftResetRight();
                     }
                 } else {
                     if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x > 135 && p1.sprite.x <= 137)) {
-                        rightResetLeft(p1.sprite);
+                        p1.rightResetLeft();
                     }
                     if ((p1.sprite.y <= 292 && p1.sprite.y > 207) && (p1.sprite.x < 788 && p1.sprite.x >= 786)) {
-                        rightResetRight(p1.sprite);
+                        p1.rightResetRight();
                     }
                 }
 
                 // PLAYER TWO RESTRAINTS
                 if (grounded(p2.sprite)) {
-                    resetY(p2.sprite);
+                    p2.resetY();
                 }
                 if (underStage(p2.sprite)) {
-                    resetLowY(p2.sprite);
+                    p2.resetLowY();
                 }
                 if (facingLeft(p2.sprite)) {
                     if ((p2.sprite.y >= 207 && p2.sprite.y <= 292) && (p2.sprite.x > 62 && p2.sprite.x <= 64)) {
-                        leftResetLeft(p2.sprite);
+                        p2.leftResetLeft();
                     }
                     if ((p2.sprite.y >= 207 && p2.sprite.y <= 292) && (p2.sprite.x < 718 && p2.sprite.x >= 716)) {
-                        leftResetRight(p2.sprite);
+                        p2.leftResetRight();
                     }
                 } else {
                     if ((p2.sprite.y <= 292 && p2.sprite.y >= 207) && (p2.sprite.x > 135 && p2.sprite.x <= 137)) {
-                        rightResetLeft(p2.sprite);
+                        p2.rightResetLeft();
                     }
                     if ((p2.sprite.y <= 292 && p2.sprite.y >= 207) && (p2.sprite.x < 788 && p2.sprite.x >= 786)) {
-                        rightResetRight(p2.sprite);
+                        p2.rightResetRight();
                     }
                 }
             }
