@@ -25,6 +25,8 @@ import {
     tressa2
 } from "./characters-script";
 
+import { Player } from "./player-script";
+
 import {
     startStyle,
     style,
@@ -122,30 +124,9 @@ let magicArr: Magic[] = [];
 let magicArrTwo: Magic[] = [];
 
 // TWO PLAYER GAME
-class Player {
-    sprite: Sprite;
-    startX: number;
-    startY: number = 205;
-    vel: number = 0;
-    jumpCount: number = 0;
-    damage: number = 0;
-    shieldUp: boolean = false;
-    movingLeft: boolean = false;
-    movingRight: boolean = false;
-    shooting: boolean = false;
-}
 
-let p1 = new Player();
-let p2 = new Player();
-
-let p1Shield: Sprite = Sprite.fromImage("./Red_Shield.png");
-p1Shield.scale.x = .2;
-p1Shield.scale.y = .2;
-p1Shield.alpha = .6;
-let p2Shield: Sprite = Sprite.fromImage("./Blue_Shield.png");
-p2Shield.scale.x = .2;
-p2Shield.scale.y = .2;
-p2Shield.alpha = .6;
+let p1 = new Player(1);
+let p2 = new Player(2);
 
 // DAMAGE DISPLAY
 let damageToString = (player: Player): string => player.damage + "";
@@ -448,12 +429,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                 window.addEventListener("click", (e: MouseEvent): void  => {
                     if (p1choose && canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Ophelia");
-                        p1.sprite = ophelia1;
-                        p1.sprite.x = p1.startX = 210;
-                        p1.sprite.y = 205;
-                        if (p1.sprite.scale.x >= 0) {
-                            p1.sprite.scale.x *= -1;
-                        }
+                        p1.select(ophelia1);
 
                         blockBox = new Graphics();
                         blockBox.beginFill(0xffffff, 0.5);
@@ -472,12 +448,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     }
                     if (p1choose && canChoose && e.x >= 153 && e.x <= 246 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Cyrus");
-                        p1.sprite = cyrus1;
-                        p1.sprite.x = p1.startX = 225;
-                        p1.sprite.y = 205;
-                        if (p1.sprite.scale.x >= 0) {
-                            p1.sprite.scale.x *= -1;
-                        }
+                        p1.select(cyrus1);
 
                         blockBox = new Graphics();
                         blockBox.beginFill(0xffffff, 0.5);
@@ -496,12 +467,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     }
                     if (p1choose && canChoose && e.x >= 252 && e.x <= 342 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Tressa");
-                        p1.sprite = tressa1;
-                        p1.sprite.x = p1.startX = 210;
-                        p1.sprite.y = 205;
-                        if (p1.sprite.scale.x >= 0) {
-                            p1.sprite.scale.x *= -1;
-                        }
+                        p1.select(tressa1);
 
                         blockBox = new Graphics();
                         blockBox.beginFill(0xffffff, 0.5);
@@ -520,12 +486,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     }
                     if (p1choose && canChoose && e.x >= 349 && e.x <= 438 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Olberic");
-                        p1.sprite = olberic1;
-                        p1.sprite.x = p1.startX = 225;
-                        p1.sprite.y = 205;
-                        if (p1.sprite.scale.x >= 0) {
-                            p1.sprite.scale.x *= -1;
-                        }
+                        p1.select(olberic1);
 
                         blockBox = new Graphics();
                         blockBox.beginFill(0xffffff, 0.5);
@@ -544,12 +505,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     }
                     if (p1choose && canChoose && e.x >= 446 && e.x <= 536 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Primrose");
-                        p1.sprite = primrose1;
-                        p1.sprite.x = p1.startX = 210;
-                        p1.sprite.y = 205;
-                        if (p1.sprite.scale.x >= 0) {
-                            p1.sprite.scale.x *= -1;
-                        }
+                        p1.select(primrose1);
 
                         blockBox = new Graphics();
                         blockBox.beginFill(0xffffff, 0.5);
@@ -568,12 +524,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     }
                     if (p1choose && canChoose && e.x >= 544 && e.x <= 634 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Alfyn");
-                        p1.sprite = alfyn1;
-                        p1.sprite.x = p1.startX = 212;
-                        p1.sprite.y = 205;
-                        if (p1.sprite.scale.x >= 0) {
-                            p1.sprite.scale.x *= -1;
-                        }
+                        p1.select(alfyn1);
 
                         blockBox = new Graphics();
                         blockBox.beginFill(0xffffff, 0.5);
@@ -592,12 +543,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     }
                     if (p1choose && canChoose && e.x >= 642 && e.x <= 732 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Therion");
-                        p1.sprite = therion1;
-                        p1.sprite.x = p1.startX = 217;
-                        p1.sprite.y = 205;
-                        if (p1.sprite.scale.x >= 0) {
-                            p1.sprite.scale.x *= -1;
-                        }
+                        p1.select(therion1);
 
                         blockBox = new Graphics();
                         blockBox.beginFill(0xffffff, 0.5);
@@ -616,12 +562,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                     }
                     if (p1choose && canChoose && e.x >= 738 && e.x <= 828 && e.y >= 125 && e.y <= 402) {
                         console.log("P1 Chose Hannit");
-                        p1.sprite = hannit1;
-                        p1.sprite.x = p1.startX = 215;
-                        p1.sprite.y = 205;
-                        if (p1.sprite.scale.x >= 0) {
-                            p1.sprite.scale.x *= -1;
-                        }
+                        p1.select(hannit1);
 
                         blockBox = new Graphics();
                         blockBox.beginFill(0xffffff, 0.5);
@@ -690,9 +631,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                         window.addEventListener("click", (e: MouseEvent): void  => {
                             if (p2choose && canChoose && e.x >= 55 && e.x <= 145 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Ophelia");
-                                p2.sprite = ophelia2;
-                                p2.sprite.x = p2.startX = 650;
-                                p2.sprite.y = 205;
+                                p2.select(ophelia2);
 
                                 blockBox = new Graphics();
                                 blockBox.beginFill(0xffffff, 0.5);
@@ -711,9 +650,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             }
                             if (p2choose && canChoose && e.x >= 153 && e.x <= 246 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Cyrus");
-                                p2.sprite = cyrus2;
-                                p2.sprite.x = p2.startX = 637;
-                                p2.sprite.y = 205;
+                                p2.select(cyrus2);
 
                                 blockBox = new Graphics();
                                 blockBox.beginFill(0xffffff, 0.5);
@@ -732,9 +669,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             }
                             if (p2choose && canChoose && e.x >= 252 && e.x <= 342 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Tressa");
-                                p2.sprite = tressa2;
-                                p2.sprite.x = p2.startX = 655;
-                                p2.sprite.y = 205;
+                                p2.select(tressa2);
 
                                 blockBox = new Graphics();
                                 blockBox.beginFill(0xffffff, 0.5);
@@ -753,9 +688,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             }
                             if (p2choose && canChoose && e.x >= 349 && e.x <= 438 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Olberic");
-                                p2.sprite = olberic2;
-                                p2.sprite.x = p2.startX = 640;
-                                p2.sprite.y = 205;
+                                p2.select(olberic2);
 
                                 blockBox = new Graphics();
                                 blockBox.beginFill(0xffffff, 0.5);
@@ -774,9 +707,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             }
                             if (p2choose && canChoose && e.x >= 446 && e.x <= 536 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Primrose");
-                                p2.sprite = primrose2;
-                                p2.sprite.x = p2.startX = 655;
-                                p2.sprite.y = 205;
+                                p2.select(primrose2);
 
                                 blockBox = new Graphics();
                                 blockBox.beginFill(0xffffff, 0.5);
@@ -795,9 +726,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             }
                             if (p2choose && canChoose && e.x >= 544 && e.x <= 634 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Alfyn");
-                                p2.sprite = alfyn2;
-                                p2.sprite.x = p2.startX = 652;
-                                p2.sprite.y = 205;
+                                p2.select(alfyn2);
 
                                 blockBox = new Graphics();
                                 blockBox.beginFill(0xffffff, 0.5);
@@ -816,9 +745,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             }
                             if (p2choose && canChoose && e.x >= 642 && e.x <= 732 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Therion");
-                                p2.sprite = therion2;
-                                p2.sprite.x = p2.startX = 648;
-                                p2.sprite.y = 205;
+                                p2.select(therion2);
 
                                 blockBox = new Graphics();
                                 blockBox.beginFill(0xffffff, 0.5);
@@ -837,9 +764,7 @@ window.addEventListener("click", (e: MouseEvent): void  => {
                             }
                             if (p2choose && canChoose && e.x >= 738 && e.x <= 828 && e.y >= 125 && e.y <= 402) {
                                 console.log("P2 Chose Hannit");
-                                p2.sprite = hannit2;
-                                p2.sprite.x = p2.startX = 650;
-                                p2.sprite.y = 205;
+                                p2.select(hannit2);
 
                                 blockBox = new Graphics();
                                 blockBox.beginFill(0xffffff, 0.5);
@@ -1097,39 +1022,39 @@ class Game {
             } else if (grounded(p1.sprite) && !moving(p1) && !p1.shooting && e.keyCode === SIDESTEP) {
                 p1.shieldUp = true;
                 if (facingLeft(p1.sprite)) {
-                    if (p1Shield.scale.x < 0) {
-                        p1Shield.scale.x *= -1;
+                    if (p1.shield.scale.x < 0) {
+                        p1.shield.scale.x *= -1;
                     }
                     if (p1.sprite === ophelia1 || p1.sprite === tressa1 || p1.sprite === primrose1) {
-                        p1Shield.x = p1.sprite.x - 12;
+                        p1.shield.x = p1.sprite.x - 12;
                     } else if (p1.sprite === cyrus1) {
-                        p1Shield.x = p1.sprite.x - 2;
+                        p1.shield.x = p1.sprite.x - 2;
                     } else if (p1.sprite === olberic1) {
-                    p1Shield.x = p1.sprite.x - 3;
+                    p1.shield.x = p1.sprite.x - 3;
                     } else if (p1.sprite === alfyn1) {
-                        p1Shield.x = p1.sprite.x - 15;
-                        p1Shield.y += 3;
+                        p1.shield.x = p1.sprite.x - 15;
+                        p1.shield.y += 3;
                     } else if (p1.sprite === therion1 || p1.sprite === hannit1) {
-                        p1Shield.x = p1.sprite.x - 8;
+                        p1.shield.x = p1.sprite.x - 8;
                     }
                 } else if (facingRight(p1.sprite)) {
-                    if (p1Shield.scale.x >= 0) {
-                        p1Shield.scale.x *= -1;
+                    if (p1.shield.scale.x >= 0) {
+                        p1.shield.scale.x *= -1;
                     }
                     if (p1.sprite === ophelia1 || p1.sprite === tressa1 || p1.sprite === primrose1) {
-                        p1Shield.x = p1.sprite.x + 12;
+                        p1.shield.x = p1.sprite.x + 12;
                     } else if (p1.sprite === cyrus1) {
-                        p1Shield.x = p1.sprite.x;
+                        p1.shield.x = p1.sprite.x;
                     } else if (p1.sprite === olberic1) {
-                        p1Shield.x = p1.sprite.x + 3;
+                        p1.shield.x = p1.sprite.x + 3;
                     } else if (p1.sprite === alfyn1) {
-                        p1Shield.x = p1.sprite.x + 15;
+                        p1.shield.x = p1.sprite.x + 15;
                     } else if (p1.sprite === therion1 || p1.sprite === hannit1) {
-                        p1Shield.x = p1.sprite.x + 8;
+                        p1.shield.x = p1.sprite.x + 8;
                     }
                 }
-                p1Shield.y = p1.sprite.y - 5;
-                app.stage.addChild(p1Shield);
+                p1.shield.y = p1.sprite.y - 5;
+                app.stage.addChild(p1.shield);
             }
         },                      false);
 
@@ -1160,7 +1085,7 @@ class Game {
                 p1.shooting = false;
                 this.lastKey1 = 0;
             } else if (e.keyCode === SIDESTEP && p1.shieldUp) {
-                app.stage.removeChild(p1Shield);
+                app.stage.removeChild(p1.shield);
                 p1.shieldUp = false;
             }
         },                      false);
@@ -1245,39 +1170,39 @@ class Game {
             } else if (grounded(p2.sprite) && !moving(p2) && !p2.shooting && e.keyCode === SIDESTEP) {
                 p2.shieldUp = true;
                 if (facingLeft(p2.sprite)) {
-                    if (p2Shield.scale.x < 0) {
-                        p2Shield.scale.x *= -1;
+                    if (p2.shield.scale.x < 0) {
+                        p2.shield.scale.x *= -1;
                     }
                     if (p2.sprite === ophelia2 || p2.sprite === tressa2 || p2.sprite === primrose2) {
-                        p2Shield.x = p2.sprite.x - 12;
+                        p2.shield.x = p2.sprite.x - 12;
                     } else if (p2.sprite === cyrus2) {
-                        p2Shield.x = p2.sprite.x - 2;
+                        p2.shield.x = p2.sprite.x - 2;
                     } else if (p2.sprite === olberic2) {
-                    p2Shield.x = p2.sprite.x - 3;
+                    p2.shield.x = p2.sprite.x - 3;
                     } else if (p2.sprite === alfyn2) {
-                        p2Shield.x = p2.sprite.x - 15;
-                        p2Shield.y += 3;
+                        p2.shield.x = p2.sprite.x - 15;
+                        p2.shield.y += 3;
                     } else if (p2.sprite === therion2 || p2.sprite === hannit2) {
-                        p2Shield.x = p2.sprite.x - 8;
+                        p2.shield.x = p2.sprite.x - 8;
                     }
                 } else if (facingRight(p2.sprite)) {
-                    if (p2Shield.scale.x >= 0) {
-                        p2Shield.scale.x *= -1;
+                    if (p2.shield.scale.x >= 0) {
+                        p2.shield.scale.x *= -1;
                     }
                     if (p2.sprite === ophelia2 || p2.sprite === tressa2 || p2.sprite === primrose2) {
-                        p2Shield.x = p2.sprite.x + 12;
+                        p2.shield.x = p2.sprite.x + 12;
                     } else if (p2.sprite === cyrus2) {
-                        p2Shield.x = p2.sprite.x;
+                        p2.shield.x = p2.sprite.x;
                     } else if (p2.sprite === olberic2) {
-                        p2Shield.x = p2.sprite.x + 3;
+                        p2.shield.x = p2.sprite.x + 3;
                     } else if (p2.sprite === alfyn2) {
-                        p2Shield.x = p2.sprite.x + 15;
+                        p2.shield.x = p2.sprite.x + 15;
                     } else if (p2.sprite === therion2 || p2.sprite === hannit2) {
-                        p2Shield.x = p2.sprite.x + 8;
+                        p2.shield.x = p2.sprite.x + 8;
                     }
                 }
-                p2Shield.y = p2.sprite.y - 5;
-                app.stage.addChild(p2Shield);
+                p2.shield.y = p2.sprite.y - 5;
+                app.stage.addChild(p2.shield);
             }
         },                      false);
 
@@ -1309,7 +1234,7 @@ class Game {
                 p2.shooting = false;
                 this.lastKey2 = 0;
             } else if (e.keyCode === SIDESTEP && p2.shieldUp) {
-                app.stage.removeChild(p2Shield);
+                app.stage.removeChild(p2.shield);
                 p2.shieldUp = false;
             }
         },                      false);
@@ -1407,11 +1332,11 @@ class Game {
 
                 if (moving(p1) || p1.shooting || !grounded(p1.sprite)) {
                     p1.shieldUp = false;
-                    app.stage.removeChild(p1Shield);
+                    app.stage.removeChild(p1.shield);
                 }
                 if (moving(p2) || p2.shooting || !grounded(p2.sprite)) {
                     p2.shieldUp = false;
-                    app.stage.removeChild(p2Shield);
+                    app.stage.removeChild(p2.shield);
                 }
 
                 // PROJECTILES
