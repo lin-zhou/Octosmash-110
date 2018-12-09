@@ -27,6 +27,8 @@ import {
 
 import { Player, p1, p2 } from "./player-script";
 
+import { moving, isOutOfBounds, isOffScreen, facingLeft, facingRight, grounded, underStage, canJump } from "./helper-script";
+
 import {
     startStyle,
     style,
@@ -804,54 +806,6 @@ window.addEventListener("click", (e: MouseEvent): void  => {
         },                      false);
     }
 },                      false);
-
-
-// HELPER FUNCTIONS
-let moving = (p: Player) => p.movingLeft || p.movingRight;
-
-let isOutOfBounds = (unit: Sprite): boolean => {
-    return unit.x <= -100 || unit.x >= 970 || unit.y <= -100 || unit.y >= 590;
-};
-
-let isOffScreen = (sprite: Sprite): boolean => {
-    return sprite.x <= -40 || sprite.x >= 1024 * .85 || sprite.y <= 0 || sprite.y >= 576 * .85;
-};
-
-let facingLeft = (unit: Sprite) => unit.scale.x >= 0;
-let facingRight = (unit: Sprite) => unit.scale.x < 0;
-
-let groundedLeftward = (unit: Sprite) => (facingLeft(unit) && (unit.y >= 205 && unit.y <= 207 && (unit.x < 718 && unit.x > 62)));
-let groundedRightward = (unit: Sprite) => (facingRight(unit) && (unit.y >= 205 && unit.y <= 207 && (unit.x < 788 && unit.x > 135)));
-let grounded = (unit: Sprite) => (groundedLeftward(unit) || groundedRightward(unit));
-
-let underStageLeftWard = (unit: Sprite) => (facingLeft(unit) && (unit.y >= 208 && unit.y <= 295) && (unit.x < 718 && unit.x > 62));
-let underStageRightWard = (unit: Sprite) => (facingRight(unit) && (unit.y >= 208 && unit.y <= 295) && (unit.x < 788 && unit.x > 135));
-let underStage = (unit: Sprite) => (underStageLeftWard(unit) || underStageRightWard(unit));
-
-let offSides = (unit: Sprite) => ((facingLeft(unit) && (unit.x <= 62 || unit.x >= 718)) || (facingRight(unit) && (unit.x <= 135 || unit.x >= 788)));
-
-let resetJump = (player: Player) => player.jumpCount = 0;
-
-let canJump = (player: Player): boolean => {
-    if (grounded(player.sprite)) {
-        if (player === p1) {
-            resetJump(p1);
-            return true;
-        } else if (player === p2) {
-            resetJump(p2);
-            return true;
-        }
-    } else if (player === p1) {
-        if (p1.jumpCount < 2) {
-            return true;
-        }
-    } else if (player === p2) {
-        if (p2.jumpCount < 2) {
-            return true;
-        }
-    }
-    return false;
-};
 
 // BATTLE FUNCTIONS
 let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
