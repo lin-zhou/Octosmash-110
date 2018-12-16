@@ -6,7 +6,7 @@ import {
 const app: Application = new Application(1024 * .85, 576 * .85);
 document.body.appendChild(app.view);
 
-class Magic {
+export class Magic {
     sprite: Sprite;
     x: number = 0;
     y: number = 0;
