@@ -1,5 +1,3 @@
-import { isTSTypeAliasDeclaration } from "babel-types";
-
 export let startStyle = new PIXI.TextStyle({
     fontFamily: "Arial",
     fontSize: 80,
