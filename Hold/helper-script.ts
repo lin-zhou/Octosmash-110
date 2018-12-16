@@ -1,4 +1,9 @@
-import { Sprite } from "pixi.js";
+import {
+    Sprite,
+    DisplayObject,
+    Rectangle
+} from "pixi.js";
+
 import { Player, p1, p2 } from "./player-script";
 
 export let moving = (p: Player) => p.movingLeft || p.movingRight;
@@ -43,4 +48,21 @@ export let canJump = (player: Player): boolean => {
         }
     }
     return false;
+};
+
+export let damageToString = (player: Player): string => player.damage + "";
+
+// BATTLE FUNCTIONS
+export let isColliding = (a: DisplayObject, b: DisplayObject): boolean => {
+    let ab: Rectangle = a.getBounds();
+    let bb: Rectangle = b.getBounds();
+    return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+};
+
+export let hitRight = (player: Player): void => {
+    player.sprite.x += 30 + (player.damage * 5);
+};
+
+export let hitLeft = (player: Player): void => {
+    player.sprite.x -= 30 + (player.damage * 5);
 };
